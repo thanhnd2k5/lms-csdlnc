@@ -214,14 +214,16 @@ Hệ thống hiện có:
 
 Hệ thống đã được bổ sung script mẫu:
 
-- [migration_up.sql](/D:/lms-csdlnc/docs/sql/migration_up.sql)
-- [migration_down.sql](/D:/lms-csdlnc/docs/sql/migration_down.sql)
 - [seed.sql](/D:/lms-csdlnc/docs/sql/seed.sql)
 - bộ migration giả lập theo từng phiên bản:
   - [V1__init_core.sql](/D:/lms-csdlnc/docs/sql/migrations/V1__init_core.sql)
+  - [V1__init_core_down.sql](/D:/lms-csdlnc/docs/sql/migrations/V1__init_core_down.sql)
   - [V2__add_quiz_module.sql](/D:/lms-csdlnc/docs/sql/migrations/V2__add_quiz_module.sql)
+  - [V2__add_quiz_module_down.sql](/D:/lms-csdlnc/docs/sql/migrations/V2__add_quiz_module_down.sql)
   - [V3__add_enrollment_progress_documents.sql](/D:/lms-csdlnc/docs/sql/migrations/V3__add_enrollment_progress_documents.sql)
+  - [V3__add_enrollment_progress_documents_down.sql](/D:/lms-csdlnc/docs/sql/migrations/V3__add_enrollment_progress_documents_down.sql)
   - [V4__add_class_management.sql](/D:/lms-csdlnc/docs/sql/migrations/V4__add_class_management.sql)
+  - [V4__add_class_management_down.sql](/D:/lms-csdlnc/docs/sql/migrations/V4__add_class_management_down.sql)
 
 ### 4.4. Mô phỏng quá trình phát triển schema theo migration
 
@@ -233,6 +235,11 @@ Các giai đoạn phát triển đề xuất:
 - V2: bổ sung module bài kiểm tra
 - V3: bổ sung ghi danh, tiến độ học tập và tài liệu
 - V4: bổ sung quản lý lớp học
+
+Mỗi phiên bản đều có:
+
+- migration `up` để thêm cấu trúc mới
+- migration `down` để hoàn tác thay đổi khi cần rollback
 
 Tài liệu mô tả chi tiết:
 

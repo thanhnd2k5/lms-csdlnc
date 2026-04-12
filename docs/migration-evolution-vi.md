@@ -24,6 +24,7 @@ Cách trình bày này hợp lý hơn về mặt học thuật vì:
 File:
 
 - [V1__init_core.sql](/D:/lms-csdlnc/docs/sql/migrations/V1__init_core.sql)
+- [V1__init_core_down.sql](/D:/lms-csdlnc/docs/sql/migrations/V1__init_core_down.sql)
 
 Nội dung:
 
@@ -43,6 +44,7 @@ Nội dung:
 File:
 
 - [V2__add_quiz_module.sql](/D:/lms-csdlnc/docs/sql/migrations/V2__add_quiz_module.sql)
+- [V2__add_quiz_module_down.sql](/D:/lms-csdlnc/docs/sql/migrations/V2__add_quiz_module_down.sql)
 
 Nội dung:
 
@@ -62,6 +64,7 @@ Nội dung:
 File:
 
 - [V3__add_enrollment_progress_documents.sql](/D:/lms-csdlnc/docs/sql/migrations/V3__add_enrollment_progress_documents.sql)
+- [V3__add_enrollment_progress_documents_down.sql](/D:/lms-csdlnc/docs/sql/migrations/V3__add_enrollment_progress_documents_down.sql)
 
 Nội dung:
 
@@ -81,6 +84,7 @@ Nội dung:
 File:
 
 - [V4__add_class_management.sql](/D:/lms-csdlnc/docs/sql/migrations/V4__add_class_management.sql)
+- [V4__add_class_management_down.sql](/D:/lms-csdlnc/docs/sql/migrations/V4__add_class_management_down.sql)
 
 Nội dung:
 
@@ -101,6 +105,8 @@ Anh có thể viết trong Chương 4 theo hướng:
 
 “Để làm rõ quá trình phát triển cơ sở dữ liệu, báo cáo không chỉ xem schema hiện tại là kết quả cuối cùng, mà còn mô phỏng tiến trình hình thành schema thông qua các phiên bản migration. Mỗi migration phản ánh một giai đoạn mở rộng nghiệp vụ của hệ thống LMS, từ lõi quản lý người dùng và khóa học, đến bài kiểm tra, tiến độ học tập và cuối cùng là quản lý lớp học.”
 
+Ngoài migration `up`, báo cáo cũng có thể nhấn mạnh việc chuẩn bị migration `down` tương ứng cho từng phiên bản. Điều này thể hiện khả năng hoàn tác schema khi triển khai thất bại hoặc khi cần quay lui về trạng thái trước đó, qua đó làm rõ hơn tư duy quản trị và vận hành cơ sở dữ liệu.
+
 ## 4. Cách chèn vào Chương 4
 
 Nên thêm một mục:
@@ -113,6 +119,7 @@ Trong mục này trình bày:
 2. V2: thêm quiz
 3. V3: thêm ghi danh và tài liệu
 4. V4: thêm lớp học
+5. với mỗi phiên bản đều có `up` và `down`
 
 ## 5. Điều quan trọng cần giữ trung thực
 
