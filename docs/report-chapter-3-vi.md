@@ -12,7 +12,7 @@ Cơ sở dữ liệu của hệ thống cần đáp ứng các nhóm yêu cầu:
 
 ## 3.2. Phân tích thực thể
 
-Schema hiện tại bao gồm các thực thể chính:
+Schema của hệ thống được tổ chức quanh các thực thể chính sau:
 
 - `users`
 - `courses`
@@ -82,7 +82,7 @@ Về mặt vật lý, schema được cài đặt trên MySQL với:
 
 ## 3.6. Chuẩn hóa lược đồ
 
-Schema hiện tại đạt mức chuẩn hóa tốt, có thể trình bày là đạt đến mức 3NF ở phần lớn các bảng:
+Schema của hệ thống đạt mức chuẩn hóa tốt, có thể trình bày là đạt đến mức 3NF ở phần lớn các bảng:
 
 - dữ liệu lặp được tách ra bảng riêng
 - quan hệ nhiều-nhiều được tách qua bảng trung gian
@@ -98,6 +98,6 @@ Data Dictionary chi tiết được trình bày trong:
 
 ## 3.8. Nhận xét
 
-Schema hiện tại của hệ thống LMS CSDLNC là nền tảng hợp lý để phân tích trong môn Cơ sở dữ liệu. Tuy nhiên, quá trình đối chiếu với backend cho thấy một số điểm chưa đồng bộ, được ghi chú trong:
+Schema của hệ thống LMS CSDLNC là nền tảng hợp lý để trình bày trong môn Cơ sở dữ liệu. Tuy nhiên, quá trình đối chiếu giữa thiết kế dữ liệu và phần triển khai backend cho thấy một số điểm chưa đồng bộ, được ghi chú trong:
 
 - [schema-gap-notes.md](/D:/lms-csdlnc/docs/schema-gap-notes.md)

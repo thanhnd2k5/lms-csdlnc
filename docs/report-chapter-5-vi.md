@@ -19,7 +19,7 @@ Các truy vấn mẫu và lệnh `EXPLAIN` được tổng hợp trong:
 
 `[Chèn Hình 5.1. Kết quả EXPLAIN tại đây]`
 
-## 5.4. Nhận xét về hiệu năng schema hiện tại
+## 5.4. Nhận xét về hiệu năng của schema
 
 Schema đã có nền tảng tối ưu cơ bản, nhưng vẫn có thể bổ sung thêm chỉ mục trên các cột join và cột lọc như:
 
@@ -30,4 +30,4 @@ Schema đã có nền tảng tối ưu cơ bản, nhưng vẫn có thể bổ su
 
 ## 5.5. Kết luận
 
-Schema hiện tại đã có một số chỉ mục quan trọng và có thể tiếp tục được cải thiện để phục vụ hệ thống ở quy mô lớn hơn.
+Schema hiện đã có một số chỉ mục quan trọng và có thể tiếp tục được cải thiện để phục vụ hệ thống ở quy mô lớn hơn.

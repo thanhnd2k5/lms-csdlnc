@@ -13,14 +13,14 @@ Báo cáo đã phân tích được:
 - backup/restore
 - hướng mở rộng nâng cao
 
-## 8.2. Đánh giá tổng quát về schema hiện tại
+## 8.2. Đánh giá tổng quát về schema của hệ thống
 
-Schema hiện tại có cấu trúc hợp lý, thể hiện đầy đủ các nhóm nghiệp vụ chính của hệ thống LMS. Tuy nhiên, vẫn còn một số điểm chưa đồng bộ với backend code.
+Schema của hệ thống có cấu trúc hợp lý, thể hiện đầy đủ các nhóm nghiệp vụ chính của hệ thống LMS. Tuy nhiên, vẫn còn một số điểm chưa đồng bộ với phần triển khai backend.
 
 ## 8.3. Hạn chế của đề tài
 
 - chưa có migration tách riêng theo phiên bản
-- chưa có seed chuẩn hóa trong repo gốc
+- chưa có seed chuẩn hóa trong bộ mã nguồn chính thức của dự án
 - chưa có minh chứng triển khai thực tế cho replication, sharding
 
 ## 8.4. Hướng phát triển
@@ -32,4 +32,4 @@ Schema hiện tại có cấu trúc hợp lý, thể hiện đầy đủ các nh
 
 ## 8.5. Kết luận chung
 
-Đề tài đã cho thấy vai trò trung tâm của cơ sở dữ liệu SQL trong việc xây dựng hệ thống quản lý học tập trực tuyến. Schema hiện tại của LMS CSDLNC là nền tảng phù hợp để phân tích trong môn Cơ sở dữ liệu và có khả năng tiếp tục hoàn thiện trong các giai đoạn sau.
+Đề tài đã cho thấy vai trò trung tâm của cơ sở dữ liệu SQL trong việc xây dựng hệ thống quản lý học tập trực tuyến. Schema của LMS CSDLNC là nền tảng phù hợp để trình bày trong môn Cơ sở dữ liệu và có khả năng tiếp tục hoàn thiện trong các giai đoạn sau.

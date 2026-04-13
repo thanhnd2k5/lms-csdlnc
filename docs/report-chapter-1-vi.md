@@ -15,13 +15,13 @@ Xuất phát từ lý do trên, đề tài “Ứng dụng sử dụng cơ sở 
 - Phân tích bài toán quản lý học tập trực tuyến trên môi trường web.
 - Xác định các thực thể dữ liệu, thuộc tính, quan hệ và ràng buộc cần thiết của hệ thống.
 - Xây dựng cơ sở dữ liệu quan hệ sử dụng SQL phù hợp với bài toán.
-- Đánh giá mức độ hợp lý của schema dữ liệu hiện có trong dự án LMS CSDLNC.
+- Đánh giá mức độ hợp lý của schema dữ liệu được xây dựng cho hệ thống LMS CSDLNC.
 - Trình bày các nội dung liên quan đến khởi tạo, tối ưu, backup và restore cơ sở dữ liệu.
 - Đề xuất một số hướng mở rộng nâng cao như replication và sharding ở mức độ lý thuyết.
 
 ## 1.3. Phạm vi đề tài
 
-Về mặt phạm vi, đề tài được xây dựng dựa trên một dự án LMS full-stack đã có cấu trúc frontend, backend và schema SQL. Tuy nhiên, nội dung báo cáo chủ yếu tập trung vào thành phần cơ sở dữ liệu, cụ thể bao gồm:
+Đề tài hướng tới việc xây dựng một hệ thống LMS gồm frontend, backend và cơ sở dữ liệu SQL. Tuy nhiên, do trọng tâm của học phần là Cơ sở dữ liệu, nội dung báo cáo chủ yếu tập trung trình bày thành phần cơ sở dữ liệu của hệ thống, cụ thể bao gồm:
 
 - phân tích yêu cầu dữ liệu
 - xác định thực thể, thuộc tính và quan hệ
@@ -43,6 +43,10 @@ Báo cáo được thực hiện theo các bước cơ bản sau:
 6. Phân tích các ràng buộc, index và truy vấn tiêu biểu.
 7. Xây dựng nội dung backup, restore và các hướng mở rộng nâng cao.
 
+Trong quá trình thực hiện, đề tài kết hợp giữa hai hướng chính. Thứ nhất là phân tích bài toán và thiết kế dữ liệu theo lý thuyết của môn học, gồm xác định thực thể, thuộc tính, quan hệ và chuẩn hóa lược đồ. Thứ hai là đối chiếu thiết kế đó với hệ thống đã xây dựng để xem dữ liệu được sử dụng như thế nào trong thực tế.
+
+Ngoài phần thiết kế, báo cáo còn xem xét một số nội dung gần với triển khai như truy vấn SQL, chỉ mục, `EXPLAIN`, seed dữ liệu và backup/restore. Cách làm này giúp phần báo cáo không chỉ dừng ở mô tả lý thuyết mà còn gắn với khả năng sử dụng cơ sở dữ liệu trong hệ thống.
+
 ## 1.5. Ý nghĩa của đề tài
 
 Đề tài có ý nghĩa ở hai khía cạnh.
@@ -50,6 +54,8 @@ Báo cáo được thực hiện theo các bước cơ bản sau:
 Về mặt học thuật, đề tài giúp vận dụng các kiến thức trong môn Cơ sở dữ liệu vào một bài toán cụ thể và có tính thực tế cao. Các nội dung như phân tích thực thể, lược đồ quan hệ, chuẩn hóa, index hay backup không được trình bày một cách lý thuyết đơn lẻ, mà được gắn trực tiếp với một hệ thống ứng dụng cụ thể.
 
 Về mặt ứng dụng, đề tài cho thấy tầm quan trọng của việc thiết kế cơ sở dữ liệu đúng ngay từ đầu đối với các hệ thống phần mềm có nghiệp vụ phức tạp.
+
+Ngoài ra, đề tài này phù hợp với môn học vì bài toán LMS có nhiều kiểu dữ liệu khác nhau: dữ liệu người dùng, dữ liệu khóa học, dữ liệu bài kiểm tra, dữ liệu tiến độ học tập và dữ liệu lớp học. Nhờ đó, báo cáo có điều kiện trình bày được khá đầy đủ các nội dung quan trọng của môn Cơ sở dữ liệu trong cùng một hệ thống.
 
 ## 1.6. Cấu trúc báo cáo
 
