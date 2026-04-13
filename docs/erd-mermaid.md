@@ -87,3 +87,20 @@ erDiagram
 Caption goi y:
 
 - `Hinh 3.3. So do quan he du lieu cua nhom lop hoc, ghi danh va tien do hoc tap`
+
+## 4. ERD nhom Noi dung hoc tap
+
+```mermaid
+erDiagram
+    users ||--o{ courses : teaches
+    courses ||--o{ chapters : contains
+    courses ||--o{ videos : has
+    chapters ||--o{ videos : organizes
+    courses ||--o{ documents : includes
+    chapters ||--o{ documents : includes
+    videos ||--o{ documents : includes
+```
+
+Caption goi y:
+
+- `Hinh 3.4. So do quan he du lieu cua nhom noi dung hoc tap`
