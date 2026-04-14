@@ -321,38 +321,54 @@ Nhìn chung, phần khởi tạo cơ sở dữ liệu của hệ thống tương
 
 ### 5.1. Vai trò của tối ưu cơ sở dữ liệu
 
-Tối ưu cơ sở dữ liệu nhằm đảm bảo hệ thống có thể truy vấn dữ liệu nhanh, nhất là khi số lượng học viên, khóa học và dữ liệu học tập tăng lên.
+Tối ưu cơ sở dữ liệu nhằm đảm bảo hệ thống có thể truy vấn dữ liệu nhanh, ổn định và duy trì được hiệu năng khi khối lượng dữ liệu tăng lên. Đối với hệ thống LMS, dữ liệu phát sinh không chỉ nằm ở bảng người dùng hay khóa học, mà còn tăng liên tục ở các bảng ghi danh, tiến độ học tập, lịch sử làm bài và câu trả lời của học viên.
+
+Nếu không quan tâm đến tối ưu truy vấn ngay từ giai đoạn thiết kế, hệ thống có thể gặp tình trạng truy vấn chậm, thời gian phản hồi tăng cao và khó mở rộng khi số lượng học viên tham gia học tập ngày càng lớn. Vì vậy, việc xem xét chỉ mục, truy vấn tiêu biểu và kế hoạch thực thi truy vấn là nội dung cần thiết trong báo cáo.
 
 ### 5.2. Danh sách chỉ mục trong lược đồ
 
-Trong lược đồ của hệ thống đã có một số chỉ mục cơ bản nhằm hỗ trợ truy vấn trên các cột khóa chính, khóa ngoại và các trường thường xuyên tham gia liên kết. Khi trình bày trong báo cáo, có thể tổng hợp các chỉ mục này thành một bảng riêng để nêu rõ tên chỉ mục, bảng áp dụng và mục đích sử dụng.
+Trong lược đồ của hệ thống đã có một số chỉ mục cơ bản nhằm hỗ trợ truy vấn trên các cột khóa chính, khóa ngoại và các trường thường xuyên tham gia liên kết. Các chỉ mục này có vai trò rút ngắn thời gian tìm kiếm bản ghi, giảm số lượng dòng phải quét và hỗ trợ tốt hơn cho các phép nối giữa các bảng.
+
+Khi trình bày trong báo cáo, có thể tổng hợp các chỉ mục này thành một bảng riêng để nêu rõ tên chỉ mục, bảng áp dụng và mục đích sử dụng. Cách trình bày này giúp người đọc dễ liên hệ giữa cấu trúc lược đồ và các truy vấn thực tế của hệ thống.
 
 ### 5.3. Các truy vấn tiêu biểu và EXPLAIN
 
-Để đánh giá hiệu năng của cơ sở dữ liệu, báo cáo lựa chọn một số truy vấn tiêu biểu gắn trực tiếp với nghiệp vụ của hệ thống như thống kê số học viên theo khóa học, theo dõi tiến độ học tập, đếm số câu hỏi theo bài kiểm tra và tìm kiếm lớp học theo mã lớp. Các truy vấn này có thể được kiểm tra bằng lệnh `EXPLAIN` để quan sát cách hệ quản trị sử dụng chỉ mục và xây dựng kế hoạch thực thi.
+Để đánh giá hiệu năng của cơ sở dữ liệu, báo cáo lựa chọn một số truy vấn tiêu biểu gắn trực tiếp với nghiệp vụ của hệ thống như thống kê số học viên theo khóa học, theo dõi tiến độ học tập, đếm số câu hỏi theo bài kiểm tra và tìm kiếm lớp học theo mã lớp. Đây đều là các truy vấn có khả năng xuất hiện thường xuyên trong quá trình vận hành hệ thống.
+
+Trong số đó, lệnh `EXPLAIN` được sử dụng để phân tích cách hệ quản trị cơ sở dữ liệu xây dựng kế hoạch thực thi truy vấn. Nói cách khác, `EXPLAIN` giúp người thực hiện biết được hệ quản trị đang quét bảng như thế nào, có sử dụng chỉ mục hay không và truy vấn có dấu hiệu kém hiệu quả ở đâu. Vì vậy, đây là công cụ phù hợp để minh chứng cho phần tối ưu trong báo cáo môn học.
 
 `[Chèn Hình 5.1. Kết quả EXPLAIN tại đây]`
 
 ### 5.4. Nhận xét về hiệu năng của lược đồ
 
-Lược đồ hiện đã có nền tảng tối ưu cơ bản, nhưng vẫn có thể bổ sung thêm chỉ mục trên các cột join và cột lọc như:
+Từ góc độ thiết kế, lược đồ hiện đã có nền tảng tối ưu cơ bản nhờ việc xác định khóa chính, khóa ngoại và một số chỉ mục quan trọng ngay trong quá trình tạo bảng. Tuy nhiên, khi đặt trong bối cảnh vận hành thực tế, vẫn có thể xem xét bổ sung thêm chỉ mục trên các cột thường xuyên tham gia phép nối và điều kiện lọc như:
 
 - `courses.teacher_id`
 - `videos.course_id`
 - `documents.course_id`
 - `course_enrollments.course_id`
 
+### 5.5. Kết luận
+
+Nhìn chung, lược đồ hiện đã có nền tảng tối ưu cơ bản và có thể đáp ứng tốt nhu cầu truy vấn ở mức thông thường. Tuy nhiên, khi số lượng người dùng và dữ liệu tăng lên, việc bổ sung chỉ mục phù hợp, đối chiếu truy vấn với `EXPLAIN` và đánh giá định kỳ hiệu năng truy vấn vẫn là cần thiết để duy trì khả năng vận hành ổn định của hệ thống.
+
 ## Chương 6. Sao lưu và phục hồi dữ liệu
 
 ### 6.1. Sự cần thiết của sao lưu và phục hồi
 
-Sao lưu và phục hồi là nội dung quan trọng để đảm bảo an toàn dữ liệu người dùng, khóa học, kết quả học tập và dữ liệu hệ thống.
+Sao lưu và phục hồi là nội dung quan trọng để đảm bảo an toàn dữ liệu người dùng, khóa học, kết quả học tập và dữ liệu hệ thống. Đối với một hệ thống LMS, dữ liệu không chỉ có giá trị quản trị mà còn gắn trực tiếp với quá trình học tập của người dùng. Nếu xảy ra sự cố làm mất dữ liệu, hệ thống có thể mất lịch sử ghi danh, tiến độ học tập, tài liệu hoặc kết quả làm bài.
+
+Vì vậy, trong khuôn khổ môn học, việc trình bày một quy trình sao lưu và phục hồi cơ bản là cần thiết để cho thấy cơ sở dữ liệu không chỉ được thiết kế để lưu trữ, mà còn cần được chuẩn bị cho các tình huống rủi ro trong quá trình vận hành.
 
 ### 6.2. Chiến lược sao lưu đề xuất
 
-Trong phạm vi môn học, có thể sử dụng phương án sao lưu mức file bằng `mysqldump`.
+Trong phạm vi môn học, có thể sử dụng phương án sao lưu mức file bằng `mysqldump`. Đây là cách làm tương đối đơn giản, dễ minh họa và phù hợp với một hệ cơ sở dữ liệu MySQL triển khai trên một máy chủ hoặc một môi trường thử nghiệm.
+
+Ưu điểm của phương án này là dễ thực hiện, dễ phục hồi và dễ lưu thành file để phục vụ minh chứng trong báo cáo. Tuy nhiên, báo cáo cũng cần nêu rõ rằng đây là giải pháp phù hợp với quy mô học tập và thử nghiệm, chưa phải chiến lược sao lưu toàn diện cho hệ thống lớn.
 
 ### 6.3. Lệnh backup
+
+Sau khi đã có cơ sở dữ liệu hoàn chỉnh và dữ liệu mẫu ban đầu, có thể thực hiện sao lưu bằng lệnh sau:
 
 ```powershell
 mysqldump -u root -p lms > lms_backup.sql
@@ -362,6 +378,8 @@ mysqldump -u root -p lms > lms_backup.sql
 
 ### 6.4. Lệnh restore
 
+Trong trường hợp cần khôi phục dữ liệu, file sao lưu có thể được nạp trở lại vào một cơ sở dữ liệu khác bằng lệnh sau:
+
 ```powershell
 mysql -u root -p lms_restore < lms_backup.sql
 ```
@@ -370,9 +388,17 @@ mysql -u root -p lms_restore < lms_backup.sql
 
 ### 6.5. Ghi chú minh chứng
 
-Trong quá trình hoàn thiện báo cáo, phần sao lưu và phục hồi nên đi kèm ảnh minh họa hoặc kết quả thực thi thực tế để tăng tính thuyết phục. Nếu tại thời điểm viết báo cáo chưa có đủ môi trường để chạy lệnh MySQL, cần nêu rõ đây là quy trình đề xuất và sẽ được bổ sung minh chứng khi có điều kiện triển khai.
+Trong quá trình hoàn thiện báo cáo, phần sao lưu và phục hồi nên đi kèm ảnh minh họa hoặc kết quả thực thi thực tế để tăng tính thuyết phục. Nếu tại thời điểm viết báo cáo chưa có đủ môi trường để chạy lệnh MySQL, cần nêu rõ đây là quy trình đề xuất có thể áp dụng trên MySQL và sẽ được bổ sung minh chứng khi có điều kiện triển khai thực tế.
+
+### 6.6. Kết luận
+
+Phương án sao lưu bằng file SQL là cách tiếp cận phù hợp trong phạm vi đề tài môn học vì dễ trình bày, dễ thử nghiệm và đủ để minh họa quy trình phục hồi dữ liệu cơ bản. Dù chưa phải giải pháp sao lưu chuyên sâu cho hệ thống lớn, nội dung này vẫn cho thấy cơ sở dữ liệu của hệ thống đã được xem xét dưới góc độ vận hành và an toàn dữ liệu.
 
 ## Chương 7. Kỹ thuật nâng cao
+
+Phần kỹ thuật nâng cao được đưa vào báo cáo nhằm mở rộng góc nhìn từ một hệ cơ sở dữ liệu phục vụ học tập sang khả năng vận hành ở quy mô lớn hơn trong tương lai. Trong đó, replication và sharding là hai hướng thường được nhắc đến khi hệ thống cần tăng khả năng sẵn sàng, mở rộng tải hoặc phục vụ số lượng người dùng lớn.
+
+Trong phạm vi đề tài này, hai kỹ thuật trên được phân tích ở mức định hướng lý thuyết. Mục tiêu của phần này là chỉ ra khả năng áp dụng đối với hệ thống LMS, không phải mô tả một giải pháp đã được triển khai và kiểm chứng thực tế.
 
 ### 7.1. Replication
 
@@ -397,10 +423,7 @@ Trong hệ thống LMS, các bảng có thể xem xét sharding về mặt lý t
 
 ### 7.3. Đánh giá khả năng áp dụng
 
-Trong giai đoạn hiện tại của đề tài:
-
-- replication là hướng nâng cấp thực tế hơn
-- sharding là hướng nâng cấp cho quy mô lớn hơn
+Trong giai đoạn hiện tại của đề tài, replication là hướng nâng cấp thực tế hơn vì có thể áp dụng sớm để tăng khả năng dự phòng và hỗ trợ phân tải truy vấn đọc. Trong khi đó, sharding chỉ thực sự cần thiết khi hệ thống đạt đến quy mô dữ liệu rất lớn và phát sinh yêu cầu phân tán dữ liệu trên nhiều máy chủ.
 
 ### 7.4. Kết luận
 
@@ -410,33 +433,19 @@ Hai kỹ thuật trên được đưa vào báo cáo như nội dung mở rộng
 
 ### 8.1. Kết quả đạt được
 
-Báo cáo đã trình bày được các nội dung chính của một đề tài cơ sở dữ liệu gắn với hệ thống LMS, bao gồm:
+Báo cáo đã trình bày được các nội dung cốt lõi của một đề tài cơ sở dữ liệu gắn với hệ thống LMS. Cụ thể, báo cáo đã mô tả bài toán nghiệp vụ, xác định các thực thể dữ liệu chính, xây dựng lược đồ logic và lược đồ vật lý, phân tích mức độ chuẩn hóa, trình bày quá trình khởi tạo cơ sở dữ liệu, xem xét các yếu tố tối ưu truy vấn, đồng thời đề xuất quy trình sao lưu, phục hồi và các hướng mở rộng nâng cao.
 
-- bài toán nghiệp vụ
-- mô hình dữ liệu
-- lược đồ logic và vật lý
-- chuẩn hóa
-- khởi tạo CSDL
-- tối ưu
-- backup/restore
-- hướng mở rộng nâng cao
+### 8.2. Đánh giá tổng quát về lược đồ dữ liệu của hệ thống
 
-### 8.2. Đánh giá tổng quát về schema của hệ thống
-
-Schema của hệ thống có cấu trúc tương đối hợp lý và phản ánh được các nhóm nghiệp vụ chính của một hệ thống LMS như quản lý người dùng, nội dung học tập, đánh giá, ghi danh và lớp học. Bên cạnh đó, quá trình đối chiếu với phần triển khai backend cũng cho thấy vẫn còn một số điểm cần tiếp tục đồng bộ để hệ thống hoàn thiện hơn.
+Lược đồ dữ liệu của hệ thống có cấu trúc tương đối hợp lý và phản ánh được các nhóm nghiệp vụ chính của một hệ thống LMS như quản lý người dùng, nội dung học tập, đánh giá, ghi danh và lớp học. Bên cạnh đó, quá trình đối chiếu với phần triển khai backend cũng cho thấy vẫn còn một số điểm cần tiếp tục đồng bộ để hệ thống hoàn thiện hơn.
 
 ### 8.3. Hạn chế của đề tài
 
-- phần minh chứng thực nghiệm cho `EXPLAIN`, sao lưu và phục hồi còn phụ thuộc vào môi trường MySQL thực tế
-- một số nội dung nâng cao như replication và sharding mới dừng ở mức định hướng
-- giữa schema và phần triển khai backend vẫn còn một vài điểm chưa đồng bộ cần tiếp tục chỉnh sửa
+Bên cạnh các kết quả đã đạt được, đề tài vẫn còn một số hạn chế. Trước hết, phần minh chứng thực nghiệm cho `EXPLAIN`, sao lưu và phục hồi còn phụ thuộc vào môi trường MySQL thực tế nên chưa thể hoàn thiện đầy đủ ngay trong toàn bộ tài liệu. Ngoài ra, một số nội dung nâng cao như replication và sharding mới được phân tích ở mức định hướng, chưa có điều kiện triển khai thực tế. Bên cạnh đó, giữa lược đồ dữ liệu và phần triển khai backend vẫn còn một vài điểm chưa đồng bộ và cần tiếp tục chỉnh sửa trong giai đoạn sau.
 
 ### 8.4. Hướng phát triển
 
-- tiếp tục hoàn thiện tính đồng bộ giữa schema và mã nguồn backend
-- bổ sung đầy đủ minh chứng thực nghiệm cho `EXPLAIN`, backup và restore
-- hoàn thiện hơn bộ migration, seed và dữ liệu mẫu phục vụ kiểm thử
-- nghiên cứu triển khai replication ở mức cơ bản nếu hệ thống được mở rộng trong tương lai
+Trong thời gian tới, hệ thống có thể được hoàn thiện theo một số hướng chính. Thứ nhất là tiếp tục đồng bộ giữa lược đồ dữ liệu và mã nguồn backend để giảm sai lệch trong quá trình triển khai. Thứ hai là bổ sung đầy đủ minh chứng thực nghiệm cho `EXPLAIN`, sao lưu và phục hồi khi có môi trường MySQL phù hợp. Thứ ba là hoàn thiện hơn bộ migration, seed và dữ liệu mẫu để phục vụ kiểm thử và minh họa rõ hơn quá trình phát triển cơ sở dữ liệu. Cuối cùng, nếu hệ thống được mở rộng trong tương lai, có thể nghiên cứu triển khai replication ở mức cơ bản như một bước đi thực tế trước khi xem xét các kỹ thuật phân tán phức tạp hơn.
 
 ### 8.5. Kết luận chung
 
