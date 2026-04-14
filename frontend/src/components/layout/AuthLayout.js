@@ -1,16 +1,16 @@
 import React from 'react';
-import AuthNavbar from '../auth/AuthNavbar';
+import BrandingPanel from '../auth/BrandingPanel';
 import './auth-layout.css';
 
 const AuthLayout = ({ children }) => {
   return (
-    <div className="auth-layout">
-      <AuthNavbar />
-      <div className="auth-content">
+    <div className="auth-split">
+      <BrandingPanel />
+      <div className="auth-form-panel">
         {children}
       </div>
     </div>
   );
 };
 
-export default AuthLayout; 
+export default AuthLayout;
