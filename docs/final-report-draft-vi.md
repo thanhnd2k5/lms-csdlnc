@@ -178,14 +178,21 @@ Về mặt logic, hệ thống được chia thành các cụm dữ liệu:
 
 `[Chèn Hình 3.1. Sơ đồ ERD tổng thể của hệ thống tại đây]`
 
-Sau sơ đồ tổng thể, báo cáo tiếp tục trình bày các sơ đồ chi tiết theo từng nhóm nghiệp vụ để người đọc dễ theo dõi hơn. Cách sắp xếp phù hợp trong Chương 3 như sau:
+Từ sơ đồ tổng thể, có thể tiếp tục phân tích sâu hơn các nhóm dữ liệu có vai trò trọng tâm trong hệ thống. Để thuận tiện cho việc theo dõi, báo cáo tách riêng ba nhóm dữ liệu chính gồm nhóm đánh giá và bài kiểm tra, nhóm lớp học và ghi danh, và nhóm nội dung học tập.
 
-- đặt Hình 3.1 ngay sau phần giới thiệu lược đồ logic tổng thể
-- đặt Hình 3.2 sau đoạn mô tả nhóm dữ liệu đánh giá và bài kiểm tra
-- đặt Hình 3.3 sau đoạn mô tả nhóm dữ liệu lớp học, ghi danh và tiến độ
-- đặt Hình 3.4 sau đoạn mô tả nhóm dữ liệu nội dung học tập
+Hình 3.2 làm rõ mối quan hệ giữa bài kiểm tra, câu hỏi, đáp án và lịch sử làm bài của học viên.
 
-Với cách trình bày này, phần ERD vừa đảm bảo tính tổng quan, vừa tránh cảm giác dồn toàn bộ thông tin vào một sơ đồ duy nhất.
+`[Chèn Hình 3.2. Sơ đồ ERD nhóm đánh giá và bài kiểm tra tại đây]`
+
+Hình 3.3 thể hiện nhóm dữ liệu phục vụ quản lý lớp học, ghi danh và theo dõi tiến độ học tập của học viên.
+
+`[Chèn Hình 3.3. Sơ đồ ERD nhóm lớp học, ghi danh và tiến độ học tập tại đây]`
+
+Hình 3.4 mô tả cấu trúc dữ liệu của nhóm nội dung học tập, gồm khóa học, chương học, video và tài liệu.
+
+`[Chèn Hình 3.4. Sơ đồ ERD nhóm nội dung học tập tại đây]`
+
+Cách trình bày này giúp người đọc vừa có cái nhìn tổng quan về toàn bộ hệ thống, vừa theo dõi được chi tiết của từng nhóm dữ liệu quan trọng mà không bị rối bởi một sơ đồ quá lớn.
 
 ### 3.5. Lược đồ vật lý
 
