@@ -26,9 +26,7 @@ mysql -u root -p lms_restore < lms_backup.sql
 
 ## 6.5. Ghi chú minh chứng
 
-Tình trạng minh chứng thực tế được ghi rõ trong:
-
-- [evidence-status-vi.md](/D:/lms-csdlnc/docs/evidence-status-vi.md)
+Trong quá trình hoàn thiện báo cáo, phần sao lưu và phục hồi nên đi kèm ảnh minh họa hoặc kết quả thực thi thực tế để tăng tính thuyết phục. Nếu tại thời điểm viết báo cáo chưa có đủ môi trường để chạy lệnh MySQL, cần nêu rõ đây là quy trình đề xuất và sẽ được bổ sung minh chứng khi có điều kiện triển khai.
 
 ## 6.6. Kết luận
 

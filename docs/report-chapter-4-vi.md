@@ -6,26 +6,17 @@ Mục tiêu là tạo đầy đủ bảng, ràng buộc, khóa, chỉ mục và 
 
 ## 4.2. Script tạo bảng
 
-File `backend/lms.sql` đóng vai trò là script schema chính, tạo toàn bộ bảng và ràng buộc theo thứ tự phù hợp.
+Trong đề tài này, file `backend/lms.sql` được sử dụng làm script schema chính. File này chứa toàn bộ câu lệnh tạo bảng, khóa chính, khóa ngoại và các ràng buộc cơ bản của hệ thống.
 
 ## 4.3. Mô tả các script khởi tạo
 
-Phần triển khai cơ sở dữ liệu sử dụng:
+Phần khởi tạo cơ sở dữ liệu của báo cáo được xây dựng từ ba nhóm script chính:
 
-- script schema: `lms.sql`
+- script schema tổng thể `lms.sql`
+- script seed dữ liệu mẫu
+- bộ migration mô phỏng quá trình phát triển cơ sở dữ liệu theo từng phiên bản
 
-Để phục vụ việc trình bày trong báo cáo, bộ script mẫu được tổ chức như sau:
-
-- [seed.sql](/D:/lms-csdlnc/docs/sql/seed.sql)
-- bộ migration giả lập theo từng phiên bản:
-  - [V1__init_core.sql](/D:/lms-csdlnc/docs/sql/migrations/V1__init_core.sql)
-  - [V1__init_core_down.sql](/D:/lms-csdlnc/docs/sql/migrations/V1__init_core_down.sql)
-  - [V2__add_quiz_module.sql](/D:/lms-csdlnc/docs/sql/migrations/V2__add_quiz_module.sql)
-  - [V2__add_quiz_module_down.sql](/D:/lms-csdlnc/docs/sql/migrations/V2__add_quiz_module_down.sql)
-  - [V3__add_enrollment_progress_documents.sql](/D:/lms-csdlnc/docs/sql/migrations/V3__add_enrollment_progress_documents.sql)
-  - [V3__add_enrollment_progress_documents_down.sql](/D:/lms-csdlnc/docs/sql/migrations/V3__add_enrollment_progress_documents_down.sql)
-  - [V4__add_class_management.sql](/D:/lms-csdlnc/docs/sql/migrations/V4__add_class_management.sql)
-  - [V4__add_class_management_down.sql](/D:/lms-csdlnc/docs/sql/migrations/V4__add_class_management_down.sql)
+Bộ migration được tổ chức thành các phiên bản từ V1 đến V4, và mỗi phiên bản đều có cặp script `up` và `down` để thể hiện khả năng triển khai cũng như hoàn tác thay đổi khi cần thiết.
 
 ## 4.4. Mô phỏng quá trình phát triển schema theo migration
 
@@ -69,19 +60,15 @@ Giai đoạn sau cùng bổ sung mô hình lớp học, cho phép giảng viên 
 - migration `up` thêm nhóm bảng lớp học
 - migration `down` xóa nhóm bảng lớp học theo thứ tự phụ thuộc
 
-Chi tiết cách trình bày được mô tả trong:
-
-- [migration-evolution-vi.md](/D:/lms-csdlnc/docs/migration-evolution-vi.md)
-
-Như vậy, phần migration trong báo cáo không chỉ dừng ở việc tạo schema, mà còn thể hiện được tư duy quản lý phiên bản và khả năng rollback của cơ sở dữ liệu.
+Như vậy, phần migration trong báo cáo không chỉ dừng ở việc tạo schema ban đầu, mà còn thể hiện được tư duy quản lý phiên bản và khả năng rollback của cơ sở dữ liệu trong quá trình phát triển.
 
 ## 4.5. Quy trình khởi tạo cơ sở dữ liệu
 
-1. Tạo database `lms`
-2. Chạy `lms.sql`
-3. Kiểm tra danh sách bảng
-4. Nạp dữ liệu seed
-5. Kiểm tra số lượng bản ghi
+1. Tạo cơ sở dữ liệu `lms`.
+2. Chạy file `lms.sql` để khởi tạo toàn bộ schema.
+3. Kiểm tra danh sách bảng và các ràng buộc đã được tạo.
+4. Nạp dữ liệu mẫu bằng script seed.
+5. Kiểm tra số lượng bản ghi và khả năng liên kết dữ liệu giữa các bảng.
 
 `[Chèn Hình 4.1. Kết quả tạo schema tại đây]`
 

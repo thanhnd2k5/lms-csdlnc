@@ -2,11 +2,11 @@
 
 ## 1.1. Lý do chọn đề tài
 
-Trong xu thế chuyển đổi số hiện nay, ứng dụng công nghệ thông tin vào giáo dục và đào tạo đã trở thành một nhu cầu cấp thiết. Các hệ thống quản lý học tập trực tuyến, thường được gọi là Learning Management System, đóng vai trò quan trọng trong việc tổ chức, phân phối và theo dõi quá trình học tập của người học. Thông qua các hệ thống này, giảng viên có thể xây dựng nội dung giảng dạy, học viên có thể tiếp cận tài liệu học tập mọi lúc mọi nơi, trong khi nhà quản lý có thể theo dõi và đánh giá hiệu quả đào tạo dựa trên các dữ liệu cụ thể.
+Trong những năm gần đây, nhu cầu học tập trực tuyến tăng nhanh và kéo theo sự phát triển của các hệ thống quản lý học tập, thường được gọi là Learning Management System. Một hệ thống LMS không chỉ giúp cung cấp nội dung học tập, mà còn hỗ trợ quản lý người học, tổ chức bài kiểm tra, theo dõi tiến độ và tổng hợp kết quả học tập.
 
-Tuy nhiên, để một hệ thống LMS có thể vận hành hiệu quả, nền tảng dữ liệu của nó cần được thiết kế khoa học, nhất quán và có khả năng mở rộng. Dữ liệu trong hệ thống LMS không đơn thuần là danh sách người dùng hay danh sách khóa học, mà còn bao gồm nhiều thành phần có quan hệ chặt chẽ như chương học, video bài giảng, tài liệu, bài kiểm tra, kết quả làm bài, lịch sử đăng ký học và thông tin lớp học. Nếu cơ sở dữ liệu được thiết kế không hợp lý, hệ thống sẽ gặp khó khăn trong quá trình truy vấn, cập nhật, bảo trì và mở rộng.
+Để các chức năng đó vận hành ổn định, cơ sở dữ liệu giữ vai trò rất quan trọng. Dữ liệu trong hệ thống LMS không chỉ dừng ở thông tin tài khoản hay danh sách khóa học, mà còn bao gồm chương học, video, tài liệu, bài kiểm tra, kết quả làm bài, lịch sử ghi danh và thông tin lớp học. Nếu mô hình dữ liệu được thiết kế thiếu chặt chẽ, hệ thống sẽ dễ gặp vấn đề về trùng lặp dữ liệu, khó truy vấn, khó mở rộng và khó bảo trì.
 
-Xuất phát từ lý do trên, đề tài “Ứng dụng sử dụng cơ sở dữ liệu SQL cho hệ thống quản lý học tập trực tuyến LMS CSDLNC” được lựa chọn nhằm nghiên cứu và phân tích một bài toán gần với thực tế, đồng thời vẫn đảm bảo thể hiện rõ các kiến thức cốt lõi của môn Cơ sở dữ liệu, bao gồm phân tích thực thể, xây dựng lược đồ quan hệ, chuẩn hóa, tạo schema SQL, tối ưu truy vấn và đề xuất các giải pháp vận hành như sao lưu, phục hồi và mở rộng hệ thống.
+Từ yêu cầu đó, đề tài “Ứng dụng sử dụng cơ sở dữ liệu SQL cho hệ thống quản lý học tập trực tuyến LMS CSDLNC” được thực hiện nhằm xây dựng và phân tích một bài toán có tính thực tế, qua đó vận dụng các nội dung trọng tâm của học phần Cơ sở dữ liệu như phân tích thực thể, thiết kế lược đồ quan hệ, chuẩn hóa, khởi tạo schema, tối ưu truy vấn và đề xuất các phương án sao lưu, phục hồi dữ liệu.
 
 ## 1.2. Mục tiêu nghiên cứu
 
@@ -33,29 +33,24 @@ Xuất phát từ lý do trên, đề tài “Ứng dụng sử dụng cơ sở 
 
 ## 1.4. Phương pháp thực hiện
 
-Báo cáo được thực hiện theo các bước cơ bản sau:
+Báo cáo được thực hiện theo các bước chính sau:
 
-1. Khảo sát cấu trúc dự án và file schema SQL.
-2. Phân tích bài toán nghiệp vụ của hệ thống LMS.
-3. Xác định các thực thể và quan hệ dữ liệu.
-4. Đối chiếu schema với mã nguồn backend để đánh giá tính phù hợp.
-5. Mô tả lược đồ dữ liệu ở hai mức logic và vật lý.
-6. Phân tích các ràng buộc, index và truy vấn tiêu biểu.
-7. Xây dựng nội dung backup, restore và các hướng mở rộng nâng cao.
+1. Phân tích bài toán nghiệp vụ của hệ thống LMS.
+2. Khảo sát schema SQL và xác định các thực thể dữ liệu chính.
+3. Mô tả quan hệ, ràng buộc và lược đồ dữ liệu ở mức logic và vật lý.
+4. Đánh giá mức độ chuẩn hóa của lược đồ.
+5. Xây dựng các nội dung về migration, seed, chỉ mục, truy vấn mẫu và `EXPLAIN`.
+6. Đề xuất phương án sao lưu, phục hồi và các hướng mở rộng nâng cao.
 
-Trong quá trình thực hiện, đề tài kết hợp giữa hai hướng chính. Thứ nhất là phân tích bài toán và thiết kế dữ liệu theo lý thuyết của môn học, gồm xác định thực thể, thuộc tính, quan hệ và chuẩn hóa lược đồ. Thứ hai là đối chiếu thiết kế đó với hệ thống đã xây dựng để xem dữ liệu được sử dụng như thế nào trong thực tế.
-
-Ngoài phần thiết kế, báo cáo còn xem xét một số nội dung gần với triển khai như truy vấn SQL, chỉ mục, `EXPLAIN`, seed dữ liệu và backup/restore. Cách làm này giúp phần báo cáo không chỉ dừng ở mô tả lý thuyết mà còn gắn với khả năng sử dụng cơ sở dữ liệu trong hệ thống.
+Trong quá trình thực hiện, đề tài kết hợp giữa phân tích lý thuyết và đối chiếu với phần triển khai thực tế của hệ thống. Cách tiếp cận này giúp nội dung báo cáo vừa bám sát yêu cầu của môn học, vừa phản ánh đúng cách cơ sở dữ liệu được sử dụng trong ứng dụng.
 
 ## 1.5. Ý nghĩa của đề tài
 
-Đề tài có ý nghĩa ở hai khía cạnh.
+Đề tài có ý nghĩa ở cả mặt học thuật và thực tiễn.
 
-Về mặt học thuật, đề tài giúp vận dụng các kiến thức trong môn Cơ sở dữ liệu vào một bài toán cụ thể và có tính thực tế cao. Các nội dung như phân tích thực thể, lược đồ quan hệ, chuẩn hóa, index hay backup không được trình bày một cách lý thuyết đơn lẻ, mà được gắn trực tiếp với một hệ thống ứng dụng cụ thể.
+Về mặt học thuật, đề tài tạo điều kiện vận dụng các kiến thức cốt lõi của môn Cơ sở dữ liệu vào một bài toán cụ thể, từ phân tích thực thể và quan hệ cho đến chuẩn hóa, tối ưu truy vấn và tổ chức dữ liệu. Nhờ vậy, các khái niệm của môn học không chỉ được trình bày ở mức lý thuyết mà còn gắn với một hệ thống có nghiệp vụ rõ ràng.
 
-Về mặt ứng dụng, đề tài cho thấy tầm quan trọng của việc thiết kế cơ sở dữ liệu đúng ngay từ đầu đối với các hệ thống phần mềm có nghiệp vụ phức tạp.
-
-Ngoài ra, đề tài này phù hợp với môn học vì bài toán LMS có nhiều kiểu dữ liệu khác nhau: dữ liệu người dùng, dữ liệu khóa học, dữ liệu bài kiểm tra, dữ liệu tiến độ học tập và dữ liệu lớp học. Nhờ đó, báo cáo có điều kiện trình bày được khá đầy đủ các nội dung quan trọng của môn Cơ sở dữ liệu trong cùng một hệ thống.
+Về mặt thực tiễn, đề tài cho thấy cơ sở dữ liệu là nền tảng quyết định khả năng vận hành của hệ thống LMS. Một thiết kế dữ liệu hợp lý sẽ hỗ trợ tốt cho việc quản lý người dùng, tổ chức nội dung học tập, lưu kết quả đánh giá và theo dõi tiến độ học tập một cách nhất quán.
 
 ## 1.6. Cấu trúc báo cáo
 

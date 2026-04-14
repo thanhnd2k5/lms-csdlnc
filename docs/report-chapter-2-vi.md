@@ -2,13 +2,9 @@
 
 ## 2.1. Bài toán nghiệp vụ
 
-Trong bối cảnh chuyển đổi số trong giáo dục, nhu cầu xây dựng các hệ thống hỗ trợ dạy và học trực tuyến ngày càng trở nên phổ biến. Các nền tảng học tập trực tuyến không chỉ cần đáp ứng việc phân phối nội dung học tập, mà còn phải hỗ trợ quá trình quản lý khóa học, theo dõi tiến độ học tập, tổ chức đánh giá kết quả học tập và quản lý người học theo từng lớp học hoặc nhóm học tập cụ thể.
+Đề tài hướng tới bài toán xây dựng một hệ thống quản lý học tập trực tuyến trên nền tảng web. Hệ thống cần hỗ trợ việc tổ chức khóa học, quản lý nội dung học tập, theo dõi tiến độ, lưu kết quả kiểm tra và quản lý học viên theo từng lớp học.
 
-Từ yêu cầu thực tiễn đó, đề tài xây dựng hệ thống LMS CSDLNC hướng tới bài toán quản lý học tập trực tuyến trên nền tảng web. Hệ thống được thiết kế để phục vụ đồng thời nhiều đối tượng sử dụng khác nhau, bao gồm quản trị viên, giảng viên và học viên.
-
-Nếu quản lý theo cách thủ công hoặc phân tán trên nhiều công cụ riêng lẻ, dữ liệu về người học, khóa học, kết quả bài kiểm tra và tiến độ học tập sẽ rất khó đồng bộ. Điều này dẫn đến các vấn đề như trùng lặp dữ liệu, khó tổng hợp báo cáo, khó kiểm soát quyền truy cập và khó mở rộng hệ thống khi số lượng người dùng tăng lên.
-
-Do đó, bài toán đặt ra không chỉ là xây dựng giao diện để hiển thị nội dung học tập, mà còn là xây dựng một hệ thống dữ liệu đủ chặt chẽ để quản lý toàn bộ vòng đời của hoạt động học tập, từ khâu tạo khóa học, tham gia học, làm bài kiểm tra cho đến thống kê và theo dõi kết quả.
+Trong thực tế, nếu các thông tin này được quản lý rời rạc hoặc thủ công, dữ liệu sẽ khó đồng bộ, khó tổng hợp và dễ phát sinh sai lệch. Vì vậy, bài toán đặt ra không chỉ là xây dựng các chức năng phục vụ dạy và học, mà còn là tổ chức một mô hình dữ liệu đủ chặt chẽ để quản lý thống nhất toàn bộ thông tin của hệ thống.
 
 ## 2.2. Đối tượng sử dụng hệ thống
 
@@ -30,7 +26,7 @@ Việc phân chia rõ các nhóm người dùng nêu trên là cần thiết vì
 
 ## 2.3. Chức năng chính của hệ thống
 
-Trên cơ sở bài toán quản lý học tập trực tuyến và cấu trúc hệ thống đã xây dựng, hệ thống bao gồm các nhóm chức năng chính sau:
+Từ yêu cầu của bài toán, hệ thống được tổ chức thành các nhóm chức năng chính sau:
 
 - Quản lý tài khoản và xác thực
 - Quản lý khóa học
@@ -54,7 +50,7 @@ Chức năng quản lý lớp học giúp hệ thống không chỉ quản lý k
 
 ## 2.4. Kiến trúc tổng quan của ứng dụng
 
-Hệ thống được xây dựng theo mô hình client-server gồm:
+Hệ thống được xây dựng theo mô hình client-server, gồm ba thành phần chính:
 
 - Frontend sử dụng React
 - Backend sử dụng Node.js và Express
@@ -64,7 +60,7 @@ Trong mô hình này, frontend đảm nhiệm vai trò giao tiếp với ngườ
 
 Cơ sở dữ liệu MySQL giữ vai trò lưu trữ tập trung toàn bộ dữ liệu của hệ thống. Mọi hoạt động như tạo khóa học, đăng ký học, lưu kết quả bài kiểm tra hay theo dõi tiến độ học tập đều được phản ánh thông qua các bảng dữ liệu và các quan hệ tham chiếu tương ứng.
 
-Luồng xử lý cơ bản của hệ thống có thể mô tả như sau: người dùng thao tác trên giao diện frontend, yêu cầu được gửi đến backend, backend xử lý nghiệp vụ và truy vấn cơ sở dữ liệu, sau đó kết quả được trả về frontend để hiển thị. Cách tổ chức này giúp tách biệt rõ ràng giữa giao diện, nghiệp vụ và dữ liệu, đồng thời tạo điều kiện thuận lợi cho việc phân tích cơ sở dữ liệu trong báo cáo.
+Luồng xử lý cơ bản của hệ thống có thể mô tả như sau: người dùng thao tác trên giao diện frontend, yêu cầu được gửi đến backend, backend xử lý nghiệp vụ và thực hiện truy vấn cơ sở dữ liệu, sau đó kết quả được trả về frontend để hiển thị. Cách tổ chức này giúp tách biệt tương đối rõ giữa giao diện, xử lý nghiệp vụ và dữ liệu.
 
 ## 2.5. Vai trò của cơ sở dữ liệu trong hệ thống
 
@@ -76,4 +72,4 @@ Trong đề tài này, cơ sở dữ liệu chính là nền tảng phản ánh 
 
 ## 2.6. Ghi chú về phạm vi nghiên cứu trong báo cáo
 
-Báo cáo này tập trung vào phân tích cơ sở dữ liệu SQL của hệ thống LMS CSDLNC. Phần frontend và backend chỉ đóng vai trò minh họa cho bài toán nghiệp vụ và tính ứng dụng của cơ sở dữ liệu.
+Báo cáo này tập trung vào thành phần cơ sở dữ liệu SQL của hệ thống LMS CSDLNC. Phần frontend và backend chỉ được trình bày ở mức cần thiết nhằm làm rõ bài toán nghiệp vụ và vai trò của cơ sở dữ liệu trong toàn hệ thống.
