@@ -20,7 +20,18 @@ Các ý trong file này không phải là nội dung bắt buộc phải giữ n
 
 - Nếu giảng viên thích văn phong thuần Việt hơn, có thể đổi thêm một số chỗ còn giữ thuật ngữ tiếng Anh như `frontend`, `backend`, `migration`, `seed`, `EXPLAIN`.
 - Nếu muốn báo cáo nhìn học thuật hơn, có thể đổi một số danh sách bullet ngắn thành bảng, đặc biệt ở phần mục tiêu, phạm vi và kết quả đạt được.
+
+Gợi ý cụ thể:
+
+- Chương 1, mục 1.2: có thể đổi danh sách mục tiêu nghiên cứu thành bảng 2 cột gồm `STT` và `Mục tiêu`.
+- Chương 1, mục 1.3: có thể đổi phần phạm vi đề tài thành bảng 2 cột gồm `Nội dung` và `Mô tả`.
+- Chương 8, mục 8.1: có thể đổi phần kết quả đạt được thành bảng 2 cột gồm `Nội dung` và `Kết quả chính`.
+
 - Nếu muốn phần Chương 2 dày hơn, có thể bổ sung 1 đoạn ngắn mô tả luồng học tập điển hình của học viên từ lúc đăng nhập đến khi hoàn thành bài kiểm tra.
+
+Trạng thái hiện tại:
+
+- Đoạn “Luồng học tập điển hình của học viên” đã được bổ sung vào Chương 2 của bản tổng và chương riêng.
 
 ## 4. Các điểm bắt buộc nên bổ sung trước khi nộp
 

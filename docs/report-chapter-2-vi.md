@@ -70,6 +70,12 @@ Không chỉ đóng vai trò lưu trữ, cơ sở dữ liệu còn quyết đị
 
 Trong đề tài này, cơ sở dữ liệu chính là nền tảng phản ánh trực tiếp cấu trúc và mức độ hoàn thiện của hệ thống LMS. Vì vậy, việc tập trung phân tích cơ sở dữ liệu là hoàn toàn phù hợp với yêu cầu của học phần và cũng là phần có giá trị kỹ thuật nổi bật nhất của hệ thống.
 
-## 2.6. Ghi chú về phạm vi nghiên cứu trong báo cáo
+## 2.6. Luồng học tập điển hình của học viên
+
+Một luồng sử dụng điển hình của hệ thống có thể bắt đầu từ việc học viên đăng nhập vào hệ thống, lựa chọn khóa học phù hợp và đăng ký tham gia học. Sau khi ghi danh thành công, học viên truy cập các chương học, xem video bài giảng, sử dụng tài liệu học tập liên quan và thực hiện các bài kiểm tra được gắn với nội dung tương ứng.
+
+Trong quá trình đó, hệ thống cần lưu trữ đồng thời nhiều loại dữ liệu như thông tin người dùng, dữ liệu khóa học, trạng thái ghi danh, tiến độ xem video, nội dung bài kiểm tra và kết quả làm bài. Luồng sử dụng này cho thấy cơ sở dữ liệu không chỉ đóng vai trò lưu trữ riêng lẻ từng bảng dữ liệu, mà còn phải đảm bảo liên kết chặt chẽ giữa các thành phần để phản ánh đúng quá trình học tập của người dùng.
+
+## 2.7. Ghi chú về phạm vi nghiên cứu trong báo cáo
 
 Báo cáo này tập trung vào thành phần cơ sở dữ liệu SQL của hệ thống LMS CSDLNC. Phần frontend và backend chỉ được trình bày ở mức cần thiết nhằm làm rõ bài toán nghiệp vụ và vai trò của cơ sở dữ liệu trong toàn hệ thống.
