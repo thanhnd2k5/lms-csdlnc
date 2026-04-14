@@ -12,7 +12,7 @@ Cơ sở dữ liệu của hệ thống cần đáp ứng các nhóm yêu cầu:
 
 ## 3.2. Phân tích thực thể
 
-Schema của hệ thống được tổ chức quanh các thực thể chính sau:
+Lược đồ dữ liệu của hệ thống được tổ chức quanh các thực thể chính sau:
 
 - `users`
 - `courses`
@@ -31,7 +31,7 @@ Schema của hệ thống được tổ chức quanh các thực thể chính sa
 - `class_students`
 - `class_students_courses_approval`
 
-Trong báo cáo chính, các thực thể trên sẽ được phân tích theo nhóm chức năng để làm rõ vai trò của từng thành phần dữ liệu trong hệ thống. Phần mô tả chi tiết tên bảng, tên cột, kiểu dữ liệu và ràng buộc có thể trình bày ở mục Data Dictionary hoặc đưa xuống phần phụ lục để thuận tiện theo dõi.
+Trong báo cáo chính, các thực thể trên sẽ được phân tích theo nhóm chức năng để làm rõ vai trò của từng thành phần dữ liệu trong hệ thống. Phần mô tả chi tiết tên bảng, tên cột, kiểu dữ liệu và ràng buộc có thể trình bày ở mục Từ điển dữ liệu hoặc đưa xuống phần phụ lục để thuận tiện theo dõi.
 
 ## 3.3. Quan hệ và ràng buộc giữa các thực thể
 
@@ -45,7 +45,7 @@ Hệ thống có các quan hệ một-nhiều và nhiều-nhiều rõ ràng:
 - `classes` - `courses` qua `class_courses`
 - `classes` - `users` qua `class_students`
 
-Để đảm bảo tính toàn vẹn dữ liệu, schema sử dụng các cơ chế ràng buộc sau:
+Để đảm bảo tính toàn vẹn dữ liệu, lược đồ sử dụng các cơ chế ràng buộc sau:
 
 - khóa chính
 - khóa ngoại
@@ -78,7 +78,7 @@ Với cách trình bày này, phần ERD vừa đảm bảo tính tổng quan, v
 
 ## 3.5. Lược đồ vật lý
 
-Về mặt vật lý, schema được cài đặt trên MySQL với:
+Về mặt vật lý, lược đồ được cài đặt trên MySQL với:
 
 - `INT AUTO_INCREMENT`
 - `TIMESTAMP`
@@ -101,12 +101,12 @@ Lược đồ của hệ thống được thiết kế theo hướng chuẩn hó
 
 Tuy nhiên, xét một cách chặt chẽ theo lý thuyết, vẫn có một số bảng được thiết kế theo hướng phục vụ nghiệp vụ và thuận tiện cho truy vấn nên có thể tiếp tục được xem xét, tinh chỉnh nếu cần chuẩn hóa sâu hơn trong tương lai. Vì vậy, có thể kết luận rằng lược đồ của hệ thống đạt mức chuẩn hóa tốt, trong đó phần lớn các bảng có thể trình bày ở mức gần hoặc đạt chuẩn 3NF.
 
-## 3.7. Data Dictionary
+## 3.7. Từ điển dữ liệu
 
-Sau khi phân tích thực thể và quan hệ, bước tiếp theo là mô tả chi tiết từng bảng dữ liệu thông qua Data Dictionary. Nội dung này bao gồm tên bảng, mục đích sử dụng, tên cột, kiểu dữ liệu, khóa chính, khóa ngoại và các ràng buộc quan trọng. Nếu phần Data Dictionary quá dài, có thể chuyển xuống phụ lục để báo cáo chính gọn và dễ theo dõi hơn.
+Sau khi phân tích thực thể và quan hệ, bước tiếp theo là mô tả chi tiết từng bảng dữ liệu thông qua Từ điển dữ liệu (Data Dictionary). Nội dung này bao gồm tên bảng, mục đích sử dụng, tên cột, kiểu dữ liệu, khóa chính, khóa ngoại và các ràng buộc quan trọng. Nếu phần này quá dài, có thể chuyển xuống phụ lục để báo cáo chính gọn và dễ theo dõi hơn.
 
 `[Chèn Bảng Data Dictionary chi tiết tại đây hoặc chuyển xuống Phụ lục B]`
 
 ## 3.8. Nhận xét
 
-Nhìn chung, schema của hệ thống LMS CSDLNC đủ rõ ràng để trình bày trong khuôn khổ môn Cơ sở dữ liệu. Tuy nhiên, khi đối chiếu giữa thiết kế dữ liệu và phần triển khai backend, vẫn có một số điểm chưa đồng bộ. Các điểm này nên được ghi nhận ở một mục riêng hoặc phụ lục nhận xét để tránh nhầm lẫn giữa thiết kế cơ sở dữ liệu và hiện trạng triển khai mã nguồn.
+Nhìn chung, lược đồ dữ liệu của hệ thống LMS CSDLNC đủ rõ ràng để trình bày trong khuôn khổ môn Cơ sở dữ liệu. Tuy nhiên, khi đối chiếu giữa thiết kế dữ liệu và phần triển khai backend, vẫn có một số điểm chưa đồng bộ. Các điểm này nên được ghi nhận ở một mục riêng hoặc phụ lục nhận xét để tránh nhầm lẫn giữa thiết kế cơ sở dữ liệu và hiện trạng triển khai mã nguồn.

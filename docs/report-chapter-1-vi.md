@@ -6,7 +6,7 @@ Trong những năm gần đây, nhu cầu học tập trực tuyến tăng nhanh
 
 Để các chức năng đó vận hành ổn định, cơ sở dữ liệu giữ vai trò rất quan trọng. Dữ liệu trong hệ thống LMS không chỉ dừng ở thông tin tài khoản hay danh sách khóa học, mà còn bao gồm chương học, video, tài liệu, bài kiểm tra, kết quả làm bài, lịch sử ghi danh và thông tin lớp học. Nếu mô hình dữ liệu được thiết kế thiếu chặt chẽ, hệ thống sẽ dễ gặp vấn đề về trùng lặp dữ liệu, khó truy vấn, khó mở rộng và khó bảo trì.
 
-Từ yêu cầu đó, đề tài “Ứng dụng sử dụng cơ sở dữ liệu SQL cho hệ thống quản lý học tập trực tuyến LMS CSDLNC” được thực hiện nhằm xây dựng và phân tích một bài toán có tính thực tế, qua đó vận dụng các nội dung trọng tâm của học phần Cơ sở dữ liệu như phân tích thực thể, thiết kế lược đồ quan hệ, chuẩn hóa, khởi tạo schema, tối ưu truy vấn và đề xuất các phương án sao lưu, phục hồi dữ liệu.
+Từ yêu cầu đó, đề tài “Ứng dụng sử dụng cơ sở dữ liệu SQL cho hệ thống quản lý học tập trực tuyến LMS CSDLNC” được thực hiện nhằm xây dựng và phân tích một bài toán có tính thực tế, qua đó vận dụng các nội dung trọng tâm của học phần Cơ sở dữ liệu như phân tích thực thể, thiết kế lược đồ quan hệ, chuẩn hóa, khởi tạo cơ sở dữ liệu, tối ưu truy vấn và đề xuất các phương án sao lưu, phục hồi dữ liệu.
 
 ## 1.2. Mục tiêu nghiên cứu
 
@@ -15,28 +15,28 @@ Từ yêu cầu đó, đề tài “Ứng dụng sử dụng cơ sở dữ liệ
 - Phân tích bài toán quản lý học tập trực tuyến trên môi trường web.
 - Xác định các thực thể dữ liệu, thuộc tính, quan hệ và ràng buộc cần thiết của hệ thống.
 - Xây dựng cơ sở dữ liệu quan hệ sử dụng SQL phù hợp với bài toán.
-- Đánh giá mức độ hợp lý của schema dữ liệu được xây dựng cho hệ thống LMS CSDLNC.
-- Trình bày các nội dung liên quan đến khởi tạo, tối ưu, backup và restore cơ sở dữ liệu.
+- Đánh giá mức độ hợp lý của lược đồ dữ liệu được xây dựng cho hệ thống LMS CSDLNC.
+- Trình bày các nội dung liên quan đến khởi tạo, tối ưu, sao lưu và phục hồi cơ sở dữ liệu.
 - Đề xuất một số hướng mở rộng nâng cao như replication và sharding ở mức độ lý thuyết.
 
 ## 1.3. Phạm vi đề tài
 
-Đề tài hướng tới việc xây dựng một hệ thống LMS gồm frontend, backend và cơ sở dữ liệu SQL. Tuy nhiên, do trọng tâm của học phần là Cơ sở dữ liệu, nội dung báo cáo chủ yếu tập trung trình bày thành phần cơ sở dữ liệu của hệ thống, cụ thể bao gồm:
+Đề tài hướng tới việc xây dựng một hệ thống LMS gồm giao diện người dùng, tầng xử lý nghiệp vụ và cơ sở dữ liệu SQL. Tuy nhiên, do trọng tâm của học phần là Cơ sở dữ liệu, nội dung báo cáo chủ yếu tập trung trình bày thành phần cơ sở dữ liệu của hệ thống, cụ thể bao gồm:
 
 - phân tích yêu cầu dữ liệu
 - xác định thực thể, thuộc tính và quan hệ
 - xây dựng lược đồ logic và vật lý
-- mô tả data dictionary
+- mô tả từ điển dữ liệu (Data Dictionary)
 - phân tích chuẩn hóa
-- đánh giá index và hiệu năng truy vấn
-- đề xuất backup, restore và mở rộng cơ sở dữ liệu
+- đánh giá chỉ mục và hiệu năng truy vấn
+- đề xuất sao lưu, phục hồi và mở rộng cơ sở dữ liệu
 
 ## 1.4. Phương pháp thực hiện
 
 Báo cáo được thực hiện theo các bước chính sau:
 
 1. Phân tích bài toán nghiệp vụ của hệ thống LMS.
-2. Khảo sát schema SQL và xác định các thực thể dữ liệu chính.
+2. Khảo sát lược đồ SQL và xác định các thực thể dữ liệu chính.
 3. Mô tả quan hệ, ràng buộc và lược đồ dữ liệu ở mức logic và vật lý.
 4. Đánh giá mức độ chuẩn hóa của lược đồ.
 5. Xây dựng các nội dung về migration, seed, chỉ mục, truy vấn mẫu và `EXPLAIN`.

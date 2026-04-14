@@ -6,13 +6,13 @@ Mục tiêu là tạo đầy đủ bảng, ràng buộc, khóa, chỉ mục và 
 
 ## 4.2. Script tạo bảng
 
-Trong đề tài này, file `backend/lms.sql` được sử dụng làm script schema chính. File này chứa toàn bộ câu lệnh tạo bảng, khóa chính, khóa ngoại và các ràng buộc cơ bản của hệ thống.
+Trong đề tài này, file `backend/lms.sql` được sử dụng làm script lược đồ chính. File này chứa toàn bộ câu lệnh tạo bảng, khóa chính, khóa ngoại và các ràng buộc cơ bản của hệ thống.
 
 ## 4.3. Mô tả các script khởi tạo
 
 Phần khởi tạo cơ sở dữ liệu của báo cáo được xây dựng từ ba nhóm script chính:
 
-- script schema tổng thể `lms.sql`
+- script lược đồ tổng thể `lms.sql`
 - script seed dữ liệu mẫu
 - bộ migration mô phỏng quá trình phát triển cơ sở dữ liệu theo từng phiên bản
 
@@ -60,12 +60,12 @@ Giai đoạn sau cùng bổ sung mô hình lớp học, cho phép giảng viên 
 - migration `up` thêm nhóm bảng lớp học
 - migration `down` xóa nhóm bảng lớp học theo thứ tự phụ thuộc
 
-Như vậy, phần migration trong báo cáo không chỉ dừng ở việc tạo schema ban đầu, mà còn thể hiện được tư duy quản lý phiên bản và khả năng rollback của cơ sở dữ liệu trong quá trình phát triển.
+Như vậy, phần migration trong báo cáo không chỉ dừng ở việc tạo lược đồ ban đầu, mà còn thể hiện được tư duy quản lý phiên bản và khả năng rollback của cơ sở dữ liệu trong quá trình phát triển.
 
 ## 4.5. Quy trình khởi tạo cơ sở dữ liệu
 
 1. Tạo cơ sở dữ liệu `lms`.
-2. Chạy file `lms.sql` để khởi tạo toàn bộ schema.
+2. Chạy file `lms.sql` để khởi tạo toàn bộ lược đồ.
 3. Kiểm tra danh sách bảng và các ràng buộc đã được tạo.
 4. Nạp dữ liệu mẫu bằng script seed.
 5. Kiểm tra số lượng bản ghi và khả năng liên kết dữ liệu giữa các bảng.

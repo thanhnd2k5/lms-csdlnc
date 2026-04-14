@@ -2,11 +2,11 @@
 
 ## 6.1. Sự cần thiết của sao lưu và phục hồi
 
-Backup và restore là nội dung quan trọng để đảm bảo an toàn dữ liệu người dùng, khóa học, kết quả học tập và dữ liệu hệ thống.
+Sao lưu và phục hồi là nội dung quan trọng để đảm bảo an toàn dữ liệu người dùng, khóa học, kết quả học tập và dữ liệu hệ thống.
 
 ## 6.2. Chiến lược sao lưu đề xuất
 
-Trong phạm vi môn học, có thể sử dụng backup mức file bằng `mysqldump`.
+Trong phạm vi môn học, có thể sử dụng phương án sao lưu mức file bằng `mysqldump`.
 
 ## 6.3. Lệnh backup
 

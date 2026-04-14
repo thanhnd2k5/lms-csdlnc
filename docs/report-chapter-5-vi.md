@@ -4,9 +4,9 @@
 
 Tối ưu cơ sở dữ liệu nhằm đảm bảo hệ thống có thể truy vấn dữ liệu nhanh, nhất là khi số lượng học viên, khóa học và dữ liệu học tập tăng lên.
 
-## 5.2. Danh sách chỉ mục trong schema
+## 5.2. Danh sách chỉ mục trong lược đồ
 
-Trong schema của hệ thống đã có một số chỉ mục cơ bản nhằm hỗ trợ truy vấn trên các cột khóa chính, khóa ngoại và các trường thường xuyên tham gia liên kết. Khi trình bày trong báo cáo, có thể tổng hợp các chỉ mục này thành một bảng riêng để nêu rõ tên chỉ mục, bảng áp dụng và mục đích sử dụng.
+Trong lược đồ của hệ thống đã có một số chỉ mục cơ bản nhằm hỗ trợ truy vấn trên các cột khóa chính, khóa ngoại và các trường thường xuyên tham gia liên kết. Khi trình bày trong báo cáo, có thể tổng hợp các chỉ mục này thành một bảng riêng để nêu rõ tên chỉ mục, bảng áp dụng và mục đích sử dụng.
 
 ## 5.3. Các truy vấn tiêu biểu và EXPLAIN
 
@@ -14,9 +14,9 @@ Trong schema của hệ thống đã có một số chỉ mục cơ bản nhằm
 
 `[Chèn Hình 5.1. Kết quả EXPLAIN tại đây]`
 
-## 5.4. Nhận xét về hiệu năng của schema
+## 5.4. Nhận xét về hiệu năng của lược đồ
 
-Schema đã có nền tảng tối ưu cơ bản, nhưng vẫn có thể bổ sung thêm chỉ mục trên các cột join và cột lọc như:
+Lược đồ hiện đã có nền tảng tối ưu cơ bản, nhưng vẫn có thể bổ sung thêm chỉ mục trên các cột join và cột lọc như:
 
 - `courses.teacher_id`
 - `videos.course_id`

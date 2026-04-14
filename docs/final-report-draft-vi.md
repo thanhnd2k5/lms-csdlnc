@@ -9,7 +9,7 @@ Trong những năm gần đây, nhu cầu học tập trực tuyến tăng nhanh
 
 Để các chức năng đó vận hành ổn định, cơ sở dữ liệu giữ vai trò rất quan trọng. Dữ liệu trong hệ thống LMS không chỉ dừng ở thông tin tài khoản hay danh sách khóa học, mà còn bao gồm chương học, video, tài liệu, bài kiểm tra, kết quả làm bài, lịch sử ghi danh và thông tin lớp học. Nếu mô hình dữ liệu được thiết kế thiếu chặt chẽ, hệ thống sẽ dễ gặp vấn đề về trùng lặp dữ liệu, khó truy vấn, khó mở rộng và khó bảo trì.
 
-Từ yêu cầu đó, đề tài “Ứng dụng sử dụng cơ sở dữ liệu SQL cho hệ thống quản lý học tập trực tuyến LMS CSDLNC” được thực hiện nhằm xây dựng và phân tích một bài toán có tính thực tế, qua đó vận dụng các nội dung trọng tâm của học phần Cơ sở dữ liệu như phân tích thực thể, thiết kế lược đồ quan hệ, chuẩn hóa, khởi tạo schema, tối ưu truy vấn và đề xuất các phương án sao lưu, phục hồi dữ liệu.
+Từ yêu cầu đó, đề tài “Ứng dụng sử dụng cơ sở dữ liệu SQL cho hệ thống quản lý học tập trực tuyến LMS CSDLNC” được thực hiện nhằm xây dựng và phân tích một bài toán có tính thực tế, qua đó vận dụng các nội dung trọng tâm của học phần Cơ sở dữ liệu như phân tích thực thể, thiết kế lược đồ quan hệ, chuẩn hóa, khởi tạo cơ sở dữ liệu, tối ưu truy vấn và đề xuất các phương án sao lưu, phục hồi dữ liệu.
 
 ### 1.2. Mục tiêu nghiên cứu
 
@@ -18,28 +18,28 @@ Từ yêu cầu đó, đề tài “Ứng dụng sử dụng cơ sở dữ liệ
 - Phân tích bài toán quản lý học tập trực tuyến trên môi trường web.
 - Xác định các thực thể dữ liệu, thuộc tính, quan hệ và ràng buộc cần thiết của hệ thống.
 - Xây dựng cơ sở dữ liệu quan hệ sử dụng SQL phù hợp với bài toán.
-- Đánh giá mức độ hợp lý của schema dữ liệu được xây dựng cho hệ thống LMS CSDLNC.
-- Trình bày các nội dung liên quan đến khởi tạo, tối ưu, backup và restore cơ sở dữ liệu.
+- Đánh giá mức độ hợp lý của lược đồ dữ liệu được xây dựng cho hệ thống LMS CSDLNC.
+- Trình bày các nội dung liên quan đến khởi tạo, tối ưu, sao lưu và phục hồi cơ sở dữ liệu.
 - Đề xuất một số hướng mở rộng nâng cao như replication và sharding ở mức độ lý thuyết.
 
 ### 1.3. Phạm vi đề tài
 
-Đề tài hướng tới việc xây dựng một hệ thống LMS gồm frontend, backend và cơ sở dữ liệu SQL. Tuy nhiên, do trọng tâm của học phần là Cơ sở dữ liệu, nội dung báo cáo chủ yếu tập trung trình bày thành phần cơ sở dữ liệu của hệ thống, cụ thể bao gồm:
+Đề tài hướng tới việc xây dựng một hệ thống LMS gồm giao diện người dùng, tầng xử lý nghiệp vụ và cơ sở dữ liệu SQL. Tuy nhiên, do trọng tâm của học phần là Cơ sở dữ liệu, nội dung báo cáo chủ yếu tập trung trình bày thành phần cơ sở dữ liệu của hệ thống, cụ thể bao gồm:
 
 - phân tích yêu cầu dữ liệu
 - xác định thực thể, thuộc tính và quan hệ
 - xây dựng lược đồ logic và vật lý
-- mô tả data dictionary
+- mô tả từ điển dữ liệu (Data Dictionary)
 - phân tích chuẩn hóa
-- đánh giá index và hiệu năng truy vấn
-- đề xuất backup, restore và mở rộng cơ sở dữ liệu
+- đánh giá chỉ mục và hiệu năng truy vấn
+- đề xuất sao lưu, phục hồi và mở rộng cơ sở dữ liệu
 
 ### 1.4. Phương pháp thực hiện
 
 Báo cáo được thực hiện theo các bước chính sau:
 
 1. Phân tích bài toán nghiệp vụ của hệ thống LMS.
-2. Khảo sát schema SQL và xác định các thực thể dữ liệu chính.
+2. Khảo sát lược đồ SQL và xác định các thực thể dữ liệu chính.
 3. Mô tả quan hệ, ràng buộc và lược đồ dữ liệu ở mức logic và vật lý.
 4. Đánh giá mức độ chuẩn hóa của lược đồ.
 5. Xây dựng các nội dung về migration, seed, chỉ mục, truy vấn mẫu và `EXPLAIN`.
@@ -109,7 +109,7 @@ Cơ sở dữ liệu của hệ thống cần đáp ứng các nhóm yêu cầu:
 
 ### 3.2. Phân tích thực thể
 
-Schema của hệ thống được tổ chức quanh các thực thể chính sau:
+Lược đồ dữ liệu của hệ thống được tổ chức quanh các thực thể chính sau:
 
 - `users`
 - `courses`
@@ -128,7 +128,7 @@ Schema của hệ thống được tổ chức quanh các thực thể chính sa
 - `class_students`
 - `class_students_courses_approval`
 
-Trong báo cáo chính, các thực thể trên sẽ được phân tích theo nhóm chức năng để làm rõ vai trò của từng thành phần dữ liệu trong hệ thống. Phần mô tả chi tiết tên bảng, tên cột, kiểu dữ liệu và ràng buộc có thể được đưa về Data Dictionary hoặc phụ lục để bố cục báo cáo gọn hơn.
+Trong báo cáo chính, các thực thể trên sẽ được phân tích theo nhóm chức năng để làm rõ vai trò của từng thành phần dữ liệu trong hệ thống. Phần mô tả chi tiết tên bảng, tên cột, kiểu dữ liệu và ràng buộc có thể được đưa về mục Từ điển dữ liệu hoặc phụ lục để bố cục báo cáo gọn hơn.
 
 ### 3.3. Quan hệ và ràng buộc giữa các thực thể
 
@@ -142,7 +142,7 @@ Hệ thống có các quan hệ một-nhiều và nhiều-nhiều rõ ràng:
 - `classes` - `courses` qua `class_courses`
 - `classes` - `users` qua `class_students`
 
-Để đảm bảo tính toàn vẹn dữ liệu, schema sử dụng các cơ chế ràng buộc sau:
+Để đảm bảo tính toàn vẹn dữ liệu, lược đồ sử dụng các cơ chế ràng buộc sau:
 
 - khóa chính
 - khóa ngoại
@@ -175,7 +175,7 @@ Với cách trình bày này, phần ERD vừa đảm bảo tính tổng quan, v
 
 ### 3.5. Lược đồ vật lý
 
-Về mặt vật lý, schema được cài đặt trên MySQL với:
+Về mặt vật lý, lược đồ được cài đặt trên MySQL với:
 
 - `INT AUTO_INCREMENT`
 - `TIMESTAMP`
@@ -198,15 +198,15 @@ Lược đồ của hệ thống được thiết kế theo hướng chuẩn hó
 
 Tuy nhiên, xét một cách chặt chẽ theo lý thuyết, vẫn có một số bảng được thiết kế theo hướng phục vụ nghiệp vụ và thuận tiện cho truy vấn nên có thể tiếp tục được xem xét, tinh chỉnh nếu cần chuẩn hóa sâu hơn trong tương lai. Vì vậy, có thể kết luận rằng lược đồ của hệ thống đạt mức chuẩn hóa tốt, trong đó phần lớn các bảng có thể trình bày ở mức gần hoặc đạt chuẩn 3NF.
 
-### 3.7. Data Dictionary
+### 3.7. Từ điển dữ liệu
 
-Sau khi phân tích thực thể và quan hệ, bước tiếp theo là mô tả chi tiết từng bảng dữ liệu thông qua Data Dictionary. Nội dung này bao gồm tên bảng, mục đích sử dụng, tên cột, kiểu dữ liệu, khóa chính, khóa ngoại và các ràng buộc quan trọng. Nếu phần Data Dictionary quá dài, có thể chuyển xuống phụ lục để báo cáo chính gọn và dễ theo dõi hơn.
+Sau khi phân tích thực thể và quan hệ, bước tiếp theo là mô tả chi tiết từng bảng dữ liệu thông qua Từ điển dữ liệu (Data Dictionary). Nội dung này bao gồm tên bảng, mục đích sử dụng, tên cột, kiểu dữ liệu, khóa chính, khóa ngoại và các ràng buộc quan trọng. Nếu phần này quá dài, có thể chuyển xuống phụ lục để báo cáo chính gọn và dễ theo dõi hơn.
 
 `[Chèn Bảng Data Dictionary chi tiết tại đây hoặc chuyển xuống Phụ lục B]`
 
 ### 3.8. Nhận xét
 
-Nhìn chung, schema của hệ thống LMS CSDLNC đủ rõ ràng để trình bày trong khuôn khổ môn Cơ sở dữ liệu. Tuy nhiên, khi đối chiếu giữa thiết kế dữ liệu và phần triển khai backend, vẫn có một số điểm chưa đồng bộ. Các điểm này nên được ghi nhận ở một mục riêng hoặc phụ lục nhận xét để tránh nhầm lẫn giữa thiết kế cơ sở dữ liệu và hiện trạng triển khai mã nguồn.
+Nhìn chung, lược đồ dữ liệu của hệ thống LMS CSDLNC đủ rõ ràng để trình bày trong khuôn khổ môn Cơ sở dữ liệu. Tuy nhiên, khi đối chiếu giữa thiết kế dữ liệu và phần triển khai backend, vẫn có một số điểm chưa đồng bộ. Các điểm này nên được ghi nhận ở một mục riêng hoặc phụ lục nhận xét để tránh nhầm lẫn giữa thiết kế cơ sở dữ liệu và hiện trạng triển khai mã nguồn.
 
 ## Chương 4. Khởi tạo và triển khai cơ sở dữ liệu
 
@@ -216,13 +216,13 @@ Mục tiêu là tạo đầy đủ bảng, ràng buộc, khóa, chỉ mục và 
 
 ### 4.2. Script tạo bảng
 
-Trong đề tài này, file `backend/lms.sql` được sử dụng làm script schema chính. File này chứa toàn bộ câu lệnh tạo bảng, khóa chính, khóa ngoại và các ràng buộc cơ bản của hệ thống.
+Trong đề tài này, file `backend/lms.sql` được sử dụng làm script lược đồ chính. File này chứa toàn bộ câu lệnh tạo bảng, khóa chính, khóa ngoại và các ràng buộc cơ bản của hệ thống.
 
 ### 4.3. Mô tả các script khởi tạo
 
 Phần khởi tạo cơ sở dữ liệu của báo cáo được xây dựng từ ba nhóm script chính:
 
-- script schema tổng thể `lms.sql`
+- script lược đồ tổng thể `lms.sql`
 - script seed dữ liệu mẫu
 - bộ migration mô phỏng quá trình phát triển cơ sở dữ liệu theo từng phiên bản
 
@@ -244,12 +244,12 @@ Mỗi phiên bản đều có:
 - migration `up` để thêm cấu trúc mới
 - migration `down` để hoàn tác thay đổi khi cần rollback
 
-Như vậy, phần migration trong báo cáo không chỉ dừng ở việc tạo schema ban đầu, mà còn thể hiện được tư duy quản lý phiên bản và khả năng rollback của cơ sở dữ liệu trong quá trình phát triển.
+Như vậy, phần migration trong báo cáo không chỉ dừng ở việc tạo lược đồ ban đầu, mà còn thể hiện được tư duy quản lý phiên bản và khả năng rollback của cơ sở dữ liệu trong quá trình phát triển.
 
 ### 4.5. Quy trình khởi tạo cơ sở dữ liệu
 
 1. Tạo cơ sở dữ liệu `lms`.
-2. Chạy file `lms.sql` để khởi tạo toàn bộ schema.
+2. Chạy file `lms.sql` để khởi tạo toàn bộ lược đồ.
 3. Kiểm tra danh sách bảng và các ràng buộc đã được tạo.
 4. Nạp dữ liệu mẫu bằng script seed.
 5. Kiểm tra số lượng bản ghi và khả năng liên kết dữ liệu giữa các bảng.
@@ -264,9 +264,9 @@ Như vậy, phần migration trong báo cáo không chỉ dừng ở việc tạ
 
 Tối ưu cơ sở dữ liệu nhằm đảm bảo hệ thống có thể truy vấn dữ liệu nhanh, nhất là khi số lượng học viên, khóa học và dữ liệu học tập tăng lên.
 
-### 5.2. Danh sách chỉ mục trong schema
+### 5.2. Danh sách chỉ mục trong lược đồ
 
-Trong schema của hệ thống đã có một số chỉ mục cơ bản nhằm hỗ trợ truy vấn trên các cột khóa chính, khóa ngoại và các trường thường xuyên tham gia liên kết. Khi trình bày trong báo cáo, có thể tổng hợp các chỉ mục này thành một bảng riêng để nêu rõ tên chỉ mục, bảng áp dụng và mục đích sử dụng.
+Trong lược đồ của hệ thống đã có một số chỉ mục cơ bản nhằm hỗ trợ truy vấn trên các cột khóa chính, khóa ngoại và các trường thường xuyên tham gia liên kết. Khi trình bày trong báo cáo, có thể tổng hợp các chỉ mục này thành một bảng riêng để nêu rõ tên chỉ mục, bảng áp dụng và mục đích sử dụng.
 
 ### 5.3. Các truy vấn tiêu biểu và EXPLAIN
 
@@ -274,9 +274,9 @@ Trong schema của hệ thống đã có một số chỉ mục cơ bản nhằm
 
 `[Chèn Hình 5.1. Kết quả EXPLAIN tại đây]`
 
-### 5.4. Nhận xét về hiệu năng của schema
+### 5.4. Nhận xét về hiệu năng của lược đồ
 
-Schema đã có nền tảng tối ưu cơ bản, nhưng vẫn có thể bổ sung thêm chỉ mục trên các cột join và cột lọc như:
+Lược đồ hiện đã có nền tảng tối ưu cơ bản, nhưng vẫn có thể bổ sung thêm chỉ mục trên các cột join và cột lọc như:
 
 - `courses.teacher_id`
 - `videos.course_id`
@@ -287,11 +287,11 @@ Schema đã có nền tảng tối ưu cơ bản, nhưng vẫn có thể bổ su
 
 ### 6.1. Sự cần thiết của sao lưu và phục hồi
 
-Backup và restore là nội dung quan trọng để đảm bảo an toàn dữ liệu người dùng, khóa học, kết quả học tập và dữ liệu hệ thống.
+Sao lưu và phục hồi là nội dung quan trọng để đảm bảo an toàn dữ liệu người dùng, khóa học, kết quả học tập và dữ liệu hệ thống.
 
 ### 6.2. Chiến lược sao lưu đề xuất
 
-Trong phạm vi môn học, có thể sử dụng backup mức file bằng `mysqldump`.
+Trong phạm vi môn học, có thể sử dụng phương án sao lưu mức file bằng `mysqldump`.
 
 ### 6.3. Lệnh backup
 
@@ -317,7 +317,9 @@ Trong quá trình hoàn thiện báo cáo, phần sao lưu và phục hồi nên
 
 ### 7.1. Replication
 
-Replication là cơ chế sao chép dữ liệu từ máy chủ chính sang máy chủ phụ để:
+Replication là cơ chế sao chép dữ liệu từ máy chủ chính sang một hoặc nhiều máy chủ phụ nhằm tăng độ sẵn sàng của hệ thống. Đối với bài toán LMS, replication phù hợp trong trường hợp cần tăng khả năng dự phòng và phân tách tải đọc khỏi máy chủ xử lý ghi chính.
+
+Những lợi ích chính của replication có thể kể đến:
 
 - tăng tính sẵn sàng
 - giảm tải truy vấn đọc
@@ -325,7 +327,7 @@ Replication là cơ chế sao chép dữ liệu từ máy chủ chính sang máy
 
 ### 7.2. Sharding
 
-Sharding là kỹ thuật phân tách dữ liệu thành nhiều phần trên nhiều máy chủ.
+Sharding là kỹ thuật phân tách dữ liệu thành nhiều phần và lưu trữ trên nhiều máy chủ khác nhau. So với replication, sharding không chỉ sao chép dữ liệu mà còn phân chia dữ liệu để phục vụ hệ thống ở quy mô rất lớn.
 
 Trong hệ thống LMS, các bảng có thể xem xét sharding về mặt lý thuyết là:
 
@@ -334,15 +336,22 @@ Trong hệ thống LMS, các bảng có thể xem xét sharding về mặt lý t
 - `quiz_attempts`
 - `quiz_answers`
 
-### 7.3. Kết luận
+### 7.3. Đánh giá khả năng áp dụng
 
-Hai kỹ thuật này được đưa vào báo cáo như nội dung mở rộng mang tính định hướng, không mô tả như đã triển khai thực tế.
+Trong giai đoạn hiện tại của đề tài:
+
+- replication là hướng nâng cấp thực tế hơn
+- sharding là hướng nâng cấp cho quy mô lớn hơn
+
+### 7.4. Kết luận
+
+Hai kỹ thuật trên được đưa vào báo cáo như nội dung mở rộng mang tính định hướng. Trong phạm vi hiện tại, hệ thống chưa triển khai thực tế replication hoặc sharding, do đó phần này chỉ dừng ở mức đề xuất khả năng áp dụng và phân tích lý thuyết.
 
 ## Chương 8. Kết luận và hướng phát triển
 
 ### 8.1. Kết quả đạt được
 
-Báo cáo đã phân tích được:
+Báo cáo đã trình bày được các nội dung chính của một đề tài cơ sở dữ liệu gắn với hệ thống LMS, bao gồm:
 
 - bài toán nghiệp vụ
 - mô hình dữ liệu
@@ -355,26 +364,21 @@ Báo cáo đã phân tích được:
 
 ### 8.2. Đánh giá tổng quát về schema của hệ thống
 
-Schema của hệ thống có cấu trúc hợp lý, thể hiện đầy đủ các nhóm nghiệp vụ chính của hệ thống LMS. Tuy nhiên, vẫn còn một số điểm chưa đồng bộ với phần triển khai backend.
+Schema của hệ thống có cấu trúc tương đối hợp lý và phản ánh được các nhóm nghiệp vụ chính của một hệ thống LMS như quản lý người dùng, nội dung học tập, đánh giá, ghi danh và lớp học. Bên cạnh đó, quá trình đối chiếu với phần triển khai backend cũng cho thấy vẫn còn một số điểm cần tiếp tục đồng bộ để hệ thống hoàn thiện hơn.
 
 ### 8.3. Hạn chế của đề tài
 
-- chưa có migration tách riêng theo phiên bản
-- chưa có seed chuẩn hóa trong bộ mã nguồn chính thức của dự án
-- chưa có minh chứng triển khai thực tế cho replication, sharding
+- phần minh chứng thực nghiệm cho `EXPLAIN`, sao lưu và phục hồi còn phụ thuộc vào môi trường MySQL thực tế
+- một số nội dung nâng cao như replication và sharding mới dừng ở mức định hướng
+- giữa schema và phần triển khai backend vẫn còn một vài điểm chưa đồng bộ cần tiếp tục chỉnh sửa
 
 ### 8.4. Hướng phát triển
 
-- hoàn thiện tính đồng bộ giữa schema và code
-- bổ sung migration và seed
-- bổ sung minh chứng `EXPLAIN`
-- mở rộng backup và replication
+- tiếp tục hoàn thiện tính đồng bộ giữa schema và mã nguồn backend
+- bổ sung đầy đủ minh chứng thực nghiệm cho `EXPLAIN`, backup và restore
+- hoàn thiện hơn bộ migration, seed và dữ liệu mẫu phục vụ kiểm thử
+- nghiên cứu triển khai replication ở mức cơ bản nếu hệ thống được mở rộng trong tương lai
 
 ### 8.5. Kết luận chung
 
-Đề tài đã cho thấy vai trò trung tâm của cơ sở dữ liệu SQL trong việc xây dựng hệ thống quản lý học tập trực tuyến. Schema của LMS CSDLNC là nền tảng phù hợp để trình bày trong môn Cơ sở dữ liệu và có khả năng tiếp tục hoàn thiện trong các giai đoạn sau.
-Trong mô hình này, frontend đảm nhiệm vai trò giao tiếp với người dùng thông qua các giao diện chức năng như đăng nhập, xem khóa học, học video, làm bài kiểm tra và quản lý lớp học. Backend chịu trách nhiệm xử lý nghiệp vụ, kiểm tra quyền truy cập, nhận yêu cầu từ frontend và thực hiện các thao tác đọc ghi dữ liệu.
-
-Cơ sở dữ liệu MySQL giữ vai trò lưu trữ tập trung toàn bộ dữ liệu của hệ thống. Mọi hoạt động như tạo khóa học, đăng ký học, lưu kết quả bài kiểm tra hay theo dõi tiến độ học tập đều được phản ánh thông qua các bảng dữ liệu và các quan hệ tham chiếu tương ứng.
-
-Luồng xử lý cơ bản của hệ thống có thể mô tả như sau: người dùng thao tác trên giao diện frontend, yêu cầu được gửi đến backend, backend xử lý nghiệp vụ và thực hiện truy vấn cơ sở dữ liệu, sau đó kết quả được trả về frontend để hiển thị. Cách tổ chức này giúp tách biệt tương đối rõ giữa giao diện, xử lý nghiệp vụ và dữ liệu.
+Qua đề tài này có thể thấy cơ sở dữ liệu SQL giữ vai trò trung tâm trong việc tổ chức và vận hành một hệ thống quản lý học tập trực tuyến. Việc xây dựng lược đồ phù hợp, thiết lập ràng buộc rõ ràng, chuẩn hóa dữ liệu và quan tâm tới tối ưu truy vấn là những yếu tố quyết định chất lượng của hệ thống. Trên cơ sở đó, đề tài đã đáp ứng được mục tiêu chính của học phần và tạo nền tảng để tiếp tục hoàn thiện trong các giai đoạn sau.
