@@ -3,8 +3,6 @@ import { message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import CourseCard from '../../common/card/CourseCard';
-import Navbar from '../../common/navbar/navbar';
-import Sidebar from '../../common/sidebar/sidebar';
 import '../../../styles/CourseLayout.css';
 
 const EnrolledCourses = () => {
@@ -41,27 +39,19 @@ const EnrolledCourses = () => {
   };
 
   return (
-    <div className="layout">
-      <Sidebar />
-      <div className="main-content">
-        <Navbar />
-        <div className="content">
-          <div className="enrolled-courses-container">
-            <h2 className="section-title">Khóa học đã đăng ký</h2>
-            <div className="courses-grid">
-              {enrolledCourses.map((course) => (
-                <CourseCard
-                  key={course.id}
-                  course={course}
-                  isEnrolled={true}
-                  onCardClick={handleCardClick}
-                  onStartLearning={handleStartLearning}
-                  showEnrollmentStatus={true}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
+    <div className="enrolled-courses-container">
+      <h2 className="section-title">Khóa học đã đăng ký</h2>
+      <div className="courses-grid">
+        {enrolledCourses.map((course) => (
+          <CourseCard
+            key={course.id}
+            course={course}
+            isEnrolled={true}
+            onCardClick={handleCardClick}
+            onStartLearning={handleStartLearning}
+            showEnrollmentStatus={true}
+          />
+        ))}
       </div>
     </div>
   );

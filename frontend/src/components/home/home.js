@@ -2,9 +2,6 @@ import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { message } from 'antd';
 import HomeContent from './HomeContent';
-import Sidebar from '../common/sidebar/sidebar';
-import Navbar from '../common/navbar/navbar';
-import '../layout/layout.css';
 
 const Home = () => {
   const location = useLocation();
@@ -39,15 +36,7 @@ const Home = () => {
   }, [location, navigate]);
 
   return (
-    <div className="layout">
-      <Sidebar />
-      <div className="main-content">
-        <Navbar />
-        <main className="content">
-          <HomeContent />
-        </main>
-      </div>
-    </div>
+    <HomeContent />
   );
 };
 

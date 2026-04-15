@@ -5,8 +5,6 @@ import { message } from 'antd';
 import Dashboard from './dashboard/dashboard';
 import CourseManagement from './courses/course_management';
 import QuizManagement from './quizzes/quiz_management';
-import Navbar from '../common/navbar/navbar';
-import Sidebar from '../common/sidebar/sidebar';
 import './admin_page.css';
 
 const AdminPage = () => {
@@ -45,26 +43,20 @@ const AdminPage = () => {
   };
 
   return (
-    <div className="app-container">
-      <Sidebar />
-      <div className="main-content">
-        <Navbar />
-        <div className="page-content">
-          <div className="content-container">
-            <Routes>
-              <Route path="/" element={<Dashboard courses={courses} users={users} />} />
-              <Route path="/courses" element={
-                <CourseManagement 
-                  courses={courses} 
-                  loading={loading} 
-                  onCourseAdded={fetchData}
-                />
-              } />
-              <Route path="/quiz" element={<QuizManagement />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </div>
-        </div>
+    <div className="page-content">
+      <div className="content-container">
+        <Routes>
+          <Route path="/" element={<Dashboard courses={courses} users={users} />} />
+          <Route path="/courses" element={
+            <CourseManagement 
+              courses={courses} 
+              loading={loading} 
+              onCourseAdded={fetchData}
+            />
+          } />
+          <Route path="/quiz" element={<QuizManagement />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </div>
     </div>
   );

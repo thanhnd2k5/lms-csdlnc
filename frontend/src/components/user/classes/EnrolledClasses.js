@@ -3,8 +3,6 @@ import { Button, message, Empty, Modal, Input, Card, Dropdown } from 'antd';
 import { FileTextOutlined, LockOutlined, EditOutlined, PlusOutlined, EllipsisOutlined, UserDeleteOutlined, CloseOutlined, KeyOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../../common/navbar/navbar';
-import Sidebar from '../../common/sidebar/sidebar';
 import './EnrolledClasses.css';
 
 const EnrolledClasses = () => {
@@ -174,105 +172,99 @@ const EnrolledClasses = () => {
     };
 
     return (
-        <div className="layout">
-            <Sidebar />
-            <div className="main-content">
-                <Navbar />
-                <div className="page-content">
-                    <div className="content-container">
-                        <div className="header">
-                            <div></div>
-                            <Button
-                                type="primary"
-                                icon={<PlusOutlined />}
-                                onClick={() => setIsJoinModalVisible(true)}
-                            >
-                                Tham gia lớp
-                            </Button>
-                        </div>
-
-                        <Card className="class-section">
-                            <div className="section-header">
-                                <h3>Lớp học</h3>
-                                <Button type="text" size="small">▼</Button>
-                            </div>
-
-                            <div className="class-grid">
-                                {classes.length === 0 ? (
-                                    <Empty description="Bạn chưa tham gia lớp học nào" />
-                                ) : (
-                                    <div className="class-cards">
-                                        {classes.map(classItem => (
-                                            <ClassCard key={classItem.id} classData={classItem} />
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        </Card>
-
-                        <Modal
-                            title={
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    <span>Tham gia lớp học</span>
-                                </div>
-                            }
-                            open={isJoinModalVisible}
-                            onOk={handleJoinClass}
-                            onCancel={() => {
-                                setIsJoinModalVisible(false);
-                                setClassCode('');
-                                setPassword('');
-                            }}
-                            okText="Tham gia"
-                            cancelText="Hủy"
-                            okButtonProps={{
-                                icon: <PlusOutlined />,
-                                style: { 
-                                    background: '#1890ff',
-                                    borderColor: '#1890ff'
-                                }
-                            }}
-                            cancelButtonProps={{
-                                icon: <CloseOutlined />
-                            }}
-                        >
-                            <div style={{ padding: '20px 0' }}>
-                                <Input
-                                    prefix={<KeyOutlined style={{ color: '#bfbfbf' }} />}
-                                    placeholder="Nhập mã lớp học"
-                                    value={classCode}
-                                    onChange={(e) => setClassCode(e.target.value)}
-                                    style={{ 
-                                        marginBottom: 16,
-                                        height: '40px',
-                                        borderRadius: '6px'
-                                    }}
-                                />
-                                <Input
-                                    prefix={<LockOutlined style={{ color: '#bfbfbf' }} />}
-                                    placeholder="Nhập mật khẩu (nếu có)"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    style={{
-                                        height: '40px', 
-                                        borderRadius: '6px'
-                                    }}
-                                />
-                                <div style={{ 
-                                    marginTop: '20px',
-                                    padding: '12px',
-                                    background: '#f5f5f5',
-                                    borderRadius: '6px'
-                                }}>
-                                    <InfoCircleOutlined style={{ color: '#1890ff', marginRight: '8px' }} />
-                                    <span style={{ fontSize: '14px', color: '#595959' }}>
-                                        Nhập mã lớp học do giáo viên cung cấp để tham gia lớp học
-                                    </span>
-                                </div>
-                            </div>
-                        </Modal>
-                    </div>
+        <div className="page-content">
+            <div className="content-container">
+                <div className="header">
+                    <div></div>
+                    <Button
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        onClick={() => setIsJoinModalVisible(true)}
+                    >
+                        Tham gia lớp
+                    </Button>
                 </div>
+
+                <Card className="class-section">
+                    <div className="section-header">
+                        <h3>Lớp học</h3>
+                        <Button type="text" size="small">▼</Button>
+                    </div>
+
+                    <div className="class-grid">
+                        {classes.length === 0 ? (
+                            <Empty description="Bạn chưa tham gia lớp học nào" />
+                        ) : (
+                            <div className="class-cards">
+                                {classes.map(classItem => (
+                                    <ClassCard key={classItem.id} classData={classItem} />
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </Card>
+
+                <Modal
+                    title={
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span>Tham gia lớp học</span>
+                        </div>
+                    }
+                    open={isJoinModalVisible}
+                    onOk={handleJoinClass}
+                    onCancel={() => {
+                        setIsJoinModalVisible(false);
+                        setClassCode('');
+                        setPassword('');
+                    }}
+                    okText="Tham gia"
+                    cancelText="Hủy"
+                    okButtonProps={{
+                        icon: <PlusOutlined />,
+                        style: { 
+                            background: '#1890ff',
+                            borderColor: '#1890ff'
+                        }
+                    }}
+                    cancelButtonProps={{
+                        icon: <CloseOutlined />
+                    }}
+                >
+                    <div style={{ padding: '20px 0' }}>
+                        <Input
+                            prefix={<KeyOutlined style={{ color: '#bfbfbf' }} />}
+                            placeholder="Nhập mã lớp học"
+                            value={classCode}
+                            onChange={(e) => setClassCode(e.target.value)}
+                            style={{ 
+                                marginBottom: 16,
+                                height: '40px',
+                                borderRadius: '6px'
+                            }}
+                        />
+                        <Input
+                            prefix={<LockOutlined style={{ color: '#bfbfbf' }} />}
+                            placeholder="Nhập mật khẩu (nếu có)"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            style={{
+                                height: '40px', 
+                                borderRadius: '6px'
+                            }}
+                        />
+                        <div style={{ 
+                            marginTop: '20px',
+                            padding: '12px',
+                            background: '#f5f5f5',
+                            borderRadius: '6px'
+                        }}>
+                            <InfoCircleOutlined style={{ color: '#1890ff', marginRight: '8px' }} />
+                            <span style={{ fontSize: '14px', color: '#595959' }}>
+                                Nhập mã lớp học do giáo viên cung cấp để tham gia lớp học
+                            </span>
+                        </div>
+                    </div>
+                </Modal>
             </div>
         </div>
     );
