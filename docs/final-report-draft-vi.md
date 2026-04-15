@@ -243,6 +243,8 @@ Trong đề tài này, file `backend/lms.sql` được sử dụng làm script l
 
 Nói cách khác, nếu người triển khai muốn tạo nhanh toàn bộ cơ sở dữ liệu của hệ thống LMS trong một lần, chỉ cần tạo cơ sở dữ liệu rỗng và chạy file `lms.sql`. Sau bước này, toàn bộ cấu trúc bảng cần thiết của hệ thống sẽ được hình thành.
 
+Trong Chương 4, báo cáo chỉ cần trích dẫn một số đoạn lệnh SQL tiêu biểu để minh họa cách cài đặt lược đồ ở mức vật lý. Toàn bộ script chi tiết được trình bày ở phần phụ lục để thuận tiện tra cứu.
+
 ### 4.3. Mô tả các script khởi tạo
 
 Để phần khởi tạo cơ sở dữ liệu được trình bày rõ ràng hơn, báo cáo sử dụng ba nhóm script với vai trò khác nhau:
@@ -312,6 +314,8 @@ Trong trường hợp muốn trình bày theo tư duy migration, có thể thay 
 `[Chèn Hình 4.1. Kết quả tạo schema tại đây]`
 
 `[Chèn Hình 4.2. Kết quả nạp dữ liệu seed tại đây]`
+
+`[Chèn một đoạn SQL minh họa ngắn, ví dụ lệnh CREATE TABLE users hoặc courses, tại đây]`
 
 ### 4.6. Nhận xét
 

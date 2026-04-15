@@ -40,6 +40,7 @@ Trạng thái hiện tại:
 - Ảnh `EXPLAIN` hoặc bảng kết quả thực thi truy vấn.
 - Ảnh minh chứng sao lưu và phục hồi dữ liệu.
 - Ảnh giao diện ứng dụng nếu giảng viên yêu cầu phần minh họa hệ thống.
+- Nếu có phụ lục, nên đưa toàn bộ `lms.sql`, `seed.sql` hoặc bộ migration `V1 - V4` xuống phụ lục thay vì chèn toàn bộ mã SQL trong thân Chương 4.
 
 ## 5. Gợi ý sử dụng
 
