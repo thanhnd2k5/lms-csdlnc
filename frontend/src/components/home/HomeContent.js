@@ -5,6 +5,8 @@ import axios from 'axios';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { LayoutGrid, TrendingUp, Users, Award, ChevronRight } from 'lucide-react';
 import CourseCard from '../common/card/CourseCard';
+import heroMain from '../../assets/images/hero-main.png';
+import heroSub from '../../assets/images/hero-sub.png';
 import './HomeContent.css';
 import '../../styles/CourseLayout.css';
 
@@ -113,25 +115,14 @@ const HomeContent = () => {
             </div>
             <h1>Nâng tầm kĩ năng <br/> <span className="gradient-text">Kiến thức vô tận</span></h1>
             <p>Khám phá lộ trình học tập được cá nhân hóa, giúp bạn làm chủ tương lai với sự dẫn dắt từ các chuyên gia hàng đầu.</p>
-            <div className="hero-actions">
-              <button className="primary-btn" onClick={() => navigate('/courses')}>
-                Bắt đầu ngay <ChevronRight size={18} />
-              </button>
-              <div className="students-preview">
-                <div className="avatars">
-                  {[1,2,3,4].map(i => <div key={i} className="avatar-circle"></div>)}
-                </div>
-                <span>+10k học viên đã tham gia</span>
-              </div>
-            </div>
           </motion.div>
 
           <div className="hero-right">
             <motion.div className="floating-card c1" variants={floatingVariants} animate="animate">
-              <div className="card-mock"></div>
+              <img src={heroSub} alt="Education Icons" className="floating-img" />
             </motion.div>
             <motion.div className="floating-card c2" variants={floatingVariants} animate="animate" transition={{ delay: 1 }}>
-              <div className="card-mock"></div>
+              <img src={heroMain} alt="Student Learning" className="floating-img" />
             </motion.div>
             <div className="hero-glow"></div>
           </div>
