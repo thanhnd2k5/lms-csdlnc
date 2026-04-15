@@ -1,0 +1,251 @@
+.home-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  padding-bottom: 100px;
+}
+
+/* Ultra Hero Section */
+.ultra-hero-section {
+  padding: 80px 40px;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  background: white;
+}
+
+.hero-split-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 60px;
+  width: 100%;
+}
+
+.hero-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #f0f4ff;
+  color: #4361ee;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 600;
+  width: fit-content;
+  margin-bottom: 24px;
+}
+
+.hero-left h1 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 900;
+  line-height: 1.1;
+  color: #1a1a2e;
+  margin-bottom: 24px;
+  letter-spacing: -1.5px;
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #4361ee, #7209b7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-left p {
+  font-size: 1.2rem;
+  color: #64748b;
+  max-width: 500px;
+  line-height: 1.6;
+  margin-bottom: 40px;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.primary-btn {
+  padding: 16px 32px;
+  background: #4361ee;
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 10px 20px rgba(67, 97, 238, 0.2);
+  transition: all 0.3s;
+}
+
+.primary-btn:hover {
+  background: #3730e1;
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px rgba(67, 97, 238, 0.3);
+}
+
+.students-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatars {
+  display: flex;
+}
+
+.avatar-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background: #e2e8f0;
+  margin-left: -12px;
+}
+
+.avatar-circle:first-child { margin-left: 0; }
+
+.students-preview span {
+  font-size: 14px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Floating Elements */
+.hero-right {
+  position: relative;
+  height: 400px;
+}
+
+.floating-card {
+  position: absolute;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.05);
+  z-index: 5;
+}
+
+.floating-card.c1 {
+  width: 300px;
+  height: 200px;
+  top: 10%;
+  right: 15%;
+  background: linear-gradient(135deg, #fff, #f8f9ff);
+}
+
+.floating-card.c2 {
+  width: 340px;
+  height: 240px;
+  bottom: 5%;
+  left: 0;
+  background: linear-gradient(135deg, #fff, #f0f4ff);
+}
+
+.card-mock {
+  width: 100%;
+  height: 40px;
+  background: rgba(67, 97, 238, 0.05);
+  margin-top: 20px;
+  border-radius: 4px;
+}
+
+.hero-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(67, 97, 238, 0.1) 0%, rgba(255,255,255,0) 70%);
+  pointer-events: none;
+}
+
+/* Stats Bar */
+.stats-bar {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: calc(100% - 80px);
+  background: #1a1a2e;
+  border-radius: 28px;
+  padding: 40px;
+  display: flex;
+  justify-content: space-around;
+  color: white;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.stat-icon {
+  width: 56px;
+  height: 56px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4361ee;
+}
+
+.stat-info h3 { font-size: 24px; font-weight: 800; margin: 0; }
+.stat-info p { font-size: 14px; color: #94a3b8; margin: 0; }
+
+/* Carousel Section */
+.carousel-section {
+  padding: 0 40px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 32px;
+}
+
+.modern-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1a1a2e;
+}
+
+.view-all-btn {
+  background: transparent;
+  border: none;
+  color: #4361ee;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.carousel-viewport {
+  cursor: grab;
+  overflow: hidden;
+  padding: 20px 0;
+}
+
+.carousel-inner {
+  display: flex;
+  gap: 32px;
+}
+
+.carousel-item {
+  min-width: 320px;
+  max-width: 320px;
+}
+
+/* Regular Grid Section */
+.courses-grid-section {
+  padding: 0 40px;
+}
+

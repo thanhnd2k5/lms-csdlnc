@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { message } from 'antd';
-import CardComponent from './card';
+import HomeContent from './HomeContent';
 import Sidebar from '../common/sidebar/sidebar';
 import Navbar from '../common/navbar/navbar';
 import '../layout/layout.css';
@@ -44,7 +44,7 @@ const Home = () => {
       <div className="main-content">
         <Navbar />
         <main className="content">
-          <CardComponent />
+          <HomeContent />
         </main>
       </div>
     </div>
