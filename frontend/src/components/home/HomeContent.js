@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { LayoutGrid, TrendingUp, Users, Award, ChevronRight } from 'lucide-react';
-import CourseCard from '../common/card/CourseCard';
-import heroMain from '../../assets/images/hero-main.png';
-import heroSub from '../../assets/images/hero-sub.png';
+import HeroSection from './sections/HeroSection';
+import StatsSection from './sections/StatsSection';
+import FeaturedCourses from './sections/FeaturedCourses';
+import RecommendedCourses from './sections/RecommendedCourses';
 import './HomeContent.css';
-import '../../styles/CourseLayout.css';
+import './HomeContent.css';
 
 const HomeContent = () => {
   const [allCourses, setAllCourses] = useState([]);
@@ -17,30 +16,22 @@ const HomeContent = () => {
   const userRole = localStorage.getItem('role');
   const token = localStorage.getItem('token');
 
-  const carouselRef = useRef(null);
-  const [carouselConstraints, setCarouselConstraints] = useState(0);
-
   useEffect(() => {
     fetchCourses();
   }, [userRole, token]);
 
-  useEffect(() => {
-    if (carouselRef.current) {
-      setCarouselConstraints(carouselRef.current.scrollWidth - carouselRef.current.offsetWidth);
-    }
-  }, [myCourses, allCourses]);
-
   const fetchCourses = async () => {
     try {
+      // Always fetch all courses for the recommended grid
+      const allCoursesResponse = await axios.get(`${process.env.REACT_APP_API_URL}/courses`);
+      setAllCourses(allCoursesResponse.data);
+
+      // If teacher, fetch their specific courses for the featured carousel
       if (userRole === 'teacher' && token) {
         const myCoursesResponse = await axios.get(`${process.env.REACT_APP_API_URL}/teacher/courses`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setMyCourses(myCoursesResponse.data);
-      } else {
-        const allCoursesResponse = await axios.get(`${process.env.REACT_APP_API_URL}/courses`);
-        const publicCourses = allCoursesResponse.data.filter(course => course.is_public);
-        setAllCourses(publicCourses);
       }
     } catch (error) {
       console.error('Error fetching courses:', error);
@@ -78,124 +69,43 @@ const HomeContent = () => {
     navigate(`/teacher/courses/${courseId}/videos`);
   };
 
-  // Variants for animations
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
-  };
-
-  const floatingVariants = {
-    animate: {
-      y: [0, -15, 0],
-      transition: {
-        duration: 4,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
   return (
     <div className="home-content-wrapper">
-      {/* Ultra-Premium Hero Section */}
-      <section className="ultra-hero-section">
-        <div className="hero-split-container">
-          <motion.div
-            className="hero-left"
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <div className="hero-badge">
-              <TrendingUp size={14} />
-              <span>Nền tảng học tập thế hệ mới</span>
-            </div>
-            <h1>Nâng tầm kĩ năng <br /> <span className="gradient-text">Kiến thức vô tận</span></h1>
-            <p>Khám phá lộ trình học tập được cá nhân hóa, giúp bạn làm chủ tương lai với sự dẫn dắt từ các chuyên gia hàng đầu.</p>
-          </motion.div>
+      <HeroSection 
+        onGetStarted={() => scrollToSection('featured-courses')} 
+        onLearnMore={() => scrollToSection('recommended-courses')} 
+      />
+      
+      <StatsSection />
 
-          <div className="hero-right">
-            <motion.div className="floating-card c1" variants={floatingVariants} animate="animate">
-              <img src={heroSub} alt="Education Icons" className="floating-img" />
-            </motion.div>
-            <motion.div className="floating-card c2" variants={floatingVariants} animate="animate" transition={{ delay: 1 }}>
-              <img src={heroMain} alt="Student Learning" className="floating-img" />
-            </motion.div>
-            <div className="hero-glow"></div>
-          </div>
-        </div>
-      </section>
+      {/* Show FeaturedCourses only if there is data */}
+      {(userRole === 'teacher' ? myCourses : allCourses).length > 0 && (
+        <FeaturedCourses 
+          title={userRole === 'teacher' ? 'Khóa học của bạn' : 'Khóa học nổi bật'}
+          courses={userRole === 'teacher' ? myCourses : allCourses}
+          userRole={userRole}
+          handleCardClick={handleCardClick}
+          handleEnroll={handleEnroll}
+          handleEditClick={handleEditClick}
+        />
+      )}
 
-      {/* Stats Bar */}
-      <section className="stats-bar">
-        <div className="stat-item">
-          <div className="stat-icon"><Users size={24} /></div>
-          <div className="stat-info"><h3>50k+</h3><p>Học viên</p></div>
-        </div>
-        <div className="stat-item">
-          <div className="stat-icon"><LayoutGrid size={24} /></div>
-          <div className="stat-info"><h3>200+</h3><p>Khóa học</p></div>
-        </div>
-        <div className="stat-item">
-          <div className="stat-icon"><Award size={24} /></div>
-          <div className="stat-info"><h3>100%</h3><p>Hài lòng</p></div>
-        </div>
-      </section>
-
-      {/* Featured Carousel Section */}
-      <section className="carousel-section">
-        <div className="section-header">
-          <h2 className="modern-title">
-            {userRole === 'teacher' ? 'Khóa học của bạn' : 'Khóa học nổi bật'}
-          </h2>
-          <button className="view-all-btn">Xem tất cả</button>
-        </div>
-
-        <div className="carousel-viewport" ref={carouselRef}>
-          <motion.div
-            className="carousel-inner"
-            drag="x"
-            dragConstraints={{ right: 0, left: -carouselConstraints }}
-            whileTap={{ cursor: "grabbing" }}
-          >
-            {(userRole === 'teacher' ? myCourses : allCourses).map((course) => (
-              <div key={course.id} className="carousel-item">
-                <CourseCard
-                  course={course}
-                  userRole={userRole}
-                  onCardClick={handleCardClick}
-                  onEnroll={handleEnroll}
-                  onEditClick={handleEditClick}
-                />
-              </div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Recommended Grid */}
-      <section className="courses-grid-section">
-        <h2 className="modern-title">Đề xuất cho bạn</h2>
-        <motion.div
-          className="courses-grid"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {allCourses.slice(0, 8).map((course) => (
-            <CourseCard
-              key={course.id}
-              course={course}
-              userRole={userRole}
-              onCardClick={handleCardClick}
-              onEnroll={handleEnroll}
-            />
-          ))}
-        </motion.div>
-      </section>
+      {/* Show RecommendedCourses only if there is data */}
+      {allCourses.length > 0 && (
+        <RecommendedCourses 
+          courses={allCourses}
+          userRole={userRole}
+          handleCardClick={handleCardClick}
+          handleEnroll={handleEnroll}
+        />
+      )}
     </div>
   );
 };

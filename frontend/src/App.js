@@ -1,6 +1,7 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainLayout from "./components/layout/MainLayout";
+import HomeLayout from "./components/layout/HomeLayout";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import CourseVideosPage from "./components/course_videos/course_videos_page";
 import Home from "./components/home/home";
@@ -50,9 +51,13 @@ function App() {
         <Route path="/check-email" element={<CheckEmail />} />
         <Route path="/verify-email/:token" element={<EmailVerification />} />
 
+        {/* Home Route - With HomeLayout */}
+        <Route element={<HomeLayout />}>
+          <Route path="/" element={<Home />} />
+        </Route>
+
         {/* General Routes - With MainLayout */}
         <Route element={<MainLayout />}>
-          <Route path="/" element={<Home />} />
           
           <Route
             path="/course/:courseId"
