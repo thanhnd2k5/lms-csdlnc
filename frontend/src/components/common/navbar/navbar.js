@@ -125,39 +125,73 @@ const Navbar = () => {
 
           {token ? (
             <div className="user-menu" ref={menuRef}>
-              <div className="user-info" onClick={() => setShowMenu(!showMenu)}>
-                <div className="user-avatar">
-                  {userData?.avatar ? (
-                    <img 
-                      src={`${process.env.REACT_APP_API_URL}${userData.avatar}`} 
-                      alt="Avatar" 
-                      className="avatar-image"
-                    />
-                  ) : (
-                    userData?.role?.[0]?.toUpperCase() || 'U'
-                  )}
+              <div className={`user-info-trigger ${showMenu ? 'active' : ''}`} onClick={() => setShowMenu(!showMenu)}>
+                <div className="avatar-ring-wrapper">
+                  <div className="avatar-ring" />
+                  <div className="user-avatar-wrapper">
+                    {userData?.avatar ? (
+                      <img 
+                        src={`${process.env.REACT_APP_API_URL}${userData.avatar}`} 
+                        alt="Avatar" 
+                        className="avatar-image-modern"
+                      />
+                    ) : (
+                      <div className="avatar-placeholder-gradient">
+                        {userData?.full_name?.[0]?.toUpperCase() || userData?.username?.[0]?.toUpperCase() || 'U'}
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <span className="user-name">{userData?.full_name || userData?.username}</span>
-                <CaretDownOutlined className="dropdown-icon" />
+                <div className="user-details-hidden-mobile">
+                  <span className="user-name-text">{userData?.full_name || userData?.username}</span>
+                  <span className="user-role-text">{role.charAt(0).toUpperCase() + role.slice(1)}</span>
+                </div>
+                <CaretDownOutlined className={`dropdown-arrow-icon ${showMenu ? 'rotated' : ''}`} />
               </div>
               
               {showMenu && (
-                <div className="dropdown-menu">
-                  {role !== 'student' && (
-                    <Link to={role === 'admin' ? '/admin' : '/teacher'} className="menu-item" onClick={() => setShowMenu(false)}>
-                      <DashboardOutlined /> Trang quản trị
+                <div className="dropdown-menu-modern">
+                  <div className="dropdown-profile-header">
+                    <div className="header-avatar">
+                      {userData?.avatar ? (
+                        <img src={`${process.env.REACT_APP_API_URL}${userData.avatar}`} alt="Avatar" />
+                      ) : (
+                        <div className="avatar-placeholder-gradient small">
+                          {userData?.full_name?.[0]?.toUpperCase() || 'U'}
+                        </div>
+                      )}
+                    </div>
+                    <div className="header-info">
+                      <div className="header-name">{userData?.full_name || userData?.username}</div>
+                      <div className="header-email">{userData?.email || userData?.username}</div>
+                    </div>
+                  </div>
+
+                  <div className="menu-items-group">
+                    {role !== 'student' && (
+                      <Link to={role === 'admin' ? '/admin' : '/teacher'} className="dropdown-item-modern" onClick={() => setShowMenu(false)}>
+                        <DashboardOutlined className="item-icon" /> 
+                        <span>Trang quản trị</span>
+                      </Link>
+                    )}
+                    <Link to="/profile" className="dropdown-item-modern" onClick={() => setShowMenu(false)}>
+                      <UserOutlined className="item-icon" />
+                      <span>Hồ sơ cá nhân</span>
                     </Link>
-                  )}
-                  <Link to="/profile" className="menu-item" onClick={() => setShowMenu(false)}>
-                    <UserOutlined /> Hồ sơ
-                  </Link>
-                  <Link to="/settings" className="menu-item" onClick={() => setShowMenu(false)}>
-                    <SettingOutlined /> Cài đặt
-                  </Link>
-                  <div className="menu-divider"></div>
-                  <button className="menu-item logout" onClick={handleLogout}>
-                    <LogoutOutlined /> Đăng xuất
-                  </button>
+                    <Link to="/settings" className="dropdown-item-modern" onClick={() => setShowMenu(false)}>
+                      <SettingOutlined className="item-icon" />
+                      <span>Cài đặt hệ thống</span>
+                    </Link>
+                  </div>
+
+                  <div className="menu-divider-modern"></div>
+                  
+                  <div className="menu-items-group">
+                    <button className="dropdown-item-modern logout-item" onClick={handleLogout}>
+                      <LogoutOutlined className="item-icon" />
+                      <span>Đăng xuất</span>
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
