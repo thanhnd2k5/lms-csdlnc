@@ -5,8 +5,6 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import CreateClass from './createClass';
 import EditClass from './editClass';
-import Navbar from '../../common/navbar/navbar';
-import Sidebar from '../../common/sidebar/sidebar';
 import './ClassManagement.css';
 
 const { confirm } = Modal;
@@ -193,50 +191,42 @@ const ClassManagement = () => {
     };
 
     return (
-        <div className="layout">
-            <Sidebar />
-            <div className="main-content">
-                <Navbar />
-                <div className="page-content">
-                    <div className="content-container">
-                        <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <h2>Quản lý lớp học</h2>
-                            <Button 
-                                type="primary" 
-                                icon={<PlusOutlined />}
-                                onClick={showCreateModal}
-                            >
-                                Tạo lớp học mới
-                            </Button>
-                        </div>
-
-                        <Table 
-                            columns={columns} 
-                            dataSource={classes} 
-                            loading={loading}
-                            rowKey="id"
-                            pagination={{
-                                pageSize: 10,
-                                showTotal: (total) => `Tổng số ${total} lớp học`,
-                            }}
-                        />
-
-                        <CreateClass
-                            visible={isCreateModalVisible}
-                            onCancel={() => setIsCreateModalVisible(false)}
-                            onSuccess={handleCreateSuccess}
-                        />
-
-                        <EditClass
-                            visible={isEditModalVisible}
-                            onCancel={() => setIsEditModalVisible(false)}
-                            onSuccess={handleEditSuccess}
-                            classData={selectedClass}
-                        />
-                    </div>
-                </div>
+        <>
+            <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h2>Quản lý lớp học</h2>
+                <Button 
+                    type="primary" 
+                    icon={<PlusOutlined />}
+                    onClick={showCreateModal}
+                >
+                    Tạo lớp học mới
+                </Button>
             </div>
-        </div>
+
+            <Table 
+                columns={columns} 
+                dataSource={classes} 
+                loading={loading}
+                rowKey="id"
+                pagination={{
+                    pageSize: 10,
+                    showTotal: (total) => `Tổng số ${total} lớp học`,
+                }}
+            />
+
+            <CreateClass
+                visible={isCreateModalVisible}
+                onCancel={() => setIsCreateModalVisible(false)}
+                onSuccess={handleCreateSuccess}
+            />
+
+            <EditClass
+                visible={isEditModalVisible}
+                onCancel={() => setIsEditModalVisible(false)}
+                onSuccess={handleEditSuccess}
+                classData={selectedClass}
+            />
+        </>
     );
 };
 

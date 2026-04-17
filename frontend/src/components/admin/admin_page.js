@@ -43,22 +43,18 @@ const AdminPage = () => {
   };
 
   return (
-    <div className="page-content">
-      <div className="content-container">
-        <Routes>
-          <Route path="/" element={<Dashboard courses={courses} users={users} />} />
-          <Route path="/courses" element={
-            <CourseManagement 
-              courses={courses} 
-              loading={loading} 
-              onCourseAdded={fetchData}
-            />
-          } />
-          <Route path="/quiz" element={<QuizManagement />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </div>
-    </div>
+    <Routes>
+      <Route path="/" element={<Dashboard courses={courses} users={users} />} />
+      <Route path="/courses" element={
+        <CourseManagement 
+          courses={courses} 
+          loading={loading} 
+          onCourseAdded={fetchData}
+        />
+      } />
+      <Route path="/quiz" element={<QuizManagement />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 };
 

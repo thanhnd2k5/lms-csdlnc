@@ -1,6 +1,7 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainLayout from "./components/layout/MainLayout";
+import DashboardLayout from "./components/layout/DashboardLayout";
 import CourseVideosPage from "./components/course_videos/course_videos_page";
 import Home from "./components/home/home";
 import Login from "./components/auth/Login";
@@ -49,7 +50,7 @@ function App() {
         <Route path="/check-email" element={<CheckEmail />} />
         <Route path="/verify-email/:token" element={<EmailVerification />} />
 
-        {/* Protected/Content Routes - With MainLayout */}
+        {/* General Routes - With MainLayout */}
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
           
@@ -61,7 +62,52 @@ function App() {
               </PrivateRoute>
             }
           />
-          
+
+          <Route
+            path="/enrolled-courses"
+            element={
+              <PrivateRoute>
+                <EnrolledCourses />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/course-info/:courseId"
+            element={
+              <PrivateRoute>
+                <CourseInfo />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/search" element={<SearchResults />} />
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/enrolled-classes"
+            element={
+              <PrivateRoute>
+                <EnrolledClasses />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/student/classes/:classId/courses"
+            element={
+              <PrivateRoute>
+                <ClassCourse />
+              </PrivateRoute>
+            }
+          />
+        </Route>
+
+        {/* Dashboard Routes (Admin & Teacher) - With DashboardLayout */}
+        <Route element={<DashboardLayout />}>
           <Route
             path="/admin/*"
             element={
@@ -73,13 +119,35 @@ function App() {
           
           <Route
             path="/admin/courses/:courseId/videos"
-            element={<VideoManagement />}
+            element={
+              <AdminRoute>
+                <VideoManagement />
+              </AdminRoute>
+            }
           />
-          <Route path="/admin/quizzes/create" element={<CreateQuiz />} />
-          <Route path="/admin/quizzes/edit/:id" element={<CreateQuiz />} />
+          <Route 
+            path="/admin/quizzes/create" 
+            element={
+              <AdminRoute>
+                <CreateQuiz />
+              </AdminRoute>
+            } 
+          />
+          <Route 
+            path="/admin/quizzes/edit/:id" 
+            element={
+              <AdminRoute>
+                <CreateQuiz />
+              </AdminRoute>
+            } 
+          />
           <Route
             path="/admin/quizzes/:quizId/questions"
-            element={<QuestionManagement />}
+            element={
+              <AdminRoute>
+                <QuestionManagement />
+              </AdminRoute>
+            }
           />
 
           {/* Teacher Routes */}
@@ -153,48 +221,6 @@ function App() {
               <PrivateRouteTeacher>
                 <ClassCourseManagement />
               </PrivateRouteTeacher>
-            }
-          />
-          
-          <Route
-            path="/enrolled-courses"
-            element={
-              <PrivateRoute>
-                <EnrolledCourses />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/course-info/:courseId"
-            element={
-              <PrivateRoute>
-                <CourseInfo />
-              </PrivateRoute>
-            }
-          />
-          <Route path="/search" element={<SearchResults />} />
-          <Route
-            path="/profile"
-            element={
-              <PrivateRoute>
-                <Profile />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/enrolled-classes"
-            element={
-              <PrivateRoute>
-                <EnrolledClasses />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/student/classes/:classId/courses"
-            element={
-              <PrivateRoute>
-                <ClassCourse />
-              </PrivateRoute>
             }
           />
         </Route>

@@ -4,8 +4,6 @@ import { PlusOutlined } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import QuestionItem from './QuestionItem';
-import Navbar from '../../../common/navbar/navbar';
-import Sidebar from '../../../common/sidebar/sidebar';
 import '../../admin_page.css';
 
 const { Title } = Typography;
@@ -127,64 +125,56 @@ const QuestionManagement = () => {
   };
 
   return (
-    <div className="layout">
-      <Sidebar />
-      <div className="main-content">
-        <Navbar />
-        <main className="content admin-container">
-          <div className="course-management">
-            <div className="page-header" style={{ padding: 0, margin: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <Title level={2}>Quản lý câu hỏi - {quiz?.title}</Title>
-            </div>
+    <>
+      <div className="page-header" style={{ padding: 0, margin: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Title level={2}>Quản lý câu hỏi - {quiz?.title}</Title>
+      </div>
 
-            <div className="form-container" style={{ maxWidth: 800, margin: '20px auto', background: 'white', padding: '24px', borderRadius: '8px' }}>
-              <Form
-                form={form}
-                onFinish={handleUpdateQuestions}
-                layout="vertical"
-                disabled={loading}
-                initialValues={{ questions: questions }}
-              >
-                <Form.List name="questions">
-                  {(fields, { add, remove }) => (
-                    <>
-                      {fields.map((field, index) => (
-                        <QuestionItem
-                          key={field.key}
-                          form={form}
-                          name={field.name}
-                          remove={remove}
-                          restField={field}
-                          index={index}
-                        />
-                      ))}
-                      <Button
-                        type="dashed"
-                        onClick={showQuestionTypeModal}
-                        block
-                        icon={<PlusOutlined />}
-                        style={{ marginBottom: 24 }}
-                      >
-                        Thêm câu hỏi
-                      </Button>
-                    </>
-                  )}
-                </Form.List>
+      <div className="form-container" style={{ maxWidth: 800, margin: '20px auto', background: 'white', padding: '24px', borderRadius: '8px' }}>
+        <Form
+          form={form}
+          onFinish={handleUpdateQuestions}
+          layout="vertical"
+          disabled={loading}
+          initialValues={{ questions: questions }}
+        >
+            <Form.List name="questions">
+              {(fields, { add, remove }) => (
+                <>
+                  {fields.map((field, index) => (
+                    <QuestionItem
+                      key={field.key}
+                      form={form}
+                      name={field.name}
+                      remove={remove}
+                      restField={field}
+                      index={index}
+                    />
+                  ))}
+                  <Button
+                    type="dashed"
+                    onClick={showQuestionTypeModal}
+                    block
+                    icon={<PlusOutlined />}
+                    style={{ marginBottom: 24 }}
+                  >
+                    Thêm câu hỏi
+                  </Button>
+                </>
+              )}
+            </Form.List>
 
-                <Form.Item>
-                  <Space>
-                    <Button type="primary" htmlType="submit" loading={submitting}>
-                      Lưu thay đổi
-                    </Button>
-                    <Button onClick={() => navigate(role === 'admin' ? '/admin/quiz' : '/teacher/quiz')}>
-                      Quay lại
-                    </Button>
-                  </Space>
-                </Form.Item>
-              </Form>
-            </div>
-          </div>
-        </main>
+            <Form.Item>
+              <Space>
+                <Button type="primary" htmlType="submit" loading={submitting}>
+                  Lưu thay đổi
+                </Button>
+                <Button onClick={() => navigate(role === 'admin' ? '/admin/quiz' : '/teacher/quiz')}>
+                  Quay lại
+                </Button>
+              </Space>
+            </Form.Item>
+        </Form>
       </div>
 
       <Modal
@@ -205,7 +195,7 @@ const QuestionManagement = () => {
           </Space>
         </Radio.Group>
       </Modal>
-    </div>
+    </>
   );
 };
 

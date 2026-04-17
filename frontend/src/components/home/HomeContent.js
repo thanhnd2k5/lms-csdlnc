@@ -16,7 +16,7 @@ const HomeContent = () => {
   const navigate = useNavigate();
   const userRole = localStorage.getItem('role');
   const token = localStorage.getItem('token');
-  
+
   const carouselRef = useRef(null);
   const [carouselConstraints, setCarouselConstraints] = useState(0);
 
@@ -63,8 +63,8 @@ const HomeContent = () => {
 
   const handleEnroll = async (courseId) => {
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/courseEnroll/enroll`, 
-        { courseId }, 
+      await axios.post(`${process.env.REACT_APP_API_URL}/courseEnroll/enroll`,
+        { courseId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       message.success('Đăng ký khóa học thành công');
@@ -81,7 +81,7 @@ const HomeContent = () => {
   // Variants for animations
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { 
+    visible: {
       opacity: 1,
       transition: { staggerChildren: 0.1 }
     }
@@ -103,7 +103,7 @@ const HomeContent = () => {
       {/* Ultra-Premium Hero Section */}
       <section className="ultra-hero-section">
         <div className="hero-split-container">
-          <motion.div 
+          <motion.div
             className="hero-left"
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -113,7 +113,7 @@ const HomeContent = () => {
               <TrendingUp size={14} />
               <span>Nền tảng học tập thế hệ mới</span>
             </div>
-            <h1>Nâng tầm kĩ năng <br/> <span className="gradient-text">Kiến thức vô tận</span></h1>
+            <h1>Nâng tầm kĩ năng <br /> <span className="gradient-text">Kiến thức vô tận</span></h1>
             <p>Khám phá lộ trình học tập được cá nhân hóa, giúp bạn làm chủ tương lai với sự dẫn dắt từ các chuyên gia hàng đầu.</p>
           </motion.div>
 
@@ -155,7 +155,7 @@ const HomeContent = () => {
         </div>
 
         <div className="carousel-viewport" ref={carouselRef}>
-          <motion.div 
+          <motion.div
             className="carousel-inner"
             drag="x"
             dragConstraints={{ right: 0, left: -carouselConstraints }}
@@ -179,7 +179,7 @@ const HomeContent = () => {
       {/* Recommended Grid */}
       <section className="courses-grid-section">
         <h2 className="modern-title">Đề xuất cho bạn</h2>
-        <motion.div 
+        <motion.div
           className="courses-grid"
           variants={containerVariants}
           initial="hidden"

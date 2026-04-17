@@ -88,7 +88,7 @@ const getCourseDetails = (courseId) => {
       LEFT JOIN documents d ON c.id = d.course_id
       LEFT JOIN course_enrollments ce ON c.id = ce.course_id
       WHERE c.id = ?
-      GROUP BY c.id
+      GROUP BY c.id, u.full_name
     `;
 
     db.query(query, [courseId], (error, results) => {
@@ -128,7 +128,7 @@ const getEnrollmentDetailsByTeacher = (teacherId) => {
       LEFT JOIN video_completion vc ON v.id = vc.video_id AND vc.user_id = u.id
       LEFT JOIN documents d ON c.id = d.course_id
       WHERE c.teacher_id = ?
-      GROUP BY c.id, u.id
+      GROUP BY c.id, u.id, c.title, c.thumbnail, u.full_name, u.email, ce.enrolled_at
       ORDER BY ce.enrolled_at DESC
     `;
 

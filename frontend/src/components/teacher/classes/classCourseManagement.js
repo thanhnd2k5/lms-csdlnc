@@ -3,8 +3,6 @@ import { Table, Button, message, Space, Modal } from 'antd';
 import { DeleteOutlined, VideoCameraOutlined, PlusOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
-import Navbar from '../../common/navbar/navbar';
-import Sidebar from '../../common/sidebar/sidebar';
 import './ClassManagement.css';
 
 const { confirm } = Modal;
@@ -147,76 +145,68 @@ const ClassCourseManagement = () => {
     ];
 
     return (
-        <div className="layout">
-            <Sidebar />
-            <div className="main-content">
-                <Navbar />
-                <div className="page-content">
-                    <div className="content-container">
-                        <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <Button onClick={() => navigate('/teacher/classes')}>
-                                Quay lại danh sách lớp
-                            </Button>
-                            <Button
-                                type="primary"
-                                icon={<PlusOutlined />}
-                                onClick={() => {
-                                    fetchAvailableCourses();
-                                    setIsModalVisible(true);
-                                }}
-                            >
-                                Thêm khóa học
-                            </Button>
-                        </div>
-    
-                        <Table
-                            columns={columns}
-                            dataSource={courses}
-                            loading={loading}
-                            rowKey="id"
-                            pagination={{
-                                pageSize: 10,
-                                showTotal: (total) => `Tổng số ${total} khóa học`,
-                            }}
-                        />
-    
-                        <Modal
-                            title="Thêm khóa học vào lớp"
-                            open={isModalVisible}
-                            onCancel={() => setIsModalVisible(false)}
-                            footer={null}
-                        >
-                            <Table
-                                columns={[
-                                    {
-                                        title: 'Tên khóa học',
-                                        dataIndex: 'title',
-                                        key: 'title',
-                                    },
-                                    {
-                                        title: 'Thao tác',
-                                        key: 'action',
-                                        render: (_, record) => (
-                                            <Button
-                                                type="primary"
-                                                onClick={() => handleAddCourse(record.id)}
-                                            >
-                                                Thêm vào lớp
-                                            </Button>
-                                        ),
-                                    },
-                                ]}
-                                dataSource={availableCourses.filter(
-                                    course => !courses.some(c => c.id === course.id)
-                                )}
-                                rowKey="id"
-                                pagination={false}
-                            />
-                        </Modal>
-                    </div>
-                </div>
+        <>
+            <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Button onClick={() => navigate('/teacher/classes')}>
+                    Quay lại danh sách lớp
+                </Button>
+                <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={() => {
+                        fetchAvailableCourses();
+                        setIsModalVisible(true);
+                    }}
+                >
+                    Thêm khóa học
+                </Button>
             </div>
-        </div>
+
+            <Table
+                columns={columns}
+                dataSource={courses}
+                loading={loading}
+                rowKey="id"
+                pagination={{
+                    pageSize: 10,
+                    showTotal: (total) => `Tổng số ${total} khóa học`,
+                }}
+            />
+
+            <Modal
+                title="Thêm khóa học vào lớp"
+                open={isModalVisible}
+                onCancel={() => setIsModalVisible(false)}
+                footer={null}
+            >
+                <Table
+                    columns={[
+                        {
+                            title: 'Tên khóa học',
+                            dataIndex: 'title',
+                            key: 'title',
+                        },
+                        {
+                            title: 'Thao tác',
+                            key: 'action',
+                            render: (_, record) => (
+                                <Button
+                                    type="primary"
+                                    onClick={() => handleAddCourse(record.id)}
+                                >
+                                    Thêm vào lớp
+                                </Button>
+                            ),
+                        },
+                    ]}
+                    dataSource={availableCourses.filter(
+                        course => !courses.some(c => c.id === course.id)
+                    )}
+                    rowKey="id"
+                    pagination={false}
+                />
+            </Modal>
+        </>
     );
 };
 

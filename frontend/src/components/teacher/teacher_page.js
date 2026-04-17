@@ -50,22 +50,18 @@ const TeacherPage = () => {
   };
 
   return (
-    <div className="page-content">
-      <div className="content-container">
-        <Routes>
-          <Route path="/" element={<TeacherDashboard courses={courses} />} />
-          <Route path="/courses" element={
-            <CourseManagement 
-              courses={courses} 
-              loading={loading} 
-              onCourseAdded={fetchCourses}
-            />
-          } />
-          <Route path="/quiz" element={<QuizManagement />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </div>
-    </div>
+    <Routes>
+      <Route path="/" element={<TeacherDashboard courses={courses} />} />
+      <Route path="/courses" element={
+        <CourseManagement 
+          courses={courses} 
+          loading={loading} 
+          onCourseAdded={fetchCourses}
+        />
+      } />
+      <Route path="/quiz" element={<QuizManagement />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 };
 

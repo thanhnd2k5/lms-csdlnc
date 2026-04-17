@@ -1,108 +1,72 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { 
-  MenuFoldOutlined, 
-  MenuUnfoldOutlined,
-  LogoutOutlined,
-  UserOutlined,
-  SettingOutlined
-} from '@ant-design/icons';
+import { Menu, Layout } from 'antd';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { sidebarConfig } from './sidebarConfig';
 import './sidebar.css';
 
+const { Sider } = Layout;
+
 const Sidebar = () => {
+  const navigate = useNavigate();
   const location = useLocation();
-  const userRole = localStorage.getItem('role') || 'student';
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [selectedKeys, setSelectedKeys] = useState(['/']);
+  const role = localStorage.getItem('role') || 'student';
 
-  // Theo dõi kích thước màn hình để tự động thu gọn
+  // Only Admin and Teacher see this sidebar in DashboardLayout
+  const menuItems = sidebarConfig[role] || [];
+
   useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-      if (window.innerWidth < 1024) {
-        setIsCollapsed(true);
-      } else {
-        setIsCollapsed(false);
+    // Determine the selected key based on current location
+    const path = location.pathname;
+    
+    // Exact match first
+    const exactMatch = menuItems.find(item => item.path === path);
+    if (exactMatch) {
+      setSelectedKeys([exactMatch.path]);
+    } else {
+      // Find the item that is a prefix match (longest prefix)
+      const matches = menuItems
+        .filter(item => path.startsWith(item.path) && item.path !== '/')
+        .sort((a, b) => b.path.length - a.path.length);
+        
+      if (matches.length > 0) {
+        setSelectedKeys([matches[0].path]);
+      } else if (path === '/') {
+        setSelectedKeys(['/']);
       }
-    };
-    window.addEventListener('resize', handleResize);
-    handleResize(); // Chạy ngay lần đầu
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    }
+  }, [location.pathname, menuItems]);
 
-  const menuItems = sidebarConfig[userRole] || sidebarConfig.student;
-
-  const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
+  const handleMenuClick = ({ key }) => {
+    navigate(key);
   };
 
+  if (menuItems.length === 0) return null;
+
   return (
-    <div className={`sidebar-container ${isCollapsed ? 'collapsed' : ''}`}>
-      <div className="sidebar-header">
-        <Link to="/" className="sidebar-logo-link">
-          <div className="logo-wrapper">
-            <img src="/logo1.png" alt="LMS Logo" className="main-logo" />
-            {!isCollapsed && <span className="logo-text">LMS System</span>}
-          </div>
-        </Link>
-        <button className="toggle-btn" onClick={toggleSidebar}>
-          {isCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-        </button>
+    <Sider
+      width={260}
+      theme="light"
+      className="modern-sidebar"
+      breakpoint="lg"
+      collapsedWidth="80"
+    >
+      <div className="sidebar-menu-wrapper">
+        <Menu
+          mode="inline"
+          selectedKeys={selectedKeys}
+          onClick={handleMenuClick}
+          className="dashboard-menu"
+          items={menuItems.map(item => ({
+            key: item.path,
+            icon: React.cloneElement(item.icon, { className: 'menu-icon' }),
+            label: item.name,
+            className: 'menu-item-premium'
+          }))}
+        />
       </div>
-
-      <nav className="sidebar-nav-content">
-        <ul className="nav-list">
-          {menuItems.map((item) => (
-            <li key={item.path} className="nav-item-wrapper">
-              <Link
-                to={item.path}
-                className={`nav-link ${location.pathname === item.path ? 'active' : ''}`}
-                title={isCollapsed ? item.name : ''}
-              >
-                <span className="nav-icon">{item.icon}</span>
-                {!isCollapsed && <span className="nav-text">{item.name}</span>}
-                {location.pathname === item.path && !isCollapsed && (
-                  <div className="active-indicator" />
-                )}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      <div className="sidebar-footer">
-        <div className="footer-nav">
-          <Link 
-            to="/profile" 
-            className={`footer-item ${location.pathname === '/profile' ? 'active' : ''}`}
-            title={isCollapsed ? 'Hồ sơ cá nhân' : ''}
-          >
-            <span className="nav-icon"><UserOutlined /></span>
-            {!isCollapsed && <span className="nav-text">Hồ sơ cá nhân</span>}
-          </Link>
-          
-          <Link 
-            to="/settings" 
-            className={`footer-item ${location.pathname === '/settings' ? 'active' : ''}`}
-            title={isCollapsed ? 'Cài đặt' : ''}
-          >
-            <span className="nav-icon"><SettingOutlined /></span>
-            {!isCollapsed && <span className="nav-text">Cài đặt</span>}
-          </Link>
-
-          <button 
-            className="footer-item logout-btn" 
-            title={isCollapsed ? 'Đăng xuất' : ''}
-          >
-            <span className="nav-icon"><LogoutOutlined /></span>
-            {!isCollapsed && <span className="nav-text">Đăng xuất</span>}
-          </button>
-        </div>
-      </div>
-    </div>
+    </Sider>
   );
 };
 
 export default Sidebar;
- 
