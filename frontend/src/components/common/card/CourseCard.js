@@ -8,6 +8,7 @@ const CourseCard = ({
   course,
   onEnroll,
   onCardClick,
+  onEditClick,
   userRole,
   isEnrolled: propIsEnrolled,
   className = '',
@@ -15,6 +16,12 @@ const CourseCard = ({
 }) => {
   const [isEnrolled, setIsEnrolled] = useState(propIsEnrolled);
   const token = localStorage.getItem('token');
+  const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+
+  // Kiểm tra quyền chỉnh sửa
+  const isOwner = course.teacher_id === currentUser.id;
+  const isAdmin = userRole === 'admin';
+  const canEdit = isAdmin || (userRole === 'teacher' && isOwner);
 
   useEffect(() => {
     if (token && showEnrollmentStatus && !propIsEnrolled && userRole !== 'teacher') {
@@ -37,6 +44,11 @@ const CourseCard = ({
   const handleEnrollClick = (e) => {
     e.stopPropagation();
     onEnroll?.(course.id);
+  };
+
+  const handleEditClick = (e) => {
+    e.stopPropagation();
+    onEditClick?.(course.id);
   };
 
   const itemVariants = {
@@ -88,7 +100,7 @@ const CourseCard = ({
           </div>
         </div>
 
-        {userRole !== 'teacher' && !isEnrolled && (
+        {!isEnrolled && userRole !== 'teacher' && userRole !== 'admin' && (
           <div className="course-card-action">
             <button 
               className="enroll-button"
@@ -99,11 +111,12 @@ const CourseCard = ({
           </div>
         )}
 
-        {userRole === 'teacher' && (
+        {canEdit && (
           <div className="course-card-action">
             <button 
               className="enroll-button"
               style={{ background: '#e2eafc', color: '#4361ee' }}
+              onClick={handleEditClick}
             >
               Chỉnh sửa khóa học
             </button>

@@ -104,6 +104,7 @@ const HomeContent = () => {
           userRole={userRole}
           handleCardClick={handleCardClick}
           handleEnroll={handleEnroll}
+          handleEditClick={handleEditClick}
         />
       )}
     </div>

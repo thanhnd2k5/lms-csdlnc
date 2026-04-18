@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import CourseCard from '../../common/card/CourseCard';
 import './RecommendedCourses.css';
 
-const RecommendedCourses = ({ courses, userRole, handleCardClick, handleEnroll }) => {
+const RecommendedCourses = ({ courses, userRole, handleCardClick, handleEnroll, handleEditClick }) => {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -30,6 +30,7 @@ const RecommendedCourses = ({ courses, userRole, handleCardClick, handleEnroll }
                 userRole={userRole}
                 onCardClick={handleCardClick}
                 onEnroll={handleEnroll}
+                onEditClick={handleEditClick}
               />
             </div>
           ))}
