@@ -16,22 +16,48 @@ const Sidebar = () => {
   const menuItems = sidebarConfig[role] || [];
 
   useEffect(() => {
-    // Determine the selected key based on current location
-    const path = location.pathname;
+    // Normalize path by removing trailing slashes for consistent matching
+    const currentPath = location.pathname.replace(/\/+$/, '') || '/';
     
-    // Exact match first
-    const exactMatch = menuItems.find(item => item.path === path);
-    if (exactMatch) {
-      setSelectedKeys([exactMatch.path]);
-    } else {
-      // Find the item that is a prefix match (longest prefix)
-      const matches = menuItems
-        .filter(item => path.startsWith(item.path) && item.path !== '/')
-        .sort((a, b) => b.path.length - a.path.length);
+    let bestMatch = null;
+    let maxScore = -1;
+
+    menuItems.forEach(item => {
+      const itemPath = item.path.replace(/\/+$/, '') || '/';
+      const allPaths = [itemPath, ...(item.aliases || [])].map(p => p.replace(/\/+$/, '') || '/');
+      
+      allPaths.forEach(p => {
+        let score = -1;
         
-      if (matches.length > 0) {
-        setSelectedKeys([matches[0].path]);
-      } else if (path === '/') {
+        if (item.exact) {
+          // Score 100 for exact match
+          if (currentPath === p) score = 100;
+        } else {
+          // Score based on path length if it's a valid prefix match
+          // A valid prefix match must either be an exact match or followed by a slash
+          if (currentPath === p) {
+            score = p.length;
+          } else if (currentPath.startsWith(p + '/')) {
+            score = p.length;
+          }
+        }
+
+        if (score > maxScore) {
+          maxScore = score;
+          bestMatch = item.path;
+        }
+      });
+    });
+
+    if (bestMatch) {
+      setSelectedKeys([bestMatch]);
+    } else {
+      // Intelligent fallback for dashboard areas
+      if (currentPath.startsWith('/teacher')) {
+        setSelectedKeys(['/teacher']);
+      } else if (currentPath.startsWith('/admin')) {
+        setSelectedKeys(['/admin']);
+      } else {
         setSelectedKeys(['/']);
       }
     }
