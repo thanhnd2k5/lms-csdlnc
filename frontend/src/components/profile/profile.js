@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, message, Upload, Divider } from 'antd';
 import { UserOutlined, MailOutlined, UploadOutlined, CameraOutlined } from '@ant-design/icons';
 import axios from 'axios';
+import { getAssetUrl } from '../../utils/urlUtils';
 import './profile.css';
 
 const Profile = () => {
@@ -114,7 +115,7 @@ const Profile = () => {
               <div onClick={handleAvatarClick} style={{ cursor: 'pointer' }}>
                 {avatar ? (
                   <img 
-                    src={`${process.env.REACT_APP_API_URL}${avatar}`} 
+                    src={getAssetUrl(avatar)} 
                     alt="Avatar" 
                     className="profile-avatar"
                   />

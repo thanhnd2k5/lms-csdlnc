@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Form, Input, Upload, message, Switch } from 'antd';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import axios from 'axios';
+import { getAssetUrl } from '../../../../utils/urlUtils';
 
 const EditCourse = ({ visible, onCancel, onSuccess, courseData }) => {
   const [form] = Form.useForm();
@@ -138,7 +139,7 @@ const EditCourse = ({ visible, onCancel, onSuccess, courseData }) => {
           >
             {imageUrl ? (
               <img 
-                src={`${process.env.REACT_APP_API_URL}${imageUrl}`} 
+                src={getAssetUrl(imageUrl)} 
                 alt="thumbnail" 
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
               />

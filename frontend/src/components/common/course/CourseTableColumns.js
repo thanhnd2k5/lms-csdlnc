@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Space, Image, Tag, Tooltip } from 'antd';
 import { EditOutlined, DeleteOutlined, TeamOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { getAssetUrl } from '../../../utils/urlUtils';
 
 const CourseTableColumns = ({ onEdit, onDelete, role, onViewStudents}) => {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ const CourseTableColumns = ({ onEdit, onDelete, role, onViewStudents}) => {
       render: (thumbnailUrl) => (
         thumbnailUrl ? (
           <Image 
-            src={`${process.env.REACT_APP_API_URL}${thumbnailUrl}`}
+            src={getAssetUrl(thumbnailUrl)}
             alt="Course thumbnail"
             style={{ 
               width: 100, 

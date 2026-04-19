@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Form, Input, InputNumber, Switch, message, Select, Upload } from 'antd';
 import axios from 'axios';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { getAssetUrl } from '../../../utils/urlUtils';
 
 const { Option } = Select;
 
@@ -213,7 +214,7 @@ const EditClass = ({ visible, onCancel, onSuccess, classData }) => {
                     >
                         {imageUrl ? (
                             <img 
-                                src={`${process.env.REACT_APP_API_URL}${imageUrl}`}
+                                src={getAssetUrl(imageUrl)}
                                 alt="thumbnail" 
                                 style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                             />

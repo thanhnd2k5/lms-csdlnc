@@ -11,6 +11,7 @@ const courseEnrollRoutes = require("./src/routes/courseEnrollRoutes");
 const searchRoutes = require("./src/routes/searchRoutes");
 const userRoutes = require("./src/routes/userRoutes");
 const classRoutes = require("./src/routes/classRoutes");
+const failoverManager = require("./src/services/failoverManager");
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -41,3 +42,5 @@ app.use("/", classRoutes);
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+failoverManager.start();

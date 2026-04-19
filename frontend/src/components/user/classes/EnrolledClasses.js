@@ -3,6 +3,7 @@ import { Button, message, Empty, Modal, Input, Card, Dropdown } from 'antd';
 import { FileTextOutlined, LockOutlined, EditOutlined, PlusOutlined, EllipsisOutlined, UserDeleteOutlined, CloseOutlined, KeyOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { getAssetUrl } from '../../../utils/urlUtils';
 import './EnrolledClasses.css';
 
 const EnrolledClasses = () => {
@@ -123,7 +124,7 @@ const EnrolledClasses = () => {
                         }}>
                             {classData.thumbnail ? (
                                 <img 
-                                    src={`${process.env.REACT_APP_API_URL}${classData.thumbnail}`}
+                                    src={getAssetUrl(classData.thumbnail)}
                                     alt={classData.name}
                                     className="avatar-image"
                                 />

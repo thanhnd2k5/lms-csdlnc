@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { User, Users, BookOpen, Check } from 'lucide-react';
+import { getAssetUrl } from '../../../utils/urlUtils';
 import './CourseCard.css';
 
 const CourseCard = ({
@@ -69,7 +70,7 @@ const CourseCard = ({
       <div className="course-image-wrapper">
         <img
           alt={course.title}
-          src={`${process.env.REACT_APP_API_URL}${course.thumbnail}`}
+          src={getAssetUrl(course.thumbnail)}
           className="course-image-custom"
           onError={(e) => {
             e.target.src = 'https://placehold.co/600x400/f1f5f9/475569?text=LMS+Course';

@@ -1,0 +1,5 @@
+{
+  "activeWriteHost": "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
+  "activeWritePort": 4000,
+  "lastFailoverAt": null
+}

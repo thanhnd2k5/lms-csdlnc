@@ -15,6 +15,7 @@ import {
   DashboardOutlined
 } from '@ant-design/icons';
 import { sidebarConfig } from '../sidebar/sidebarConfig';
+import { getAssetUrl } from '../../../utils/urlUtils';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -131,7 +132,7 @@ const Navbar = () => {
                   <div className="user-avatar-wrapper">
                     {userData?.avatar ? (
                       <img 
-                        src={`${process.env.REACT_APP_API_URL}${userData.avatar}`} 
+                        src={getAssetUrl(userData.avatar)} 
                         alt="Avatar" 
                         className="avatar-image-modern"
                       />
@@ -154,7 +155,7 @@ const Navbar = () => {
                   <div className="dropdown-profile-header">
                     <div className="header-avatar">
                       {userData?.avatar ? (
-                        <img src={`${process.env.REACT_APP_API_URL}${userData.avatar}`} alt="Avatar" />
+                        <img src={getAssetUrl(userData.avatar)} alt="Avatar" />
                       ) : (
                         <div className="avatar-placeholder-gradient small">
                           {userData?.full_name?.[0]?.toUpperCase() || 'U'}
