@@ -4,7 +4,6 @@ import { message, Badge } from 'antd';
 import axios from 'axios';
 import './navbar.css';
 import { 
-  SearchOutlined, 
   UserOutlined, 
   BookOutlined, 
   LogoutOutlined, 
@@ -14,6 +13,7 @@ import {
   MenuOutlined,
   DashboardOutlined
 } from '@ant-design/icons';
+import { Search } from 'lucide-react';
 import { sidebarConfig } from '../sidebar/sidebarConfig';
 import { getAssetUrl } from '../../../utils/urlUtils';
 
@@ -104,17 +104,17 @@ const Navbar = () => {
 
         {/* Right: Search, Notifications & User */}
         <div className="navbar-right">
-          <div className="search-box">
-            <SearchOutlined className="search-icon" />
-            <input 
-              type="text" 
-              placeholder="Tìm kiếm..." 
-              className="search-input"
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              onKeyPress={handleSearch}
-            />
-          </div>
+              <div className="search-box">
+                <Search className="nav-search-icon" size={18} />
+                <input 
+                  type="text" 
+                  placeholder="Tìm kiếm..." 
+                  className="search-input"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  onKeyPress={handleSearch}
+                />
+              </div>
 
           {token && (
             <div className="notification-icon">

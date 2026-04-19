@@ -103,32 +103,37 @@
 
 /* Search Box */
 .search-box {
+  position: relative;
   display: flex;
   align-items: center;
   background: #f1f5f9;
   border-radius: 12px;
-  padding: 8px 14px;
   width: 220px;
-  transition: all 0.3s ease;
-  border: 1px solid transparent;
+  height: 40px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .search-box:focus-within {
   background: #ffffff;
   width: 280px;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.search-icon {
+.nav-search-icon {
+  position: absolute;
+  left: 14px;
   color: #94a3b8;
-  margin-right: 10px;
+  pointer-events: none;
+  z-index: 5;
 }
 
 .search-input {
   border: none;
-  background: none;
+  background: transparent;
   width: 100%;
+  height: 100%;
+  padding: 0 16px 0 42px;
+  /* Indent text for the icon */
   font-size: 0.9rem;
   color: #1e293b;
   outline: none;
@@ -207,20 +212,21 @@
   position: absolute;
   inset: -6px;
   border-radius: 50%;
-  background: conic-gradient(
-    from 0deg,
-    #6366f1,
-    #a855f7,
-    #ec4899,
-    #f59e0b,
-    #10b981,
-    #2563eb,
-    #6366f1
-  );
-  opacity: 0.2; /* Luôn hiển thị mờ mờ */
-  filter: blur(8px); /* Tạo hiệu ứng hào quang mềm mại */
+  background: conic-gradient(from 0deg,
+      #6366f1,
+      #a855f7,
+      #ec4899,
+      #f59e0b,
+      #10b981,
+      #2563eb,
+      #6366f1);
+  opacity: 0.2;
+  /* Luôn hiển thị mờ mờ */
+  filter: blur(8px);
+  /* Tạo hiệu ứng hào quang mềm mại */
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  animation: spinRing 12s linear infinite; /* Xoay rất chậm mặc định */
+  animation: spinRing 12s linear infinite;
+  /* Xoay rất chậm mặc định */
 }
 
 /* Hiện rực rỡ và xoay nhanh khi hover hoặc active */
@@ -233,14 +239,20 @@
 }
 
 @keyframes spinRing {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Lớp Avatar thật đè lên trên vòng aura */
 .user-avatar-wrapper {
   position: absolute;
-  inset: 0px; /* Căn khít tâm */
+  inset: 0px;
+  /* Căn khít tâm */
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
