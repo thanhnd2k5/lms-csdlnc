@@ -14,6 +14,7 @@ export const sidebarConfig = {
     {
       name: 'Trang chủ',
       path: '/',
+      exact: true,
       icon: <HomeOutlined />
     },
     {
@@ -31,11 +32,13 @@ export const sidebarConfig = {
     {
       name: 'Trang chủ',
       path: '/',
+      exact: true,
       icon: <HomeOutlined />
     },
     {
       name: 'Thống kê',
       path: '/admin',
+      exact: true,
       icon: <BarChartOutlined />
     },
     {
@@ -46,6 +49,7 @@ export const sidebarConfig = {
     {
       name: 'Quản lý bài tập',
       path: '/admin/quiz',
+      aliases: ['/admin/quizzes'],
       icon: <FormOutlined />
     }
   ],
@@ -53,11 +57,13 @@ export const sidebarConfig = {
     {
       name: 'Trang chủ',
       path: '/',
+      exact: true,
       icon: <HomeOutlined />
     },
     {
       name: 'Thống kê',
-      path: '/teacher/',
+      path: '/teacher',
+      exact: true,
       icon: <BarChartOutlined />
     },
     {
@@ -68,6 +74,7 @@ export const sidebarConfig = {
     {
       name: 'Quản lý bài tập',
       path: '/teacher/quiz',
+      aliases: ['/teacher/quizzes'],
       icon: <FormOutlined />
     },
     {
