@@ -124,10 +124,20 @@ const EnrolledClasses = () => {
                             backgroundColor: classData.thumbnail ? 'transparent' : getRandomColor(classData.name)
                         }}>
                             {classData.thumbnail ? (
-                                <img 
-                                    src={`${process.env.REACT_APP_API_URL}${classData.thumbnail}`}
+                               <img 
+                                    src={
+                                        classData.thumbnail.startsWith('http') 
+                                            ? classData.thumbnail 
+                                            : `${process.env.REACT_APP_API_URL}${classData.thumbnail}`
+                                    }
                                     alt={classData.name}
                                     className="avatar-image"
+                                    onError={(e) => {
+                                        // Nếu link ảnh online bị lỗi thì nó sẽ hiện màu nền và chữ cái đầu (initials)
+                                        e.target.style.display = 'none';
+                                        e.target.parentNode.style.backgroundColor = getRandomColor(classData.name);
+                                        // Bạn có thể cho nó hiện initials ở đây nếu muốn
+                                    }}
                                 />
                             ) : initials}
                         </div>

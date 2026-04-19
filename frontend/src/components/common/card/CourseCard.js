@@ -68,10 +68,19 @@ const CourseCard = ({
       cover={
         <div className="course-image-container">
           <img
-            alt={course.title}
-            src={`${process.env.REACT_APP_API_URL}${course.thumbnail}`}
-            className="course-image"
-          />
+          alt={course.title}
+          src={
+            course.thumbnail?.startsWith('http') 
+              ? course.thumbnail 
+              : `${process.env.REACT_APP_API_URL}${course.thumbnail}`
+          }
+          className="course-image"
+          onError={(e) => {
+            // Nếu ảnh bị lỗi thì hiện một ảnh mặc định cho đẹp
+            e.target.src = 'https://via.placeholder.com/300x200?text=No+Image';
+          }}
+        />
+          
         </div>
       }
     >
