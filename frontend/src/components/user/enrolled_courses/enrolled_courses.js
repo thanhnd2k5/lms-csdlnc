@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { message, Spin, Button } from 'antd';
+import { message, Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { LoadingOutlined, ArrowRightOutlined } from '@ant-design/icons';
+import { LoadingOutlined } from '@ant-design/icons';
 import axios from 'axios';
+import { BookOpen, Compass } from 'lucide-react';
 import CourseCard from '../../common/card/CourseCard';
 import '../../../styles/CourseLayout.css';
-import illustration from '../../../assets/images/learning_journey.png';
 
 const EnrolledCourses = () => {
   const [enrolledCourses, setEnrolledCourses] = useState([]);
@@ -60,22 +60,18 @@ const EnrolledCourses = () => {
       {enrolledCourses.length > 0 && <h2 className="section-title">Khóa học đã đăng ký</h2>}
       
       {enrolledCourses.length === 0 ? (
-        <div className="empty-state-card">
-          <div className="empty-illustration-container">
-            <img src={illustration} alt="Hành trình học tập" className="empty-illustration" />
+        <div className="empty-state">
+          <div className="empty-illustration">
+             <BookOpen size={64} strokeWidth={1.5} />
           </div>
-          <h1 className="premium-title">Hành trình học tập bắt đầu từ đây</h1>
-          <p className="premium-desc">
-            Không gian này sẽ lưu giữ những kiến thức quý báu của bạn. Hãy khởi hành ngay hôm nay bằng cách đăng ký khóa học đầu tiên!
+          <h2 className="empty-title">Bạn chưa đăng ký khóa học nào</h2>
+          <p className="empty-desc">
+            Hãy bắt đầu hành trình học tập bằng cách khám phá và đăng ký các khóa học mới.
           </p>
-          <Button 
-            type="primary" 
-            size="large"
-            className="premium-explore-btn"
-            onClick={handleExplore}
-          >
-            Khám phá ngay <ArrowRightOutlined />
-          </Button>
+          <button className="btn-explore" onClick={handleExplore}>
+            <Compass size={20} />
+            <span>Khám phá ngay</span>
+          </button>
         </div>
       ) : (
         <div className="courses-grid">
