@@ -3,8 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Card, Button, message, Descriptions, Statistic, Row, Col, Rate } from 'antd';
 import { PlayCircleOutlined, FileOutlined, TeamOutlined, StarOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import Navbar from '../common/navbar/navbar';
-import Sidebar from '../common/sidebar/sidebar';
 import './course_info.css';
 
 const CourseInfo = () => {
@@ -68,63 +66,57 @@ const CourseInfo = () => {
   if (!courseDetails) return <div>Không tìm thấy khóa học</div>;
 
   return (
-    <div className="layout">
-      <Sidebar />
-      <div className="main-content">
-        <Navbar />
-        <div className="course-info-container">
-          <div className="course-preview">
-            <div className="course-preview-left">
-              <h1>{courseDetails?.title}</h1>
-              <p className="course-description">{courseDetails?.description}</p>
-              
-              <div className="course-meta">
-                <div className="instructor">
-                  Giảng viên: <span>{courseDetails?.teacher_name}</span>
-                </div>
-              </div>
-
-              <div className="course-content">
-                <h2>Nội dung khóa học</h2>
-                <div className="content-stats">
-                  <div>
-                    <PlayCircleOutlined /> {courseDetails?.total_videos || 0} video
-                  </div>
-                </div>
-                {courseDetails?.chapters?.map((chapter) => (
-                  <Card key={chapter.id} className="chapter-card">
-                    <h3>{chapter.title}</h3>
-                    <p>{chapter.description}</p>
-                  </Card>
-                ))}
-              </div>
-            </div>
-
-            <div className="course-preview-right">
-              <Card className="course-card">
-                <img 
-                  src={`${process.env.REACT_APP_API_URL}${courseDetails?.thumbnail}`} 
-                  alt={courseDetails?.title}
-                  className="course-thumbnail" 
-                />
-                <div className="card-content">
-                  {isEnrolled ? (
-                    <Button 
-                      type="primary" 
-                      block 
-                      onClick={handleStartLearning}
-                    >
-                      Vào học
-                    </Button>
-                  ) : (
-                    <Button type="primary" block onClick={handleEnroll}>
-                      Đăng ký học ngay
-                    </Button>
-                  )}
-                </div>
-              </Card>
+    <div className="course-info-container">
+      <div className="course-preview">
+        <div className="course-preview-left">
+          <h1>{courseDetails?.title}</h1>
+          <p className="course-description">{courseDetails?.description}</p>
+          
+          <div className="course-meta">
+            <div className="instructor">
+              Giảng viên: <span>{courseDetails?.teacher_name}</span>
             </div>
           </div>
+
+          <div className="course-content">
+            <h2>Nội dung khóa học</h2>
+            <div className="content-stats">
+              <div>
+                <PlayCircleOutlined /> {courseDetails?.total_videos || 0} video
+              </div>
+            </div>
+            {courseDetails?.chapters?.map((chapter) => (
+              <Card key={chapter.id} className="chapter-card">
+                <h3>{chapter.title}</h3>
+                <p>{chapter.description}</p>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        <div className="course-preview-right">
+          <Card className="course-card">
+            <img 
+              src={`${process.env.REACT_APP_API_URL}${courseDetails?.thumbnail}`} 
+              alt={courseDetails?.title}
+              className="course-thumbnail" 
+            />
+            <div className="card-content">
+              {isEnrolled ? (
+                <Button 
+                  type="primary" 
+                  block 
+                  onClick={handleStartLearning}
+                >
+                  Vào học
+                </Button>
+              ) : (
+                <Button type="primary" block onClick={handleEnroll}>
+                  Đăng ký học ngay
+                </Button>
+              )}
+            </div>
+          </Card>
         </div>
       </div>
     </div>

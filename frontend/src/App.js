@@ -1,5 +1,8 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import MainLayout from "./components/layout/MainLayout";
+import HomeLayout from "./components/layout/HomeLayout";
+import DashboardLayout from "./components/layout/DashboardLayout";
 import CourseVideosPage from "./components/course_videos/course_videos_page";
 import Home from "./components/home/home";
 import Login from "./components/auth/Login";
@@ -42,153 +45,190 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route
-          path="/course/:courseId"
-          element={
-            <PrivateRoute>
-              <CourseVideosPage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/admin/*"
-          element={
-            <AdminRoute>
-              <AdminPage />
-            </AdminRoute>
-          }
-        />
+        {/* Auth Routes - No Layout */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route
-          path="/admin/courses/:courseId/videos"
-          element={<VideoManagement />}
-        />
-        <Route path="/admin/quizzes/create" element={<CreateQuiz />} />
-        <Route path="/admin/quizzes/edit/:id" element={<CreateQuiz />} />
-        <Route
-          path="/admin/quizzes/:quizId/questions"
-          element={<QuestionManagement />}
-        />
-
-        {/* Teacher Routes */}
-        <Route
-          path="/teacher/*"
-          element={
-            <PrivateRouteTeacher>
-              <TeacherPage />
-            </PrivateRouteTeacher>
-          }
-        />
-        <Route
-          path="/teacher/courses/:courseId/videos"
-          element={
-            <PrivateRouteTeacher>
-              <TeacherVideoManagement />
-            </PrivateRouteTeacher>
-          }
-        />
-        <Route
-          path="/teacher/courses/:courseId/documents"
-          element={
-            <PrivateRouteTeacher>
-              <TeacherDocumentManagement />
-            </PrivateRouteTeacher>
-          }
-        />
-        {/* Add new teacher quiz routes */}
-        <Route
-          path="/teacher/quizzes/create"
-          element={
-            <PrivateRouteTeacher>
-              <CreateQuizTeacher />
-            </PrivateRouteTeacher>
-          }
-        />
-        <Route
-          path="/teacher/quizzes/edit/:id"
-          element={
-            <PrivateRouteTeacher>
-              <CreateQuizTeacher />
-            </PrivateRouteTeacher>
-          }
-        />
-        <Route
-          path="/teacher/quizzes/:quizId/questions"
-          element={
-            <PrivateRouteTeacher>
-              <QuestionManagement />
-            </PrivateRouteTeacher>
-          }
-        />
-        <Route
-          path="/teacher/enrollments"
-          element={
-            <PrivateRouteTeacher>
-              <TeacherEnrollmentDetails />
-            </PrivateRouteTeacher>
-          }
-        />
-        <Route
-          path="/teacher/classes"
-          element={
-            <PrivateRouteTeacher>
-              <ClassManagement />
-            </PrivateRouteTeacher>
-          }
-        />
-        <Route
-          path="/teacher/classes/:classId/courses"
-          element={
-            <PrivateRouteTeacher>
-              <ClassCourseManagement />
-            </PrivateRouteTeacher>
-          }
-        />
         <Route path="/check-email" element={<CheckEmail />} />
         <Route path="/verify-email/:token" element={<EmailVerification />} />
-        <Route
-          path="/enrolled-courses"
-          element={
-            <PrivateRoute>
-              <EnrolledCourses />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/course-info/:courseId"
-          element={
-            <PrivateRoute>
-              <CourseInfo />
-            </PrivateRoute>
-          }
-        />
-        <Route path="/search" element={<SearchResults />} />
-        <Route
-          path="/profile"
-          element={
-            <PrivateRoute>
-              <Profile />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/enrolled-classes"
-          element={
-            <PrivateRoute>
-              <EnrolledClasses />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/student/classes/:classId/courses"
-          element={
-            <PrivateRoute>
-              <ClassCourse />
-            </PrivateRoute>
-          }
-        />
+
+        {/* Home Route - With HomeLayout */}
+        <Route element={<HomeLayout />}>
+          <Route path="/" element={<Home />} />
+        </Route>
+
+        {/* General Routes - With MainLayout */}
+        <Route element={<MainLayout />}>
+          
+          <Route
+            path="/course/:courseId"
+            element={
+              <PrivateRoute>
+                <CourseVideosPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/enrolled-courses"
+            element={
+              <PrivateRoute>
+                <EnrolledCourses />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/course-info/:courseId"
+            element={
+              <PrivateRoute>
+                <CourseInfo />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/search" element={<SearchResults />} />
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/enrolled-classes"
+            element={
+              <PrivateRoute>
+                <EnrolledClasses />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/student/classes/:classId/courses"
+            element={
+              <PrivateRoute>
+                <ClassCourse />
+              </PrivateRoute>
+            }
+          />
+        </Route>
+
+        {/* Dashboard Routes (Admin & Teacher) - With DashboardLayout */}
+        <Route element={<DashboardLayout />}>
+          <Route
+            path="/admin/*"
+            element={
+              <AdminRoute>
+                <AdminPage />
+              </AdminRoute>
+            }
+          />
+          
+          <Route
+            path="/admin/courses/:courseId/videos"
+            element={
+              <AdminRoute>
+                <VideoManagement />
+              </AdminRoute>
+            }
+          />
+          <Route 
+            path="/admin/quizzes/create" 
+            element={
+              <AdminRoute>
+                <CreateQuiz />
+              </AdminRoute>
+            } 
+          />
+          <Route 
+            path="/admin/quizzes/edit/:id" 
+            element={
+              <AdminRoute>
+                <CreateQuiz />
+              </AdminRoute>
+            } 
+          />
+          <Route
+            path="/admin/quizzes/:quizId/questions"
+            element={
+              <AdminRoute>
+                <QuestionManagement />
+              </AdminRoute>
+            }
+          />
+
+          {/* Teacher Routes */}
+          <Route
+            path="/teacher/*"
+            element={
+              <PrivateRouteTeacher>
+                <TeacherPage />
+              </PrivateRouteTeacher>
+            }
+          />
+          <Route
+            path="/teacher/courses/:courseId/videos"
+            element={
+              <PrivateRouteTeacher>
+                <TeacherVideoManagement />
+              </PrivateRouteTeacher>
+            }
+          />
+          <Route
+            path="/teacher/courses/:courseId/documents"
+            element={
+              <PrivateRouteTeacher>
+                <TeacherDocumentManagement />
+              </PrivateRouteTeacher>
+            }
+          />
+          <Route
+            path="/teacher/quizzes/create"
+            element={
+              <PrivateRouteTeacher>
+                <CreateQuizTeacher />
+              </PrivateRouteTeacher>
+            }
+          />
+          <Route
+            path="/teacher/quizzes/edit/:id"
+            element={
+              <PrivateRouteTeacher>
+                <CreateQuizTeacher />
+              </PrivateRouteTeacher>
+            }
+          />
+          <Route
+            path="/teacher/quizzes/:quizId/questions"
+            element={
+              <PrivateRouteTeacher>
+                <QuestionManagement />
+              </PrivateRouteTeacher>
+            }
+          />
+          <Route
+            path="/teacher/enrollments"
+            element={
+              <PrivateRouteTeacher>
+                <TeacherEnrollmentDetails />
+              </PrivateRouteTeacher>
+            }
+          />
+          <Route
+            path="/teacher/classes"
+            element={
+              <PrivateRouteTeacher>
+                <ClassManagement />
+              </PrivateRouteTeacher>
+            }
+          />
+          <Route
+            path="/teacher/classes/:classId/courses"
+            element={
+              <PrivateRouteTeacher>
+                <ClassCourseManagement />
+              </PrivateRouteTeacher>
+            }
+          />
+        </Route>
       </Routes>
     </Router>
   );

@@ -34,7 +34,7 @@ const search = {
             }
 
             // Group by để tránh duplicate do LEFT JOIN
-            query += ` GROUP BY c.id`;
+            query += ` GROUP BY c.id, u.full_name`;
 
             // Sắp xếp
             const validSortFields = ['created_at', 'total_students'];

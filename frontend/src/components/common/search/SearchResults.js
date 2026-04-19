@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Empty, Spin } from 'antd';
 import axios from 'axios';
-import Navbar from '../navbar/navbar';
-import Sidebar from '../sidebar/sidebar';
 import CourseCard from '../card/CourseCard';
 import '../../../styles/CourseLayout.css';
 
@@ -54,37 +52,31 @@ const SearchResults = () => {
   };
 
   return (
-    <div className="layout">
-      <Sidebar />
-      <div className="main-content">
-        <Navbar />
-        <div className="search-results-container">
-          <h2 className="section-title">Kết quả tìm kiếm cho "{keyword}"</h2>
-          
-          {loading ? (
-            <div className="loading-container">
-              <Spin size="large" />
-            </div>
-          ) : searchResults.length > 0 ? (
-            <div className="courses-grid">
-              {searchResults.map(course => (
-                <CourseCard
-                  key={course.id}
-                  course={course}
-                  userRole={localStorage.getItem('role')}
-                  onEnroll={handleEnroll}
-                  onCardClick={handleCourseClick}
-                />
-              ))}
-            </div>
-          ) : (
-            <Empty
-              description="Không tìm thấy khóa học nào"
-              className="no-results"
-            />
-          )}
+    <div className="search-results-container">
+      <h2 className="section-title">Kết quả tìm kiếm cho "{keyword}"</h2>
+      
+      {loading ? (
+        <div className="loading-container">
+          <Spin size="large" />
         </div>
-      </div>
+      ) : searchResults.length > 0 ? (
+        <div className="courses-grid">
+          {searchResults.map(course => (
+            <CourseCard
+              key={course.id}
+              course={course}
+              userRole={localStorage.getItem('role')}
+              onEnroll={handleEnroll}
+              onCardClick={handleCourseClick}
+            />
+          ))}
+        </div>
+      ) : (
+        <Empty
+          description="Không tìm thấy khóa học nào"
+          className="no-results"
+        />
+      )}
     </div>
   );
 };

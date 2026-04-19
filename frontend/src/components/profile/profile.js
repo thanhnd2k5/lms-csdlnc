@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, message, Upload, Divider } from 'antd';
 import { UserOutlined, MailOutlined, UploadOutlined, CameraOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import Navbar from '../common/navbar/navbar';
-import Sidebar from '../common/sidebar/sidebar';
 import './profile.css';
 
 const Profile = () => {
@@ -108,90 +106,84 @@ const Profile = () => {
   };
 
   return (
-    <div className="layout">
-      <Sidebar />
-      <div className="main-content">
-        <Navbar />
-        <div className="page-content">
-          <div className="content-container">
-            <div className="profile-header">
-              <div className="profile-avatar-section">
-                <div className="avatar-wrapper">
-                  <div onClick={handleAvatarClick} style={{ cursor: 'pointer' }}>
-                    {avatar ? (
-                      <img 
-                        src={`${process.env.REACT_APP_API_URL}${avatar}`} 
-                        alt="Avatar" 
-                        className="profile-avatar"
-                      />
-                    ) : (
-                      <div className="avatar-placeholder">
-                        {form.getFieldValue('full_name')?.[0]?.toUpperCase() || 'U'}
-                      </div>
-                    )}
+    <div className="page-content">
+      <div className="content-container">
+        <div className="profile-header">
+          <div className="profile-avatar-section">
+            <div className="avatar-wrapper">
+              <div onClick={handleAvatarClick} style={{ cursor: 'pointer' }}>
+                {avatar ? (
+                  <img 
+                    src={`${process.env.REACT_APP_API_URL}${avatar}`} 
+                    alt="Avatar" 
+                    className="profile-avatar"
+                  />
+                ) : (
+                  <div className="avatar-placeholder">
+                    {form.getFieldValue('full_name')?.[0]?.toUpperCase() || 'U'}
                   </div>
-                </div>
+                )}
               </div>
-              <h1 className="profile-name">{form.getFieldValue('full_name') || 'Chưa cập nhật tên'}</h1>
-              <p className="profile-role">{form.getFieldValue('role')?.toUpperCase()}</p>
-            </div>
-
-            <Divider />
-
-            <div className="profile-content">
-              <h2 className="section-title">Thông tin cá nhân</h2>
-              <Form
-                form={form}
-                layout="vertical"
-                onFinish={handleSubmit}
-                className="profile-form"
-              >
-                <div className="form-row">
-                  <Form.Item
-                    name="username"
-                    label="Tên đăng nhập"
-                    className="form-item-half"
-                  >
-                    <Input prefix={<UserOutlined />} disabled />
-                  </Form.Item>
-
-                  <Form.Item
-                    name="email"
-                    label="Email"
-                    className="form-item-half"
-                  >
-                    <Input prefix={<MailOutlined />} disabled />
-                  </Form.Item>
-                </div>
-
-                <Form.Item
-                  name="full_name"
-                  label="Họ và tên"
-                  rules={[{ required: true, message: 'Vui lòng nhập họ tên' }]}
-                >
-                  <Input prefix={<UserOutlined />} placeholder="Nhập họ và tên của bạn" />
-                </Form.Item>
-
-                <Form.Item
-                  name="role"
-                  label="Vai trò"
-                >
-                  <Input disabled />
-                </Form.Item>
-
-                <Form.Item className="form-actions">
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    loading={loading}
-                    className="update-button"
-                  >
-                    Cập nhật thông tin
-                  </Button>
-                </Form.Item>
-              </Form>
             </div>
           </div>
+          <h1 className="profile-name">{form.getFieldValue('full_name') || 'Chưa cập nhật tên'}</h1>
+          <p className="profile-role">{form.getFieldValue('role')?.toUpperCase()}</p>
+        </div>
+
+        <Divider />
+
+        <div className="profile-content">
+          <h2 className="section-title">Thông tin cá nhân</h2>
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleSubmit}
+            className="profile-form"
+          >
+            <div className="form-row">
+              <Form.Item
+                name="username"
+                label="Tên đăng nhập"
+                className="form-item-half"
+              >
+                <Input prefix={<UserOutlined />} disabled />
+              </Form.Item>
+
+              <Form.Item
+                name="email"
+                label="Email"
+                className="form-item-half"
+              >
+                <Input prefix={<MailOutlined />} disabled />
+              </Form.Item>
+            </div>
+
+            <Form.Item
+              name="full_name"
+              label="Họ và tên"
+              rules={[{ required: true, message: 'Vui lòng nhập họ tên' }]}
+            >
+              <Input prefix={<UserOutlined />} placeholder="Nhập họ và tên của bạn" />
+            </Form.Item>
+
+            <Form.Item
+              name="role"
+              label="Vai trò"
+            >
+              <Input disabled />
+            </Form.Item>
+
+            <Form.Item className="form-actions">
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={loading}
+                className="update-button"
+              >
+                Cập nhật thông tin
+              </Button>
+            </Form.Item>
+          </Form>
         </div>
       </div>
     </div>

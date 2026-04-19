@@ -1,0 +1,39 @@
+.recommended-section {
+  padding: 120px 40px;
+  background: #f8fafc;
+}
+
+.section-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.recommended-section .modern-title {
+  margin-bottom: 56px;
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #0b0f19;
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+}
+
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 32px;
+}
+
+.grid-item {
+  transition: transform 0.3s ease;
+}
+
+.grid-item:hover {
+  transform: translateY(-8px);
+}
+
+@media (max-width: 640px) {
+  .courses-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -4,8 +4,6 @@ import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import CourseManagement from './courses/course_management';
 import TeacherDashboard from './dashboard/dashboard';
 import QuizManagement from './quizzes/quiz_management';
-import Navbar from '../common/navbar/navbar';
-import Sidebar from '../common/sidebar/sidebar';
 import './teacher_page.css';
 
 const TeacherPage = () => {
@@ -52,28 +50,18 @@ const TeacherPage = () => {
   };
 
   return (
-    <div className="app-container">
-      <Sidebar />
-      <div className="main-content">
-        <Navbar />
-        <div className="page-content">
-          <div className="content-container">
-            <Routes>
-              <Route path="/" element={<TeacherDashboard courses={courses} />} />
-              <Route path="/courses" element={
-                <CourseManagement 
-                  courses={courses} 
-                  loading={loading} 
-                  onCourseAdded={fetchCourses}
-                />
-              } />
-              <Route path="/quiz" element={<QuizManagement />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Routes>
+      <Route path="/" element={<TeacherDashboard courses={courses} />} />
+      <Route path="/courses" element={
+        <CourseManagement 
+          courses={courses} 
+          loading={loading} 
+          onCourseAdded={fetchCourses}
+        />
+      } />
+      <Route path="/quiz" element={<QuizManagement />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 };
 

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const lmsControllers = require('../controllers/lmsControllers');
-const { authMiddleware, authorizeAdmin } = require('../middleware/auth');
+const { authMiddleware, authorizeAdmin, authorizeCourseOwner } = require('../middleware/auth');
 const multer = require('multer');
 const path = require('path');
 
@@ -13,15 +13,15 @@ router.get('/courses/:courseId/chapters', lmsControllers.getChaptersByCourseId);
 router.get('/courses/:courseId/videos', lmsControllers.getVideosByCourseId);
 router.get('/chapters/:chapterId/videos', lmsControllers.getVideosByChapterId);
 router.post('/courses', authMiddleware, lmsControllers.createCourse);
-router.delete('/courses/:courseId', authMiddleware, lmsControllers.deleteCourse);
-router.put('/courses/:courseId', authMiddleware, lmsControllers.updateCourse);
+router.delete('/courses/:courseId', authMiddleware, authorizeCourseOwner, lmsControllers.deleteCourse);
+router.put('/courses/:courseId', authMiddleware, authorizeCourseOwner, lmsControllers.updateCourse);
 router.get('/courses/:courseId', lmsControllers.getCourseById);
-router.post('/courses/:courseId/chapters', authMiddleware, lmsControllers.createChapter);
-router.put('/chapters/:chapterId', authMiddleware, lmsControllers.updateChapter);
-router.delete('/chapters/:chapterId', authMiddleware, lmsControllers.deleteChapter);
-router.post('/chapters/:chapterId/videos', authMiddleware, lmsControllers.createVideo);
-router.put('/videos/:videoId', authMiddleware, lmsControllers.updateVideo);
-router.delete('/videos/:videoId', authMiddleware, lmsControllers.deleteVideo);
+router.post('/courses/:courseId/chapters', authMiddleware, authorizeCourseOwner, lmsControllers.createChapter);
+router.put('/chapters/:chapterId', authMiddleware, authorizeCourseOwner, lmsControllers.updateChapter);
+router.delete('/chapters/:chapterId', authMiddleware, authorizeCourseOwner, lmsControllers.deleteChapter);
+router.post('/chapters/:chapterId/videos', authMiddleware, authorizeCourseOwner, lmsControllers.createVideo);
+router.put('/videos/:videoId', authMiddleware, authorizeCourseOwner, lmsControllers.updateVideo);
+router.delete('/videos/:videoId', authMiddleware, authorizeCourseOwner, lmsControllers.deleteVideo);
 router.post('/videos/:videoId/mark-watched', authMiddleware, lmsControllers.markVideoAsWatched);
 
 // Cấu hình multer cho upload thumbnail
@@ -56,12 +56,12 @@ const thumbnailUpload = multer({
 router.post('/courses/upload-thumbnail', authMiddleware, thumbnailUpload.single('thumbnail'), lmsControllers.uploadThumbnail);
 
 // Cập nhật trạng thái public của khóa học (cho cả admin và teacher)
-router.put('/courses/:courseId/visibility', authMiddleware, lmsControllers.updateCourseVisibility);
+router.put('/courses/:courseId/visibility', authMiddleware, authorizeCourseOwner, lmsControllers.updateCourseVisibility);
 
 // Thêm route để lấy danh sách học sinh theo khóa học
-router.get('/courses/:courseId/students',authMiddleware,lmsControllers.getStudentsByCourse);
+router.get('/courses/:courseId/students', authMiddleware, authorizeCourseOwner, lmsControllers.getStudentsByCourse);
 
 // Thêm route để xóa học sinh khỏi khóa học
-router.delete('/courses/:courseId/students/:userId', authMiddleware, lmsControllers.removeStudentFromCourse);
+router.delete('/courses/:courseId/students/:userId', authMiddleware, authorizeCourseOwner, lmsControllers.removeStudentFromCourse);
 
 module.exports = router;

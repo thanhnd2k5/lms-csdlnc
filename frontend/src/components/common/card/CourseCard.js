@@ -1,26 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import { Card } from 'antd';
 import axios from 'axios';
+import { motion } from 'framer-motion';
+import { User, Users, BookOpen, Check } from 'lucide-react';
 import './CourseCard.css';
-
-const { Meta } = Card;
 
 const CourseCard = ({
   course,
   onEnroll,
   onCardClick,
+  onEditClick,
+  userRole,
   isEnrolled: propIsEnrolled,
   className = '',
   showEnrollmentStatus = true
 }) => {
   const [isEnrolled, setIsEnrolled] = useState(propIsEnrolled);
   const token = localStorage.getItem('token');
+  const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+
+  // Kiểm tra quyền chỉnh sửa
+  const isOwner = course.teacher_id === currentUser.id;
+  const isAdmin = userRole === 'admin';
+  const canEdit = isAdmin || (userRole === 'teacher' && isOwner);
 
   useEffect(() => {
-    if (token && showEnrollmentStatus && !propIsEnrolled) {
+    if (token && showEnrollmentStatus && !propIsEnrolled && userRole !== 'teacher') {
       checkEnrollmentStatus();
     }
-  }, [course?.id, token, showEnrollmentStatus]);
+  }, [course?.id, token, showEnrollmentStatus, userRole, propIsEnrolled]);
 
   const checkEnrollmentStatus = async () => {
     try {
@@ -34,60 +41,90 @@ const CourseCard = ({
     }
   };
 
-  // if (isNewCourseCard) {
-  //   return (
-  //     <Card
-  //       hoverable
-  //       onClick={onCardClick}
-  //       className={`course-card new-course-card ${className}`}
-  //       cover={
-  //         <div className="course-image-container new-course-container">
-  //           <PlusOutlined className="new-course-icon" />
-  //           <div className="new-course-text">Tạo khóa học mới</div>
-  //         </div>
-  //       }
-  //     >
-  //       <Meta 
-  //         title="Tạo khóa học mới"
-  //         description="Nhấn để bắt đầu tạo khóa học của bạn" 
-  //       />
-  //     </Card>
-  //   );
-  // }
-
   const handleEnrollClick = (e) => {
     e.stopPropagation();
     onEnroll?.(course.id);
   };
 
+  const handleEditClick = (e) => {
+    e.stopPropagation();
+    onEditClick?.(course.id);
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
+
   return (
-    <Card
-      hoverable
+    <motion.div
+      variants={itemVariants}
+      className={`course-card-wrapper ${className}`}
       onClick={() => onCardClick?.(course.id)}
-      className={`course-card ${!isEnrolled ? 'not-enrolled' : ''} ${className}`}
-      cover={
-        <div className="course-image-container">
-          <img
-            alt={course.title}
-            src={`${process.env.REACT_APP_API_URL}${course.thumbnail}`}
-            className="course-image"
-          />
-        </div>
-      }
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
-      <Meta 
-        title={course.title} 
-        description={
-          <div>
-            <p className="course-description">Giảng viên: {course.teacher_name || 'Chưa có giảng viên'}</p>
-            <div className="course-info">
-              {course.total_students && <span>{course.total_students} học viên</span>}
-            </div>
+      {/* Thumbnail Section */}
+      <div className="course-image-wrapper">
+        <img
+          alt={course.title}
+          src={`${process.env.REACT_APP_API_URL}${course.thumbnail}`}
+          className="course-image-custom"
+          onError={(e) => {
+            e.target.src = 'https://placehold.co/600x400/f1f5f9/475569?text=LMS+Course';
+          }}
+        />
+        
+        {isEnrolled && (
+          <div className="enrolled-badge is-enrolled">
+            <Check size={14} />
+            <span>Đã đăng ký</span>
           </div>
-        }
-      />
-    </Card>
+        )}
+      </div>
+
+      {/* Content Section */}
+      <div className="course-card-content">
+        <h3 className="course-card-title">{course.title}</h3>
+        
+        <div className="course-card-meta">
+          <div className="meta-item">
+            <User size={16} />
+            <span className="teacher-name">{course.teacher_name || 'Giảng viên ẩn danh'}</span>
+          </div>
+          
+          <div className="meta-item">
+            <Users size={16} />
+            <span className="students-count">{course.total_students || 0} học viên</span>
+          </div>
+        </div>
+
+        {!isEnrolled && userRole !== 'teacher' && userRole !== 'admin' && (
+          <div className="course-card-action">
+            <button 
+              className="enroll-button"
+              onClick={handleEnrollClick}
+            >
+              Xem chi tiết & Đăng ký
+            </button>
+          </div>
+        )}
+
+        {canEdit && (
+          <div className="course-card-action">
+            <button 
+              className="enroll-button"
+              style={{ background: '#e2eafc', color: '#4361ee' }}
+              onClick={handleEditClick}
+            >
+              Chỉnh sửa khóa học
+            </button>
+          </div>
+        )}
+      </div>
+    </motion.div>
   );
 };
 
-export default CourseCard;
+export default CourseCard;
