@@ -34,6 +34,7 @@ const CourseInfo = () => {
 
   const fetchCourseDetails = async () => {
     try {
+
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/courseEnroll/courses/${courseId}/details`);
       setCourseDetails(response.data);
     } catch (error) {
@@ -46,9 +47,9 @@ const CourseInfo = () => {
 
   const handleEnroll = async () => {
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/courseEnroll/enroll`, 
-        { courseId }, 
-        { headers: { Authorization: `Bearer ${token}` }}
+      await axios.post(`${process.env.REACT_APP_API_URL}/courseEnroll/enroll`,
+        { courseId },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       message.success('Đăng ký khóa học thành công');
       setIsEnrolled(true);
@@ -71,7 +72,7 @@ const CourseInfo = () => {
         <div className="course-preview-left">
           <h1>{courseDetails?.title}</h1>
           <p className="course-description">{courseDetails?.description}</p>
-          
+
           <div className="course-meta">
             <div className="instructor">
               Giảng viên: <span>{courseDetails?.teacher_name}</span>
@@ -96,16 +97,22 @@ const CourseInfo = () => {
 
         <div className="course-preview-right">
           <Card className="course-card">
-            <img 
-              src={`${process.env.REACT_APP_API_URL}${courseDetails?.thumbnail}`} 
+            <img
+              // Bỏ cái process.env đi, chỉ để lại cái biến chứa URL thôi
+              src={courseDetails?.thumbnail}
               alt={courseDetails?.title}
-              className="course-thumbnail" 
+              className="course-thumbnail"
+              // Thêm cái này để nếu link URL bị die thì màn hình không bị xấu
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://via.placeholder.com/300x200?text=Loi+Link+Anh";
+              }}
             />
             <div className="card-content">
               {isEnrolled ? (
-                <Button 
-                  type="primary" 
-                  block 
+                <Button
+                  type="primary"
+                  block
                   onClick={handleStartLearning}
                 >
                   Vào học
