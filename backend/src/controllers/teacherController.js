@@ -8,7 +8,21 @@ const teacherController = {
   getTeacherCourses: async (req, res) => {
     try {
       const teacherId = req.user.id;
-      const courses = await lms.getTeacherCourses(teacherId);
+      const rawCourses = await lms.getTeacherCourses(teacherId);
+      
+      const courses = rawCourses.map(course => {
+        try {
+          return {
+            ...course,
+            highlights: typeof course.highlights === 'string' ? JSON.parse(course.highlights) : (course.highlights || []),
+            requirements: typeof course.requirements === 'string' ? JSON.parse(course.requirements) : (course.requirements || [])
+          };
+        } catch (e) {
+          console.error(`Error parsing JSON for course ${course.id}:`, e);
+          return { ...course, highlights: [], requirements: [] };
+        }
+      });
+
       res.json(courses);
     } catch (error) {
       console.error('Error getting teacher courses:', error);
@@ -132,6 +146,16 @@ const teacherController = {
         // Kiểm tra quyền sở hữu khóa học
         if (course.teacher_id !== teacherId) {
             return res.status(403).json({ message: 'Không có quyền truy cập khóa học này' });
+        }
+
+        // Parse JSON fields
+        try {
+          course.highlights = typeof course.highlights === 'string' ? JSON.parse(course.highlights) : (course.highlights || []);
+          course.requirements = typeof course.requirements === 'string' ? JSON.parse(course.requirements) : (course.requirements || []);
+        } catch (e) {
+          console.error(`Error parsing JSON for course ${courseId}:`, e);
+          course.highlights = [];
+          course.requirements = [];
         }
 
         // Lấy thêm thông tin chapters và videos của khóa học

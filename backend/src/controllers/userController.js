@@ -29,17 +29,19 @@ const updateProfile = async (req, res) => {
     }
 
     const userId = req.user.id;
-    const { full_name } = req.body;
+    const { full_name, bio } = req.body;
     
-    if (!full_name) {
-      return res.status(400).json({ message: 'Họ tên không được để trống' });
+    if (full_name) {
+      await User.updateFullName(userId, full_name);
     }
 
-    await User.updateFullName(userId, full_name);
+    if (bio !== undefined) {
+      await User.updateBio(userId, bio);
+    }
 
     res.json({
       message: 'Cập nhật thông tin thành công',
-      user: { full_name }
+      user: { full_name, bio }
     });
   } catch (error) {
     console.error('Error in updateProfile:', error);

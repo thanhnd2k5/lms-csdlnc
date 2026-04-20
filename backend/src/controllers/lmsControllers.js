@@ -3,7 +3,19 @@ const document = require('../models/document');
 
 const getAllCourses = async (req, res) => {
     try {
-        const courses = await lms.getAllCourses();
+        const results = await lms.getAllCourses();
+        const courses = results.map(course => {
+            try {
+                return {
+                    ...course,
+                    highlights: course.highlights ? JSON.parse(course.highlights) : [],
+                    requirements: course.requirements ? JSON.parse(course.requirements) : []
+                };
+            } catch (e) {
+                console.error(`Error parsing JSON for course ${course.id}:`, e);
+                return { ...course, highlights: [], requirements: [] };
+            }
+        });
         res.status(200).json(courses);
     } catch (error) {
         console.error('Error getting courses:', error);
@@ -127,13 +139,16 @@ const updateCourse = async (req, res) => {
             return res.status(404).json({ message: 'Không tìm thấy khóa học' });
         }
 
-        const { title, description, thumbnail, is_public } = req.body;
+        const { title, description, thumbnail, is_public, level, requirements, highlights } = req.body;
 
         const updatedCourse = await lms.updateCourse(courseId, { 
             title, 
             description, 
             thumbnail,
-            is_public: typeof is_public === 'boolean' ? is_public : course.is_public
+            is_public: typeof is_public === 'boolean' ? is_public : course.is_public,
+            level: level || course.level,
+            requirements: requirements ? JSON.stringify(requirements) : course.requirements,
+            highlights: highlights ? JSON.stringify(highlights) : course.highlights
         });
         
         res.status(200).json(updatedCourse);
@@ -152,6 +167,15 @@ const getCourseById = async (req, res) => {
             return res.status(404).json({ message: 'Không tìm thấy khóa học' });
         }
         
+        try {
+            course.highlights = course.highlights ? JSON.parse(course.highlights) : [];
+            course.requirements = course.requirements ? JSON.parse(course.requirements) : [];
+        } catch (e) {
+            console.error(`Error parsing JSON for course ${courseId}:`, e);
+            course.highlights = [];
+            course.requirements = [];
+        }
+
         res.status(200).json(course);
     } catch (error) {
         console.error('Error getting course:', error);

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Modal, Form, Input, Upload, message, Switch } from 'antd';
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { Modal, Form, Input, Upload, message, Switch, Select, Button, Space, Divider } from 'antd';
+import { LoadingOutlined, PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { getAssetUrl } from '../../../../utils/urlUtils';
 
@@ -15,7 +15,10 @@ const AddCourse = ({ visible, onCancel, onSuccess }) => {
       await axios.post(`${process.env.REACT_APP_API_URL}/courses`, {
         ...values,
         thumbnail: imageUrl,
-        is_public: values.is_public
+        is_public: values.is_public,
+        level: values.level || 'All Levels',
+        requirements: values.requirements || [],
+        highlights: values.highlights || []
       }, {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -146,6 +149,71 @@ const AddCourse = ({ visible, onCancel, onSuccess }) => {
             checkedChildren="Công khai" 
             unCheckedChildren="Riêng tư" 
           />
+        </Form.Item>
+
+        <Divider orientation="left">Thông tin bổ sung</Divider>
+
+        <Form.Item
+          name="level"
+          label="Trình độ"
+          initialValue="All Levels"
+        >
+          <Select>
+            <Select.Option value="Beginner">Beginner (Cơ bản)</Select.Option>
+            <Select.Option value="Intermediate">Intermediate (Trung cấp)</Select.Option>
+            <Select.Option value="Advanced">Advanced (Nâng cao)</Select.Option>
+            <Select.Option value="All Levels">All Levels (Mọi trình độ)</Select.Option>
+          </Select>
+        </Form.Item>
+
+        <Form.Item label="Bạn sẽ học được gì? (Highlights)">
+          <Form.List name="highlights">
+            {(fields, { add, remove }) => (
+              <>
+                {fields.map((field) => (
+                  <Space key={field.key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+                    <Form.Item
+                      {...field}
+                      rules={[{ required: true, message: 'Vui lòng nhập nội dung!' }]}
+                    >
+                      <Input placeholder="Ví dụ: Nắm vững kiến thức React..." style={{ width: 400 }} />
+                    </Form.Item>
+                    <MinusCircleOutlined onClick={() => remove(field.name)} />
+                  </Space>
+                ))}
+                <Form.Item>
+                  <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                    Thêm điểm nổi bật
+                  </Button>
+                </Form.Item>
+              </>
+            )}
+          </Form.List>
+        </Form.Item>
+
+        <Form.Item label="Yêu cầu khóa học (Requirements)">
+          <Form.List name="requirements">
+            {(fields, { add, remove }) => (
+              <>
+                {fields.map((field) => (
+                  <Space key={field.key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+                    <Form.Item
+                      {...field}
+                      rules={[{ required: true, message: 'Vui lòng nhập nội dung!' }]}
+                    >
+                      <Input placeholder="Ví dụ: Đã có kiến thức HTML/CSS..." style={{ width: 400 }} />
+                    </Form.Item>
+                    <MinusCircleOutlined onClick={() => remove(field.name)} />
+                  </Space>
+                ))}
+                <Form.Item>
+                  <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                    Thêm yêu cầu
+                  </Button>
+                </Form.Item>
+              </>
+            )}
+          </Form.List>
         </Form.Item>
       </Form>
     </Modal>

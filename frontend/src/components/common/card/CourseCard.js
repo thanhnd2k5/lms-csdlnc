@@ -100,29 +100,6 @@ const CourseCard = ({
             <span className="students-count">{course.total_students || 0} học viên</span>
           </div>
         </div>
-
-        {!isEnrolled && userRole !== 'teacher' && userRole !== 'admin' && (
-          <div className="course-card-action">
-            <button 
-              className="enroll-button"
-              onClick={handleEnrollClick}
-            >
-              Xem chi tiết & Đăng ký
-            </button>
-          </div>
-        )}
-
-        {canEdit && (
-          <div className="course-card-action">
-            <button 
-              className="enroll-button"
-              style={{ background: '#e2eafc', color: '#4361ee' }}
-              onClick={handleEditClick}
-            >
-              Chỉnh sửa khóa học
-            </button>
-          </div>
-        )}
       </div>
     </motion.div>
   );

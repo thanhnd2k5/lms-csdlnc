@@ -28,7 +28,8 @@ const Profile = () => {
         username: userData.username,
         email: userData.email,
         full_name: userData.full_name,
-        role: userData.role
+        role: userData.role,
+        bio: userData.bio
       });
       setAvatar(userData.avatar);
     } catch (error) {
@@ -43,14 +44,17 @@ const Profile = () => {
       setLoading(true);
       await axios.put(
         `${process.env.REACT_APP_API_URL}/users/profile`,
-        { full_name: values.full_name },
+        { 
+          full_name: values.full_name,
+          bio: values.bio 
+        },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
       const userString = localStorage.getItem('user');
       if (userString) {
         const user = JSON.parse(userString);
-        const updatedUser = { ...user, full_name: values.full_name };
+        const updatedUser = { ...user, full_name: values.full_name, bio: values.bio };
         localStorage.setItem('user', JSON.stringify(updatedUser));
       }
       
@@ -172,6 +176,16 @@ const Profile = () => {
               label="Vai trò"
             >
               <Input disabled />
+            </Form.Item>
+
+            <Form.Item
+              name="bio"
+              label="Tiểu sử / Giới thiệu"
+            >
+              <Input.TextArea 
+                rows={6} 
+                placeholder="Giới thiệu một chút về bản thân và kinh nghiệm giảng dạy của bạn..." 
+              />
             </Form.Item>
 
             <Form.Item className="form-actions">

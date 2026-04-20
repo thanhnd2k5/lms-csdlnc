@@ -75,34 +75,83 @@ const getEnrolledCourses = (userId) => {
 
 const getCourseDetails = (courseId) => {
   return new Promise((resolve, reject) => {
-    const query = `
+    // 1. Fetch base course info
+    const courseQuery = `
       SELECT 
         c.*,
         u.full_name as teacher_name,
-        COUNT(DISTINCT v.id) as total_videos,
-        COUNT(DISTINCT d.id) as total_documents,
+        u.bio as teacher_bio,
+        u.avatar as teacher_avatar,
         COUNT(DISTINCT ce.user_id) as total_students
       FROM courses c
       LEFT JOIN users u ON c.teacher_id = u.id
-      LEFT JOIN videos v ON c.id = v.course_id
-      LEFT JOIN documents d ON c.id = d.course_id
       LEFT JOIN course_enrollments ce ON c.id = ce.course_id
       WHERE c.id = ?
-      GROUP BY c.id, u.full_name
+      GROUP BY c.id, u.full_name, u.bio, u.avatar
     `;
 
-    db.query(query, [courseId], (error, results) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-      
-      if (results.length === 0) {
-        resolve(null);
-        return;
-      }
+    db.query(courseQuery, [courseId], (error, courseResults) => {
+      if (error) return reject(error);
+      if (courseResults.length === 0) return resolve(null);
 
-      resolve(results[0]);
+      const course = courseResults[0];
+
+      // Helper to safely parse JSON strings from DB
+      const safeParse = (str) => {
+        try {
+          return str ? JSON.parse(str) : [];
+        } catch (e) {
+          console.error('Error parsing JSON from DB:', e);
+          return [];
+        }
+      };
+
+      course.requirements = safeParse(course.requirements);
+      course.highlights = safeParse(course.highlights);
+
+      // 2. Fetch chapters, videos, documents, and quizzes in parallel
+      const chaptersQuery = 'SELECT * FROM chapters WHERE course_id = ? ORDER BY order_index ASC';
+      const videosQuery = 'SELECT * FROM videos WHERE course_id = ?';
+      const documentsQuery = 'SELECT * FROM documents WHERE course_id = ?';
+      const quizzesQuery = 'SELECT * FROM quizzes WHERE course_id = ?';
+
+      const fetchChapters = new Promise((res, rej) => db.query(chaptersQuery, [courseId], (e, r) => e ? rej(e) : res(r)));
+      const fetchVideos = new Promise((res, rej) => db.query(videosQuery, [courseId], (e, r) => e ? rej(e) : res(r)));
+      const fetchDocuments = new Promise((res, rej) => db.query(documentsQuery, [courseId], (e, r) => e ? rej(e) : res(r)));
+      const fetchQuizzes = new Promise((res, rej) => db.query(quizzesQuery, [courseId], (e, r) => e ? rej(e) : res(r)));
+
+      Promise.all([fetchChapters, fetchVideos, fetchDocuments, fetchQuizzes])
+        .then(([chapters, videos, documents, quizzes]) => {
+          // 3. Assemble hierarchy
+          const structuredChapters = chapters.map(chapter => {
+            const chapterItems = [
+              ...videos.filter(v => v.chapter_id === chapter.id).map(v => ({ ...v, type: 'video' })),
+              ...documents.filter(d => d.chapter_id === chapter.id).map(d => ({ ...d, type: 'document' })),
+              ...quizzes.filter(q => q.chapter_id === chapter.id).map(q => ({ ...q, type: 'quiz' }))
+            ];
+            
+            return {
+              ...chapter,
+              items: chapterItems
+            };
+          });
+
+          // Handle orphan items (items not assigned to any chapter)
+          const orphanItems = [
+            ...videos.filter(v => !v.chapter_id).map(v => ({ ...v, type: 'video' })),
+            ...documents.filter(d => !d.chapter_id).map(d => ({ ...d, type: 'document' })),
+            ...quizzes.filter(q => !q.chapter_id).map(q => ({ ...q, type: 'quiz' }))
+          ];
+
+          course.chapters = structuredChapters;
+          course.orphanItems = orphanItems;
+          course.total_videos = videos.length;
+          course.total_documents = documents.length;
+          course.total_quizzes = quizzes.length;
+
+          resolve(course);
+        })
+        .catch(reject);
     });
   });
 };
