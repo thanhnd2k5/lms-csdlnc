@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainLayout from "./components/layout/MainLayout";
 import HomeLayout from "./components/layout/HomeLayout";
 import DashboardLayout from "./components/layout/DashboardLayout";
+import FluidLayout from "./components/layout/FluidLayout";
 import CourseVideosPage from "./components/course_videos/course_videos_page";
 import Home from "./components/home/home";
 import Login from "./components/auth/Login";
@@ -86,14 +87,6 @@ function App() {
           />
           <Route path="/search" element={<SearchResults />} />
           <Route
-            path="/profile"
-            element={
-              <PrivateRoute>
-                <Profile />
-              </PrivateRoute>
-            }
-          />
-          <Route
             path="/enrolled-classes"
             element={
               <PrivateRoute>
@@ -106,6 +99,18 @@ function App() {
             element={
               <PrivateRoute>
                 <ClassCourse />
+              </PrivateRoute>
+            }
+          />
+        </Route>
+
+        {/* Fluid Routes - With FluidLayout */}
+        <Route element={<FluidLayout />}>
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <Profile />
               </PrivateRoute>
             }
           />
