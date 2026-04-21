@@ -89,7 +89,7 @@ const createCourse = async (req, res) => {
             return res.status(403).json({ message: 'Không có quyền thực hiện' });
         }
 
-        const { title, description, thumbnail, is_public } = req.body;
+        const { title, description, thumbnail, is_public, level, requirements, highlights } = req.body;
         const teacher_id = req.user.id; // Lấy ID của người tạo
         
         const course = await lms.createCourse({ 
@@ -97,7 +97,10 @@ const createCourse = async (req, res) => {
             description, 
             thumbnail,
             is_public,
-            teacher_id
+            teacher_id,
+            level,
+            requirements: requirements ? JSON.stringify(requirements) : '[]',
+            highlights: highlights ? JSON.stringify(highlights) : '[]'
         });
         
         res.status(201).json(course);

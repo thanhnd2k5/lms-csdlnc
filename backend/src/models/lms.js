@@ -113,13 +113,16 @@ const lms = {
     createCourse: (courseData) => {
         return new Promise((resolve, reject) => {
             db.query(
-                'INSERT INTO courses (title, description, thumbnail, teacher_id, is_public) VALUES (?, ?, ?, ?, ?)',
+                'INSERT INTO courses (title, description, thumbnail, teacher_id, is_public, level, requirements, highlights) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                 [
                     courseData.title, 
                     courseData.description, 
                     courseData.thumbnail,
                     courseData.teacher_id,
-                    courseData.is_public || false
+                    courseData.is_public || false,
+                    courseData.level || 'All Levels',
+                    courseData.requirements || '[]',
+                    courseData.highlights || '[]'
                 ],
                 (error, results) => {
                     if (error) {
