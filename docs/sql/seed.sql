@@ -1,4 +1,3 @@
--
 -- 1. BẢNG users 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `full_name`, `role`, `email_verified`) VALUES
 (10, 'admin', 'admin@ptit.edu.vn', '$2b$10$cabE/OIv3HqEoRr/GLo75eGm6d6GxeOl8ZewdQzbxLx051FElnJqK', 'Admin', 'admin', 1),
@@ -15,8 +14,8 @@ INSERT INTO `users` (`id`, `username`, `email`, `password`, `full_name`, `role`,
 
 
 -- 2. CÁC BẢNG NỘI DUNG 
---Bảng Classes 
-INSERT INTO `classes` (`id`, `name`, `teacher_id`, `class_code`, `status`, `max_students`, 'thumbnail') VALUES
+-- Bảng Classes 
+INSERT INTO `classes` (`id`, `name`, `teacher_id`, `class_code`, `status`, `max_students`, `thumbnail`) VALUES
 (501, 'Lớp React N01', 11, 'RE01', 'active', 30, 'https://png.pngtree.com/png-vector/20210906/ourlarge/pngtree-school-classroom-png-image_3867854.jpg'), 
 (502, 'Lớp React N02', 11, 'RE02', 'active', 30, 'https://png.pngtree.com/png-vector/20210906/ourlarge/pngtree-school-classroom-png-image_3867854.jpg'),
 (503, 'Lớp SQL N01', 12, 'SQL01', 'active', 30, 'https://png.pngtree.com/png-vector/20210906/ourlarge/pngtree-school-classroom-png-image_3867854.jpg'), 
@@ -24,7 +23,7 @@ INSERT INTO `classes` (`id`, `name`, `teacher_id`, `class_code`, `status`, `max_
 (505, 'Lớp Java N01', 13, 'JAVA01', 'active', 30, 'https://png.pngtree.com/png-vector/20210906/ourlarge/pngtree-school-classroom-png-image_3867854.jpg'), 
 (506, 'Lớp Java N02', 13, 'JAVA02', 'active', 30, 'https://png.pngtree.com/png-vector/20210906/ourlarge/pngtree-school-classroom-png-image_3867854.jpg');
 
---Bảng Course
+-- Bảng Course
 INSERT INTO `courses` (`id`, `title`, `description`, `is_public`, `teacher_id`, `thumbnail`) VALUES
 (101, 'ReactJS Cơ Bản', 'Học React từ đầu', 1, 11, 'https://files.f8.edu.vn/f8-prod/courses/13/13.png'),
 (102, 'ReactJS Nâng Cao', 'Redux và Performance', 1, 11, 'https://khoahochatde.com/wp-content/uploads/2025/07/reactjs-co-ban-den-nang-cao-1.jpg'),
@@ -33,7 +32,7 @@ INSERT INTO `courses` (`id`, `title`, `description`, `is_public`, `teacher_id`, 
 (105, 'Java Core', 'Lập trình hướng đối tượng', 1, 13, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZ_nXs841cpPlRyc3rQUVAqF8bN_EJT9IDww&s'),
 (106, 'Spring Boot', 'Backend Framework', 1, 13, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTov1bHkTXIMbor4TWVnrQN0PjohxY5FsxCsg&s');
 
---Bảng Chapter
+-- Bảng Chapter
 INSERT INTO `chapters` (`id`, `course_id`, `title`, `order_index`) VALUES
 (1,101,'Chương 1: Giới thiệu tổng quan về React và cách hoạt động',1),
 (2,101,'Chương 2: Tìm hiểu JSX và cách viết giao diện trong React',2),
@@ -54,7 +53,7 @@ INSERT INTO `chapters` (`id`, `course_id`, `title`, `order_index`) VALUES
 (17,106,'Chương 2: Controller và xử lý request trong Spring MVC',2),
 (18,106,'Chương 3: Security và bảo mật ứng dụng với Spring Security',3);
 
---Bảng Video
+-- Bảng Video
 INSERT INTO `videos` (`id`, `title`, `course_id`, `chapter_id`, `video_url`) VALUES
 (1,'Video 1.1: Giới thiệu React',101,1,'https://www.youtube.com/watch?v=Tn6-PIqc4UM'),
 (2,'Video 1.2: React hoạt động như thế nào',101,1,'https://www.youtube.com/watch?v=Ke90Tje7VS0'),
@@ -95,7 +94,7 @@ INSERT INTO `videos` (`id`, `title`, `course_id`, `chapter_id`, `video_url`) VAL
 
 
 -- 3. CÁC BẢNG THI CỬ
---Bảng Quizzes
+-- Bảng Quizzes
 INSERT INTO `quizzes` (`id`, `title`, `course_id`, `chapter_id`, `duration_minutes`, `passing_score`, `quiz_type`, `teacher_id`) VALUES
 (301,'Quiz Chương 1: React',101,1,10,80,'chapter',11),(302,'Quiz Chương 2: JSX',101,2,10,80,'chapter',11),
 (303,'Quiz Chương 3: Props',101,3,10,80,'chapter',11),(304,'Quiz Chương 1: Hooks',102,4,10,80,'chapter',11),
@@ -107,9 +106,9 @@ INSERT INTO `quizzes` (`id`, `title`, `course_id`, `chapter_id`, `duration_minut
 (315,'Quiz Chương 3: Collection',105,15,10,80,'chapter',13),(316,'Quiz Chương 1: Bean',106,16,10,80,'chapter',13),
 (317,'Quiz Chương 2: Controller',106,17,10,80,'chapter',13),(318,'Quiz Chương 3: Security',106,18,10,80,'chapter',13);
 
---Bảng Quiz Questions---------
+-- Bảng Quiz Questions---------
 INSERT INTO `quiz_questions` (`id`, `quiz_id`, `question_text`, `points`, `allows_multiple_correct`) VALUES
-(401,301,'React là gì?',2.5,0),(402,301,'SPA là gì?',2.5,0)
+(401,301,'React là gì?',2.5,0),(402,301,'SPA là gì?',2.5,0),
 (413,307,'SELECT làm gì?',2.5,0),(414,307,'WHERE làm gì?',2.5,0),
 (425,313,'Class là gì?',2.5,0),(426,313,'Object là gì?',2.5,0),
 (431,316,'Bean là gì?',2.5,0),(432,316,'DI là gì?',2.5,0),
@@ -124,7 +123,7 @@ INSERT INTO `quiz_questions` (`id`, `quiz_id`, `question_text`, `points`, `allow
 (415, 308, 'INNER JOIN trả về kết quả gì?', 5, 0),
 (417, 309, 'Hàm COUNT(*) trong SQL dùng để làm gì?', 5, 0);
 
---Bảng Quiz Options----------
+-- Bảng Quiz Options----------
 INSERT INTO quiz_options (id, question_id, option_text, is_correct) VALUES
 -- Câu hỏi 401
 (1, 401, 'Thư viện UI JS', 1),
@@ -180,34 +179,35 @@ INSERT INTO quiz_options (id, question_id, option_text, is_correct) VALUES
 (121, 431, 'Đối tượng Spring', 1),
 (122, 431, 'File cấu hình', 0),
 (125, 432, 'Tiêm phụ thuộc', 1),
-(126, 432, 'Tạo DB', 0),
+(126, 432, 'Tạo DB', 0);
 
 
 -- 4. CÁC BẢNG QUẢN LÝ LỚP & TIẾN ĐỘ
---Bảng Class Students
+-- Bảng Class Students
 INSERT INTO `class_students` (`class_id`, `student_id`, `status`) VALUES
 (501, 21, 'active'), (501, 22, 'active'), (502, 23, 'active'), (502, 24, 'active'),
 (503, 21, 'active'), (503, 23, 'active'), (504, 22, 'active'), (504, 25, 'active'),
 (505, 26, 'active'), (505, 27, 'active'), (506, 21, 'active'), (506, 25, 'active');
 
---Bảng Class Courses
+-- Bảng Class Courses
 INSERT INTO `class_courses` (`class_id`, `course_id`, `requires_approval`) VALUES
 (501,101,0),(502,102,1),(503,103,0),(504,104,1),(505,105,0),(506,106,1);
 
---Bảng Course Enrollments
+-- Bảng Course Enrollments
 INSERT INTO `course_enrollments` (`user_id`, `course_id`) VALUES (21,101),(22,101),(23,102),(21,103);
 
---Bảng Video Completion
+-- Bảng Video Completion
 INSERT INTO `video_completion` (`user_id`, `video_id`, `is_completed`) VALUES (21, 1, 1), (21, 2, 1), (22, 1, 1);
 
--- Kết quả thi: Sửa selected_option_id khớp với quiz_options ở trên
+
 INSERT INTO `quiz_attempts` (`id`, `user_id`, `quiz_id`, `score`, `status`) VALUES 
 (1, 21, 301, 10, 'completed'), (2, 22, 301, 10, 'completed'), (3, 23, 301, 5, 'completed');
 
 INSERT INTO `quiz_answers` (`attempt_id`, `question_id`, `selected_option_id`) VALUES
 (1, 401, 1), (1, 402, 5), (2, 401, 1), (2, 402, 5), (3, 401, 2), (3, 402, 5);
 
-
+INSERT INTO `class_students_courses_approval` (`class_id`, `student_id`, `course_id`, `status`) VALUES
+(502, 21, 102, 'pending'), (504, 26, 104, 'pending');
 
 
 
