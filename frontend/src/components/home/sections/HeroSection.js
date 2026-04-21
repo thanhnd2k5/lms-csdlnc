@@ -19,9 +19,11 @@ const HeroSection = ({ onGetStarted, onLearnMore }) => {
 
   return (
     <section className="ultra-hero-section">
-      {/* Ambient Glow Orbs */}
+      {/* Premium Background Elements */}
+      <div className="hero-grid-pattern"></div>
       <div className="ambient-glow orb-1"></div>
       <div className="ambient-glow orb-2"></div>
+      <div className="ambient-glow orb-3"></div>
       
       <div className="hero-split-container">
         <motion.div

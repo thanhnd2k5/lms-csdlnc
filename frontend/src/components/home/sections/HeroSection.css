@@ -1,12 +1,24 @@
 .ultra-hero-section {
   position: relative;
-  background: #0b0f19;
+  background: radial-gradient(circle at 20% 30%, #161b2e 0%, #0b0f19 100%);
   padding: 100px 40px 120px;
-  min-height: 700px;
+  min-height: 800px;
   display: flex;
   align-items: center;
   overflow: hidden;
   color: white;
+}
+
+.hero-grid-pattern {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  mask-image: radial-gradient(ellipse at center, black, transparent 80%);
+  z-index: 1;
+  pointer-events: none;
 }
 
 /* Ambient Glow Orbs */
@@ -26,19 +38,31 @@
 }
 
 .orb-1 {
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, #7209b7 0%, rgba(114, 9, 183, 0) 70%);
-  top: -150px;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(114, 9, 183, 0.25) 0%, rgba(114, 9, 183, 0) 70%);
+  top: -200px;
   right: -100px;
+  animation: pulse-glow 12s infinite alternate ease-in-out;
 }
 
 .orb-2 {
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, #4361ee 0%, rgba(67, 97, 238, 0) 70%);
-  bottom: -100px;
-  left: -50px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(67, 97, 238, 0.2) 0%, rgba(67, 97, 238, 0) 70%);
+  bottom: -150px;
+  left: -100px;
+  animation: pulse-glow 15s infinite alternate-reverse ease-in-out;
+  animation-delay: -2s;
+}
+
+.orb-3 {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(78, 205, 196, 0.15) 0%, rgba(78, 205, 196, 0) 70%);
+  top: 20%;
+  left: 30%;
+  animation: pulse-glow 18s infinite alternate ease-in-out;
   animation-delay: -5s;
 }
 
@@ -71,16 +95,15 @@
 }
 
 .hero-title {
-  font-size: clamp(2.5rem, 5.5vw, 4.8rem);
-  font-weight: 950; /* Slightly heavier weight for presence */
-  line-height: 1.05;
-  margin-bottom: 28px;
-  letter-spacing: -2px;
-  /* More aggressive reduction in brightness: Slated silver look */
-  background: linear-gradient(to bottom, #cbd5e1 0%, #94a3b8 100%);
+  font-size: clamp(2.5rem, 6vw, 5.2rem);
+  font-weight: 950;
+  line-height: 1.02;
+  margin-bottom: 32px;
+  letter-spacing: -2.5px;
+  background: linear-gradient(to bottom, #ffffff 0%, #94a3b8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.4));
+  filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.5));
 }
 
 .hero-description {
@@ -93,11 +116,20 @@
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #4361ee, #7209b7, #4ecdc4);
-  background-size: 200% auto;
+  background: linear-gradient(
+    135deg, 
+    #4361ee 0%, 
+    #7209b7 25%, 
+    #f72585 50%, 
+    #4ecdc4 75%, 
+    #4361ee 100%
+  );
+  background-size: 300% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: shine 5s linear infinite;
+  animation: shine 6s linear infinite;
+  display: inline-block;
+  filter: drop-shadow(0 0 15px rgba(114, 9, 183, 0.3));
 }
 
 @keyframes shine {
@@ -111,21 +143,35 @@
 
 .primary-btn {
   padding: 16px 36px;
-  background: #4361ee;
+  background: linear-gradient(135deg, #4361ee, #7209b7);
   color: white;
   border: none;
-  border-radius: 14px;
+  border-radius: 16px;
   font-weight: 700;
   font-size: 16px;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-  box-shadow: 0 4px 15px rgba(67, 97, 238, 0.2);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 8px 25px rgba(114, 9, 183, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.primary-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transform: translateX(-100%);
+  transition: 0.5s;
+}
+
+.primary-btn:hover::after {
+  transform: translateX(100%);
 }
 
 .primary-btn:hover {
-  background: #3651d1;
-  transform: translateY(-3px);
-  box-shadow: 0 12px 25px rgba(67, 97, 238, 0.4);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 15px 35px rgba(67, 97, 238, 0.4);
 }
 
 .secondary-btn {
