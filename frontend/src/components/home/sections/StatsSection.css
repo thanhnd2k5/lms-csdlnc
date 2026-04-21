@@ -25,7 +25,7 @@
   color: white;
 }
 
-.stat-item {
+.home-stat-item {
   display: flex;
   align-items: center;
   gap: 24px;
@@ -44,7 +44,7 @@
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.stat-item:hover .stat-icon {
+.home-stat-item:hover .stat-icon {
   transform: scale(1.1) rotate(8deg);
   background: #4361ee;
   color: white;

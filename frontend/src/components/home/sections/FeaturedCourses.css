@@ -1,5 +1,5 @@
 .featured-section {
-  padding: 120px 40px;
+  padding: 40px 40px;
   background: #ffffff;
 }
 
@@ -12,7 +12,7 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-bottom: 56px;
+  margin-bottom: 20px;
 }
 
 .modern-title {
@@ -42,7 +42,7 @@
 .carousel-viewport {
   cursor: grab;
   overflow: hidden;
-  padding: 20px 0 40px;
+  padding: 10px 0 20px;
 }
 
 .carousel-inner {

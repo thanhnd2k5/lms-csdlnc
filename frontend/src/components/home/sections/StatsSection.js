@@ -7,7 +7,7 @@ const StatsSection = () => {
     <section className="stats-section">
       <div className="stats-container">
         <div className="stat-glass-bar">
-          <div className="stat-item">
+          <div className="home-stat-item">
             <div className="stat-icon"><Users size={24} /></div>
             <div className="stat-info">
               <h3 className="stat-value">50k+</h3>
@@ -17,7 +17,7 @@ const StatsSection = () => {
           
           <div className="stat-divider"></div>
           
-          <div className="stat-item">
+          <div className="home-stat-item">
             <div className="stat-icon"><LayoutGrid size={24} /></div>
             <div className="stat-info">
               <h3 className="stat-value">200+</h3>
@@ -27,7 +27,7 @@ const StatsSection = () => {
           
           <div className="stat-divider"></div>
           
-          <div className="stat-item">
+          <div className="home-stat-item">
             <div className="stat-icon"><Award size={24} /></div>
             <div className="stat-info">
               <h3 className="stat-value">100%</h3>
