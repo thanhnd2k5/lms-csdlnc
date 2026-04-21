@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS users (
   email_verified BOOLEAN DEFAULT FALSE,
   verification_token VARCHAR(255),
   avatar VARCHAR(255) DEFAULT NULL,
+  bio TEXT DEFAULT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX idx_user_role (role)
@@ -26,6 +27,9 @@ CREATE TABLE IF NOT EXISTS courses (
   thumbnail VARCHAR(255) DEFAULT NULL,
   is_public BOOLEAN DEFAULT FALSE,
   teacher_id INT,
+  level ENUM('Beginner', 'Intermediate', 'Advanced', 'All Levels') DEFAULT 'All Levels',
+  requirements TEXT DEFAULT NULL,
+  highlights TEXT DEFAULT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE SET NULL,

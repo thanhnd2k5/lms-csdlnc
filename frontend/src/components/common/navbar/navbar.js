@@ -16,6 +16,7 @@ import {
 import { Search } from 'lucide-react';
 import { sidebarConfig } from '../sidebar/sidebarConfig';
 import { getAssetUrl } from '../../../utils/urlUtils';
+import logoSvg from '../../../assets/logo.svg';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -82,8 +83,13 @@ const Navbar = () => {
         {/* Left: Logo & Branding */}
         <div className="navbar-left">
           <Link to="/" className="navbar-logo">
-            <img src="/logo1.png" alt="LMS Logo" className="logo-img" />
-            <span className="logo-text">LMS System</span>
+            <div className="logo-icon-wrapper">
+              <img src={logoSvg} alt="LMS Logo" className="logo-img" />
+            </div>
+            <div className="logo-text-wrapper">
+              <span className="logo-text">Aurora</span>
+              <span className="logo-text-accent">LMS</span>
+            </div>
           </Link>
         </div>
 

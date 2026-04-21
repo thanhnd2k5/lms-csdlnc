@@ -5,7 +5,7 @@ const User = {
     try {
       return new Promise((resolve, reject) => {
         db.query(
-          'SELECT id, username, email, full_name, role, avatar, created_at FROM users WHERE id = ?',
+          'SELECT id, username, email, full_name, role, avatar, bio, created_at FROM users WHERE id = ?',
           [userId],
           (error, results) => {
             if (error) {
@@ -26,6 +26,25 @@ const User = {
         db.query(
           'UPDATE users SET full_name = ? WHERE id = ?',
           [fullName, userId],
+          (error, results) => {
+            if (error) {
+              return reject(error);
+            }
+            resolve(true);
+          }
+        );
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  updateBio: async (userId, bio) => {
+    try {
+      return new Promise((resolve, reject) => {
+        db.query(
+          'UPDATE users SET bio = ? WHERE id = ?',
+          [bio, userId],
           (error, results) => {
             if (error) {
               return reject(error);

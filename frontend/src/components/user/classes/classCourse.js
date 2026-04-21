@@ -46,7 +46,7 @@ const ClassCourse = () => {
     };
 
     const handleCardClick = (courseId) => {
-        navigate(`/course/${courseId}`);
+        navigate(`/course-info/${courseId}`);
     };
 
     const filteredCourses = courses.filter(c => 

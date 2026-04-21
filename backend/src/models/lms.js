@@ -166,16 +166,16 @@ const lms = {
         });
     },
 
-    updateCourse: (courseId, { title, description, thumbnail, is_public }) => {
+    updateCourse: (courseId, { title, description, thumbnail, is_public, level, requirements, highlights }) => {
         return new Promise((resolve, reject) => {
             const query = `
                 UPDATE courses 
-                SET title = ?, description = ?, thumbnail = ?, is_public = ?
+                SET title = ?, description = ?, thumbnail = ?, is_public = ?, level = ?, requirements = ?, highlights = ?
                 WHERE id = ?
             `;
             db.query(
                 query,
-                [title, description, thumbnail, is_public, courseId],
+                [title, description, thumbnail, is_public, level, requirements, highlights, courseId],
                 (error, results) => {
                     if (error) {
                         reject(error);

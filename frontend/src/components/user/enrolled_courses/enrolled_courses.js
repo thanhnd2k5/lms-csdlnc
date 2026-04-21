@@ -33,7 +33,7 @@ const EnrolledCourses = () => {
   };
 
   const handleCardClick = (courseId) => {
-    navigate(`/course/${courseId}`);
+    navigate(`/course-info/${courseId}`);
   };
 
   const handleStartLearning = (courseId) => {

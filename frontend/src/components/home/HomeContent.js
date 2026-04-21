@@ -39,16 +39,6 @@ const HomeContent = () => {
   };
 
   const handleCardClick = (courseId) => {
-    const isAuthenticated = !!token;
-    if (!isAuthenticated) {
-      message.warning('Vui lòng đăng nhập để xem khóa học');
-      navigate('/login');
-      return;
-    }
-    if (userRole === 'teacher' && myCourses.some(course => course.id === courseId)) {
-      navigate(`/course/${courseId}`);
-      return;
-    }
     navigate(`/course-info/${courseId}`);
   };
 
