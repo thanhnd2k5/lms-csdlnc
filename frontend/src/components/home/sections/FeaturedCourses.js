@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import CourseCard from '../../common/card/CourseCard';
 import './FeaturedCourses.css';
 
-const FeaturedCourses = ({ title, courses, userRole, handleCardClick, handleEnroll, handleEditClick }) => {
+const FeaturedCourses = ({ title, courses, userRole, handleCardClick, handleEnroll, handleEditClick, onViewAll }) => {
   const carouselRef = useRef(null);
   const [carouselConstraints, setCarouselConstraints] = useState(0);
 
@@ -18,7 +18,7 @@ const FeaturedCourses = ({ title, courses, userRole, handleCardClick, handleEnro
       <div className="section-container">
         <div className="section-header">
           <h2 className="modern-title">{title}</h2>
-          <button className="view-all-btn">Xem tất cả</button>
+          <button className="view-all-btn" onClick={onViewAll}>Xem tất cả</button>
         </div>
 
         <div className="carousel-viewport" ref={carouselRef}>

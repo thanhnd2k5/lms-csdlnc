@@ -39,6 +39,11 @@ const Navbar = () => {
     }
   }, [token]);
 
+  useEffect(() => {
+    window.addEventListener('userUpdate', fetchUserData);
+    return () => window.removeEventListener('userUpdate', fetchUserData);
+  }, [token]);
+
   const fetchUserData = async () => {
     try {
       const response = await axios.get(

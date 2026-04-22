@@ -59,6 +59,14 @@ const HomeContent = () => {
     navigate(`/teacher/courses/${courseId}/videos`);
   };
 
+  const handleViewAll = () => {
+    if (userRole === 'teacher') {
+      navigate('/teacher/my-courses');
+    } else {
+      navigate('/search');
+    }
+  };
+
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -78,12 +86,13 @@ const HomeContent = () => {
       {/* Show FeaturedCourses only if there is data */}
       {(userRole === 'teacher' ? myCourses : allCourses).length > 0 && (
         <FeaturedCourses 
-          title={userRole === 'teacher' ? 'Khóa học của bạn' : 'Khóa học nổi bật'}
+          title={userRole === 'teacher' ? 'Khóa học của tôi' : 'Khóa học nổi bật'}
           courses={userRole === 'teacher' ? myCourses : allCourses}
           userRole={userRole}
           handleCardClick={handleCardClick}
           handleEnroll={handleEnroll}
           handleEditClick={handleEditClick}
+          onViewAll={handleViewAll}
         />
       )}
 

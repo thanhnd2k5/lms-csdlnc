@@ -31,6 +31,7 @@ import ClassManagement from "./components/teacher/classes/ClassManagement";
 import ClassCourseManagement from "./components/teacher/classes/classCourseManagement";
 import EnrolledClasses from "./components/user/classes/EnrolledClasses";
 import ClassCourse from "./components/user/classes/classCourse";
+import TeacherCreatedCourses from "./components/teacher/courses/TeacherCreatedCourses";
 
 function App() {
   useEffect(() => {
@@ -174,6 +175,14 @@ function App() {
             element={
               <PrivateRouteTeacher>
                 <TeacherVideoManagement />
+              </PrivateRouteTeacher>
+            }
+          />
+          <Route
+            path="/teacher/my-courses"
+            element={
+              <PrivateRouteTeacher>
+                <TeacherCreatedCourses />
               </PrivateRouteTeacher>
             }
           />

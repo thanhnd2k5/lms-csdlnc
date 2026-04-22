@@ -85,6 +85,7 @@ const Profile = () => {
       }
       
       message.success('Cập nhật thông tin thành công');
+      window.dispatchEvent(new Event('userUpdate'));
     } catch (error) {
       message.error('Không thể cập nhật thông tin');
     } finally {
@@ -119,6 +120,7 @@ const Profile = () => {
 
         setAvatar(response.data.avatar);
         message.success('Tải lên ảnh đại diện thành công');
+        window.dispatchEvent(new Event('userUpdate'));
 
         const userString = localStorage.getItem('user');
         if (userString) {

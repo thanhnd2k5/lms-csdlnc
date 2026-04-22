@@ -67,6 +67,11 @@ export const sidebarConfig = {
       icon: <BarChartOutlined />
     },
     {
+      name: 'Khóa học của tôi',
+      path: '/teacher/my-courses',
+      icon: <AppstoreOutlined />
+    },
+    {
       name: 'Quản lý khóa học',
       path: '/teacher/courses',
       icon: <BookOutlined />
