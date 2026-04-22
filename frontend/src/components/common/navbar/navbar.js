@@ -17,6 +17,7 @@ import { Search } from 'lucide-react';
 import { sidebarConfig } from '../sidebar/sidebarConfig';
 import { getAssetUrl } from '../../../utils/urlUtils';
 import logoSvg from '../../../assets/logo.svg';
+import NotificationDropdown from './NotificationDropdown';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -127,13 +128,7 @@ const Navbar = () => {
                 />
               </div>
 
-          {token && (
-            <div className="notification-icon">
-              <Badge count={3} size="small" offset={[2, 0]}>
-                <BellOutlined style={{ fontSize: '20px', cursor: 'pointer', color: '#64748b' }} />
-              </Badge>
-            </div>
-          )}
+          {token && <NotificationDropdown />}
 
           {token ? (
             <div className="user-menu" ref={menuRef}>
