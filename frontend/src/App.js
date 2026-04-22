@@ -80,14 +80,6 @@ function App() {
               </PrivateRoute>
             }
           />
-          <Route
-            path="/course-info/:courseId"
-            element={
-              <PrivateRoute>
-                <CourseInfo />
-              </PrivateRoute>
-            }
-          />
           <Route path="/search" element={<SearchResults />} />
           <Route
             path="/enrolled-classes"
@@ -117,6 +109,7 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route path="/course-info/:courseId" element={<CourseInfo />} />
         </Route>
 
         {/* Dashboard Routes (Admin & Teacher) - With DashboardLayout */}

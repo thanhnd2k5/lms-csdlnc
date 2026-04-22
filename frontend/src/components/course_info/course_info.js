@@ -146,7 +146,7 @@ const CourseInfo = () => {
   return (
     <div className="course-info-page">
       {/* Hero Section */}
-      <div className="course-hero">
+      <div className="course-hero animate-fade-in">
         <div className="hero-overlay"></div>
         <div className="hero-content-container">
           <Row gutter={40} align="middle">
@@ -213,7 +213,7 @@ const CourseInfo = () => {
       <div className="course-main-layout">
         <Row gutter={48}>
           <Col xs={24} lg={16}>
-            <div className="course-left-content">
+            <div className="course-left-content animate-slide-up">
               {/* Highlights Section */}
               {courseDetails.highlights?.length > 0 && (
                 <div className="info-section highlights-card">
@@ -325,7 +325,7 @@ const CourseInfo = () => {
 
           {/* Sticky Sidebar */}
           <Col xs={24} lg={8}>
-            <div className="sticky-sidebar">
+            <div className="sticky-sidebar animate-slide-in-right">
               <Card className="enrollment-card-glass">
                 <div className="course-thumbnail-container">
                   <img src={getAssetUrl(courseDetails.thumbnail)} alt="Thumbnail" />
