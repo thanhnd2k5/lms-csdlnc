@@ -2,6 +2,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const document = require('../models/document');
+const lms = require('../models/lms');
 
 // Cấu hình multer để lưu file
 const storage = multer.diskStorage({
@@ -9,7 +10,7 @@ const storage = multer.diskStorage({
         const uploadDir = 'uploads/documents';
         // Tạo thư mục nếu chưa tồn tại
         if (!fs.existsSync(uploadDir)) {
-            fs.mkdirSync(uploadDir);
+            fs.mkdirSync(uploadDir, { recursive: true });
         }
         cb(null, uploadDir);
     },
@@ -55,14 +56,32 @@ const documentController = {
 
             const { courseId, chapterId, videoId, title } = req.body;
             
+            if (!courseId) {
+                if (req.file && req.file.path) fs.unlinkSync(req.file.path);
+                return res.status(400).json({ message: 'Course ID is required' });
+            }
+
+            // Kiểm tra quyền sở hữu khóa học
+            const courseDataFromDb = await lms.getCourseById(courseId);
+            if (!courseDataFromDb) {
+                if (req.file && req.file.path) fs.unlinkSync(req.file.path);
+                return res.status(404).json({ message: 'Course not found' });
+            }
+
+            if (req.user.role !== 'admin' && courseDataFromDb.teacher_id !== req.user.id) {
+                if (req.file && req.file.path) fs.unlinkSync(req.file.path);
+                return res.status(403).json({ message: 'You do not have permission to upload documents to this course' });
+            }
+
             // Tạo document record trong database
             const documentData = {
-                title: title || req.file.originalname, // Sử dụng tên file gốc nếu không có title
+                title: title || req.file.originalname,
                 file_path: req.file.path,
                 file_type: path.extname(req.file.originalname).substring(1),
                 course_id: courseId,
                 chapter_id: chapterId || null,
-                video_id: videoId || null
+                video_id: videoId || null,
+                teacher_id: req.user.id // Người thực hiện upload
             };
 
             const result = await document.createDocument(documentData);

@@ -17,6 +17,6 @@ router.get('/documents', documentController.getDocuments);
 router.get('/documents/:id/download', documentController.downloadDocument);
 
 // Delete document
-router.delete('/documents/:id', documentController.deleteDocument);
+router.delete('/documents/:id', authMiddleware.authMiddleware, documentController.deleteDocument);
 
 module.exports = router; 

@@ -7,6 +7,7 @@ import CourseVideoNavbar from './components/CourseVideoNavbar';
 import DocumentsList from './components/DocumentsList';
 import { useCourseData } from './hooks/useCourseData';
 import { LoadingOutlined } from '@ant-design/icons';
+import authService from '../../services/authService';
 import './course_videos_page.css';
 
 const CourseVideosPage = () => {
@@ -30,6 +31,11 @@ const CourseVideosPage = () => {
 
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
+
+  const currentUser = authService.getCurrentUser();
+  const isOwnerOrAdmin = useMemo(() => {
+    return currentUser && (currentUser.role === 'admin' || currentUser.id === courseInfo?.teacher_id);
+  }, [currentUser, courseInfo]);
 
   // Khởi tạo dữ liệu ban đầu
   useEffect(() => {
@@ -70,6 +76,8 @@ const CourseVideosPage = () => {
     return quizzes
       .filter(q => q.video_id === selectedVideo.id || (q.chapter_id === selectedVideo.chapter_id && q.quiz_type === 'chapter'))
       .map(q => {
+        if (isOwnerOrAdmin) return { ...q, locked: false };
+
         const isChapterQuiz = q.chapter_id === selectedVideo.chapter_id && q.quiz_type === 'chapter';
         if (isChapterQuiz) {
           const chapterVideos = videos.filter(v => v.chapter_id === selectedVideo.chapter_id);
@@ -78,7 +86,7 @@ const CourseVideosPage = () => {
         }
         return { ...q, locked: false };
       });
-  }, [selectedVideo, quizzes, videos, watchedVideos]);
+  }, [selectedVideo, quizzes, videos, watchedVideos, isOwnerOrAdmin]);
 
   if (loading) return <div className="loading-icon"><LoadingOutlined /></div>;
   if (error) return <div className="error-container">{error}</div>;
@@ -119,6 +127,7 @@ const CourseVideosPage = () => {
             watchedVideos={watchedVideos}
             onVideoSelect={handleVideoSelect}
             onQuizSelect={handleQuizSelect}
+            isOwnerOrAdmin={isOwnerOrAdmin}
           />
         </aside>
       </div>

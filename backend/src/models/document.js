@@ -6,8 +6,8 @@ const document = {
         return new Promise((resolve, reject) => {
             const query = `
                 INSERT INTO documents 
-                (title, file_path, file_type, course_id, chapter_id, video_id) 
-                VALUES (?, ?, ?, ?, ?, ?)
+                (title, file_path, file_type, course_id, chapter_id, video_id, teacher_id) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)
             `;
             
             db.query(
@@ -18,7 +18,8 @@ const document = {
                     documentData.file_type,
                     documentData.course_id,
                     documentData.chapter_id,
-                    documentData.video_id
+                    documentData.video_id,
+                    documentData.teacher_id
                 ],
                 (error, results) => {
                     if (error) {

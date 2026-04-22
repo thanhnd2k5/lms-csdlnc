@@ -3,7 +3,7 @@ import { Menu as AntMenu, message } from 'antd';
 import { PlayCircleOutlined, CheckCircleOutlined, ReadOutlined, FileTextOutlined, LockOutlined } from '@ant-design/icons';
 import './menu.css';
 
-const Menu = ({ videos, chapters, quizzes, watchedVideos, onVideoSelect, onQuizSelect }) => {
+const Menu = ({ videos, chapters, quizzes, watchedVideos, onVideoSelect, onQuizSelect, isOwnerOrAdmin }) => {
   const menuItems = useMemo(() => {
     return chapters.map(chapter => {
       const chapterVideos = videos.filter(video => video.chapter_id === chapter.id);
@@ -33,8 +33,8 @@ const Menu = ({ videos, chapters, quizzes, watchedVideos, onVideoSelect, onQuizS
         });
       });
 
-      // Kiểm tra xem tất cả video trong chương đã xem hết chưa
-      const isChapterCompleted = chapterVideos.length === 0 || 
+      // Kiểm tra xem tất cả video trong chương đã xem hết chưa, hoặc là owner/admin
+      const isChapterCompleted = isOwnerOrAdmin || chapterVideos.length === 0 || 
         chapterVideos.every(video => watchedVideos.includes(video.id));
 
       // Thêm các quiz của chương (không gán cho video cụ thể)
@@ -68,7 +68,7 @@ const Menu = ({ videos, chapters, quizzes, watchedVideos, onVideoSelect, onQuizS
         children: children
       };
     });
-  }, [chapters, videos, quizzes, watchedVideos, onVideoSelect, onQuizSelect]);
+  }, [chapters, videos, quizzes, watchedVideos, onVideoSelect, onQuizSelect, isOwnerOrAdmin]);
 
   return (
     <div className="menu-container">

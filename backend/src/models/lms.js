@@ -477,43 +477,7 @@ const lms = {
         });
     },
 
-    createDocument: (documentData) => {
-        return new Promise((resolve, reject) => {
-            const query = `
-                INSERT INTO documents (
-                    title, 
-                    file_path, 
-                    file_type, 
-                    course_id, 
-                    chapter_id, 
-                    video_id, 
-                    teacher_id
-                ) VALUES (?, ?, ?, ?, ?, ?, ?)
-            `;
-            
-            const values = [
-                documentData.title,
-                documentData.file_path,
-                documentData.file_type,
-                documentData.course_id,
-                documentData.chapter_id,
-                documentData.video_id,
-                documentData.teacher_id
-            ];
 
-            db.query(query, values, (error, results) => {
-                if (error) {
-                    console.error('Database error:', error);
-                    reject(error);
-                    return;
-                }
-                resolve({
-                    id: results.insertId,
-                    ...documentData
-                });
-            });
-        });
-    },
 
     getQuizzesByTeacher: (teacherId) => {
         return new Promise((resolve, reject) => {

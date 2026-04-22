@@ -38,17 +38,35 @@ const enrollInCourse = (req, res) => {
   });
 };
 
-const checkEnrollmentStatus = (req, res) => {
+const checkEnrollmentStatus = async (req, res) => {
   const userId = req.user.id;
+  const userRole = req.user.role;
   const courseId = req.params.courseId;
 
-  courseEnroll.checkEnrollment(userId, courseId, (error, isEnrolled) => {
-    if (error) {
-      console.error("Error checking enrollment:", error);
-      return res.status(500).json({ message: "Internal server error" });
+  try {
+    // 1. Nếu là admin thì luôn có quyền
+    if (userRole === "admin") {
+      return res.json({ isEnrolled: true, isOwner: true, isAdmin: true });
     }
-    res.json({ isEnrolled });
-  });
+
+    // 2. Kiểm tra xem người dùng có phải là giáo viên của khóa học không
+    const courseDetails = await courseEnroll.getCourseDetails(courseId);
+    if (courseDetails && courseDetails.teacher_id === userId) {
+      return res.json({ isEnrolled: true, isOwner: true, isAdmin: false });
+    }
+
+    // 3. Nếu không phải giáo viên, kiểm tra bảng enrollment
+    courseEnroll.checkEnrollment(userId, courseId, (error, isEnrolled) => {
+      if (error) {
+        console.error("Error checking enrollment:", error);
+        return res.status(500).json({ message: "Internal server error" });
+      }
+      res.json({ isEnrolled, isOwner: false, isAdmin: false });
+    });
+  } catch (error) {
+    console.error("Error checking enrollment status:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 const getTeacherStats = async (req, res) => {
