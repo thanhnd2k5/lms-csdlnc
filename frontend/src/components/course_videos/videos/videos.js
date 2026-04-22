@@ -119,7 +119,6 @@ const Videos = ({ video, chapter, quizzes, onQuizSelect }) => {
                       <Button
                         type={quiz.locked ? "default" : "primary"}
                         className={`quiz-action-btn-premium ${quiz.locked ? 'btn-locked' : 'btn-active'}`}
-                        icon={quiz.locked ? <LockOutlined /> : null}
                         onClick={(e) => {
                           e.stopPropagation();
                           if (quiz.locked) {
@@ -129,7 +128,10 @@ const Videos = ({ video, chapter, quizzes, onQuizSelect }) => {
                           }
                         }}
                       >
-                        {quiz.locked ? 'Đang khóa' : 'Làm bài ngay'}
+                        <span className="btn-content-wrapper">
+                          {quiz.locked && <LockOutlined />}
+                          <span>{quiz.locked ? 'Đang khóa' : 'Làm bài ngay'}</span>
+                        </span>
                       </Button>
                     </div>
                   </div>

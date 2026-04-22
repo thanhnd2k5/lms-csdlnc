@@ -214,12 +214,24 @@ h2.main-video-title {
 }
 
 .quiz-action-btn-premium {
-  width: 100%;
+  width: 100% !important;
   height: 42px !important;
   border-radius: 12px !important;
   font-weight: 600 !important;
   border: none !important;
   transition: all 0.3s ease !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.btn-content-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px;
+  width: 100%;
 }
 
 .btn-active {
