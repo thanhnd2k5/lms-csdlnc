@@ -60,18 +60,18 @@ function App() {
           <Route path="/courses" element={<AllCoursesPage />} />
         </Route>
 
+        {/* Course Player Route - Full Screen, No Global Layout */}
+        <Route
+          path="/course/:courseId"
+          element={
+            <PrivateRoute>
+              <CourseVideosPage />
+            </PrivateRoute>
+          }
+        />
+
         {/* General Routes - With MainLayout */}
         <Route element={<MainLayout />}>
-          
-          <Route
-            path="/course/:courseId"
-            element={
-              <PrivateRoute>
-                <CourseVideosPage />
-              </PrivateRoute>
-            }
-          />
-
           <Route
             path="/enrolled-courses"
             element={

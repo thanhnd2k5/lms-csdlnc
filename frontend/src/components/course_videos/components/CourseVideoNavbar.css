@@ -5,8 +5,8 @@
   align-items: center;
   padding: 0 24px;
   height: 64px !important;
-  background: white !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  background: #020617 !important; /* slate-950 */
+  border-bottom: 1px solid #1e293b !important; /* slate-800 */
   position: sticky !important;
   top: 0;
   z-index: 1000 !important;
@@ -33,24 +33,30 @@
   text-align: center !important;
   z-index: 10 !important;
   margin: 0 !important;
-  pointer-events: none; /* Allows clicks to pass through if necessary, though not usually needed for text */
+  pointer-events: none;
 }
 
 .cv-back-button {
   display: flex;
   align-items: center;
+  color: #94a3b8 !important; /* slate-400 */
+}
+
+.cv-back-button:hover {
+  color: #f1f5f9 !important; /* slate-100 */
 }
 
 .cv-navbar-title h2 {
   margin: 0 !important;
   font-size: 18px !important;
   font-weight: 600 !important;
-  color: #1a1a1a !important;
+  color: #f1f5f9 !important; /* slate-100 */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   display: block !important;
 }
+
 
 @media (max-width: 768px) {
   .cv-navbar {

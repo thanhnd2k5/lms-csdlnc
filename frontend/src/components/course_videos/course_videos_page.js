@@ -14,7 +14,7 @@ const CourseVideosPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const videoId = searchParams.get('videoId');
-  
+
   const {
     chapters,
     videos,
@@ -36,10 +36,10 @@ const CourseVideosPage = () => {
     const init = async () => {
       const data = await fetchInitialData();
       if (data.videos.length > 0) {
-        const targetVideo = videoId 
+        const targetVideo = videoId
           ? data.videos.find(v => v.id === parseInt(videoId)) || data.videos[0]
           : data.videos[0];
-        
+
         setSelectedVideo(targetVideo);
         fetchDocuments(targetVideo.id, targetVideo.chapter_id);
         if (!videoId) {
@@ -84,10 +84,34 @@ const CourseVideosPage = () => {
   if (error) return <div className="error-container">{error}</div>;
 
   return (
-    <div className="course-page-layout">
+    <div className="flex flex-col h-screen bg-slate-950 text-slate-50 overflow-hidden">
       <CourseVideoNavbar courseTitle={courseInfo?.title} />
-      <div className="course-videos-container">
-        <aside className="menu-section">
+
+      <div className="flex flex-1 overflow-hidden lg:flex-row flex-col">
+        {/* Main Content (Video/Quiz) - Left side on Desktop */}
+        <main className="flex-1 overflow-y-auto custom-scrollbar relative bg-slate-950">
+          {selectedVideo && (
+            <div className="w-full">
+              <Videos
+                video={selectedVideo}
+                chapter={chapters.find(c => c.id === selectedVideo.chapter_id)}
+                quizzes={filteredQuizzes}
+                onQuizSelect={handleQuizSelect}
+              />
+              <div className="w-full px-8 pb-10">
+                <DocumentsList documents={documents} />
+              </div>
+            </div>
+          )}
+          {selectedQuiz && (
+            <div className="max-w-4xl mx-auto w-full p-6">
+              <Quiz quiz={selectedQuiz} />
+            </div>
+          )}
+        </main>
+
+        {/* Menu Section - Right side on Desktop */}
+        <aside className="w-full lg:w-96 lg:min-w-[384px] bg-slate-900 border-t lg:border-t-0 lg:border-l border-slate-800 overflow-y-auto custom-scrollbar flex-shrink-0">
           <Menu
             videos={videos}
             chapters={chapters}
@@ -97,23 +121,9 @@ const CourseVideosPage = () => {
             onQuizSelect={handleQuizSelect}
           />
         </aside>
-        <main className="content-section">
-          {selectedVideo && (
-            <>
-              <Videos 
-                video={selectedVideo} 
-                chapter={chapters.find(c => c.id === selectedVideo.chapter_id)}
-                quizzes={filteredQuizzes} 
-                onQuizSelect={handleQuizSelect}
-              />
-              <DocumentsList documents={documents} />
-            </>
-          )}
-          {selectedQuiz && <Quiz quiz={selectedQuiz} />}
-        </main>
       </div>
     </div>
   );
 };
 
-export default CourseVideosPage;
+export default CourseVideosPage;
