@@ -40,7 +40,7 @@ const classModel = {
     getClassStudents: (classId) => {
         return new Promise((resolve, reject) => {
             const sql = `
-                SELECT u.id, u.fullname, u.email, cs.status, cs.joined_at
+                SELECT u.id, u.full_name, u.email, cs.status, cs.joined_at
                 FROM class_students cs
                 JOIN users u ON cs.student_id = u.id
                 WHERE cs.class_id = ?

@@ -168,6 +168,7 @@ CREATE TABLE IF NOT EXISTS documents (
 CREATE TABLE IF NOT EXISTS classes (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
+    description TEXT DEFAULT NULL,
     teacher_id INT NOT NULL,
     class_code VARCHAR(10) UNIQUE NOT NULL,
     password VARCHAR(255) DEFAULT NULL,
@@ -195,7 +196,7 @@ CREATE TABLE IF NOT EXISTS class_courses (
 CREATE TABLE IF NOT EXISTS class_students (
     class_id INT NOT NULL,
     student_id INT NOT NULL,
-    status ENUM('pending', 'active', 'blocked') DEFAULT 'active',
+    status ENUM('pending', 'active', 'blocked', 'inactive') DEFAULT 'active',
     joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (class_id, student_id),
     FOREIGN KEY (class_id) REFERENCES classes(id) ON DELETE CASCADE,

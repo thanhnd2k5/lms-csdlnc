@@ -22,6 +22,43 @@ const lms = {
         });
     },
 
+    getPublicCoursesPaginated: (cursor, limit = 10) => {
+        return new Promise((resolve, reject) => {
+            let query = `
+                SELECT c.*, u.full_name as teacher_name,
+                       (SELECT COUNT(*) 
+                        FROM course_enrollments 
+                        WHERE course_id = c.id) as student_count
+                FROM courses c
+                LEFT JOIN users u ON c.teacher_id = u.id
+                WHERE c.is_public = 1
+            `;
+            const queryParams = [];
+
+            if (cursor) {
+                try {
+                    const decodedCursor = JSON.parse(Buffer.from(cursor, 'base64').toString('utf8'));
+                    const { createdAt, id } = decodedCursor;
+                    query += ` AND (c.created_at < ? OR (c.created_at = ? AND c.id < ?))`;
+                    queryParams.push(createdAt, createdAt, id);
+                } catch (e) {
+                    console.error('Invalid cursor format:', e);
+                }
+            }
+
+            query += ` ORDER BY c.created_at DESC, c.id DESC LIMIT ?`;
+            queryParams.push(limit);
+
+            db.query(query, queryParams, (error, results) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+                resolve(results);
+            });
+        });
+    },
+
     getChaptersByCourseId: (courseId) => {
         return new Promise((resolve, reject) => {
             db.query(

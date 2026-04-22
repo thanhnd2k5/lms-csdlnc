@@ -1,5 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 import CourseCard from '../../common/card/CourseCard';
 import './RecommendedCourses.css';
 
@@ -15,7 +17,12 @@ const RecommendedCourses = ({ courses, userRole, handleCardClick, handleEnroll, 
   return (
     <section className="recommended-section" id="recommended-courses">
       <div className="section-container">
-        <h2 className="modern-title">Đề xuất cho bạn</h2>
+        <div className="section-header">
+          <h2 className="modern-title">Đề xuất cho bạn</h2>
+          <Link to="/courses" className="view-all-btn">
+            Xem tất cả <ArrowRight size={18} />
+          </Link>
+        </div>
         <motion.div
           className="courses-grid"
           variants={containerVariants}

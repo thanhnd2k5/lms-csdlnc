@@ -3,19 +3,53 @@ const document = require('../models/document');
 
 const getAllCourses = async (req, res) => {
     try {
-        const results = await lms.getAllCourses();
-        const courses = results.map(course => {
-            try {
-                return {
-                    ...course,
-                    highlights: course.highlights ? JSON.parse(course.highlights) : [],
-                    requirements: course.requirements ? JSON.parse(course.requirements) : []
-                };
-            } catch (e) {
-                console.error(`Error parsing JSON for course ${course.id}:`, e);
-                return { ...course, highlights: [], requirements: [] };
+        const { cursor, limit, paginated } = req.query;
+        
+        // If paginated flag is provided, use the new cursor-based logic
+        if (paginated === 'true') {
+            const limitNum = parseInt(limit) || 12;
+            const results = await lms.getPublicCoursesPaginated(cursor, limitNum);
+            
+            const courses = results.map(course => {
+                try {
+                    return {
+                        ...course,
+                        highlights: course.highlights ? JSON.parse(course.highlights) : [],
+                        requirements: course.requirements ? JSON.parse(course.requirements) : []
+                    };
+                } catch (e) {
+                    return { ...course, highlights: [], requirements: [] };
+                }
+            });
+
+            let nextCursor = null;
+            if (courses.length === limitNum) {
+                const lastItem = courses[courses.length - 1];
+                nextCursor = Buffer.from(JSON.stringify({
+                    createdAt: lastItem.created_at,
+                    id: lastItem.id
+                })).toString('base64');
             }
-        });
+
+            return res.status(200).json({ courses, nextCursor });
+        }
+
+        // Default behavior (non-paginated, returns all for now, but filtered by public for safety if not admin/teacher)
+        // Actually, for the home page, we only want public ones now.
+        const results = await lms.getAllCourses(); 
+        const courses = results
+            .filter(c => c.is_public === 1) // Only show public courses on general listing
+            .map(course => {
+                try {
+                    return {
+                        ...course,
+                        highlights: course.highlights ? JSON.parse(course.highlights) : [],
+                        requirements: course.requirements ? JSON.parse(course.requirements) : []
+                    };
+                } catch (e) {
+                    return { ...course, highlights: [], requirements: [] };
+                }
+            });
         res.status(200).json(courses);
     } catch (error) {
         console.error('Error getting courses:', error);

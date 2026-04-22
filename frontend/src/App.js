@@ -32,6 +32,7 @@ import ClassCourseManagement from "./components/teacher/classes/classCourseManag
 import EnrolledClasses from "./components/user/classes/EnrolledClasses";
 import ClassCourse from "./components/user/classes/classCourse";
 import TeacherCreatedCourses from "./components/teacher/courses/TeacherCreatedCourses";
+import AllCoursesPage from "./components/home/AllCoursesPage";
 
 function App() {
   useEffect(() => {
@@ -56,6 +57,7 @@ function App() {
         {/* Home Route - With HomeLayout */}
         <Route element={<HomeLayout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/courses" element={<AllCoursesPage />} />
         </Route>
 
         {/* General Routes - With MainLayout */}
