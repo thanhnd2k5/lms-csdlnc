@@ -89,4 +89,50 @@ p {
   .quiz-question {
     padding: 15px;
   }
+}
+
+.video-quizzes-section {
+  margin-top: 40px;
+  padding: 24px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.video-quizzes-section h3 {
+  margin-bottom: 24px;
+  color: #1e293b;
+}
+
+.quiz-list {
+  background: white;
+  border-radius: 8px;
+  padding: 0 16px;
+}
+
+.quiz-item {
+  padding: 16px 0 !important;
+  transition: all 0.2s ease;
+}
+
+.quiz-item:hover {
+  transform: translateX(4px);
+}
+
+.quiz-item .ant-list-item-meta-title {
+  font-size: 16px;
+  margin-bottom: 8px !important;
+}
+
+.quiz-locked {
+  opacity: 0.6;
+  cursor: not-allowed !important;
+}
+
+.quiz-locked * {
+  pointer-events: none;
+}
+
+.quiz-locked .ant-btn {
+  pointer-events: auto; /* Cho phép bấm nút để hiện message warning */
 } 

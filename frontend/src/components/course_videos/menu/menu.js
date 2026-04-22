@@ -1,29 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Menu as AntMenu } from 'antd';
-import { PlayCircleOutlined, CheckCircleOutlined, ReadOutlined, FileTextOutlined } from '@ant-design/icons';
+import { PlayCircleOutlined, CheckCircleOutlined, ReadOutlined, FileTextOutlined, LockOutlined } from '@ant-design/icons';
+import { message } from 'antd';
 import axios from 'axios';
 import './menu.css';
 
-const Menu = ({ videos, chapters, quizzes, onVideoSelect, onQuizSelect }) => {
-  const [watchedVideos, setWatchedVideos] = useState([]);
+const Menu = ({ videos, chapters, quizzes, watchedVideos, onVideoSelect, onQuizSelect }) => {
 
-  useEffect(() => {
-    const fetchWatchedVideos = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/videos/completed`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setWatchedVideos(response.data.map(v => v.video_id));
-      } catch (error) {
-        console.error('Error fetching watched videos:', error);
-      }
-    };
-
-    fetchWatchedVideos();
-    window.addEventListener('videoCompleted', fetchWatchedVideos);
-    return () => window.removeEventListener('videoCompleted', fetchWatchedVideos);
-  }, []);
 
   const getMenuItems = () => {
     return chapters.map(chapter => {
@@ -32,7 +15,7 @@ const Menu = ({ videos, chapters, quizzes, onVideoSelect, onQuizSelect }) => {
 
       chapterVideos.forEach(video => {
         const isWatched = watchedVideos.includes(video.id);
-        
+
         children.push({
           key: `video-${video.id}`,
           icon: isWatched ? <CheckCircleOutlined className="watched-icon" /> : <PlayCircleOutlined />,
@@ -41,16 +24,45 @@ const Menu = ({ videos, chapters, quizzes, onVideoSelect, onQuizSelect }) => {
           className: isWatched ? 'video-watched' : ''
         });
 
-        const videoQuiz = quizzes.find(quiz => quiz.video_id === video.id);
-        if (videoQuiz) {
+        // Tìm tất cả các quiz gán cho video này
+        const videoQuizzes = quizzes.filter(quiz => quiz.video_id === video.id);
+        videoQuizzes.forEach(quiz => {
           children.push({
-            key: `quiz-${videoQuiz.id}`,
+            key: `quiz-${quiz.id}`,
             icon: <FileTextOutlined style={{ color: '#52c41a' }} />,
-            label: `Quiz: ${videoQuiz.title || 'Bài kiểm tra'}`,
+            label: `Quiz: ${quiz.title || 'Bài kiểm tra'}`,
             className: 'quiz-menu-item',
-            onClick: () => onQuizSelect(videoQuiz)
+            onClick: () => onQuizSelect(quiz)
           });
-        }
+        });
+      });
+
+      // Thêm các quiz của chương (không gán cho video cụ thể)
+      const chapterQuizzes = quizzes.filter(quiz =>
+        quiz.chapter_id === chapter.id &&
+        (!quiz.video_id || quiz.quiz_type === 'chapter')
+      );
+
+      // Kiểm tra xem tất cả video trong chương đã xem hết chưa
+      const isChapterCompleted = chapterVideos.length === 0 || 
+        chapterVideos.every(video => watchedVideos.includes(video.id));
+
+      chapterQuizzes.forEach(quiz => {
+        children.push({
+          key: `quiz-chapter-${quiz.id}`,
+          icon: isChapterCompleted ? 
+            <FileTextOutlined style={{ color: '#1890ff' }} /> : 
+            <LockOutlined style={{ color: '#bfbfbf' }} />,
+          label: `Quiz Tổng Kết: ${quiz.title || 'Bài kiểm tra'}`,
+          className: `quiz-menu-item chapter-quiz ${!isChapterCompleted ? 'quiz-locked' : ''}`,
+          onClick: () => {
+            if (isChapterCompleted) {
+              onQuizSelect(quiz);
+            } else {
+              message.warning('Bạn cần hoàn thành tất cả bài giảng trong chương để mở khóa bài kiểm tra này');
+            }
+          }
+        });
       });
 
       return {

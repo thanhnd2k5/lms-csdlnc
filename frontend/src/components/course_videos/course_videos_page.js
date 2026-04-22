@@ -23,6 +23,19 @@ const CourseVideosPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [courseInfo, setCourseInfo] = useState(null);
+  const [watchedVideos, setWatchedVideos] = useState([]);
+
+  const fetchWatchedVideos = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/videos/completed`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setWatchedVideos(response.data.map(v => v.video_id));
+    } catch (error) {
+      console.error('Error fetching watched videos:', error);
+    }
+  }, []);
 
   const fetchDocuments = useCallback(async (videoId, chapterId) => {
     try {
@@ -51,7 +64,7 @@ const CourseVideosPage = () => {
       setChapters(chaptersResponse.data);
       setVideos(videosResponse.data);
       setQuizzes(quizzesResponse.data);
-      
+
       if (videoId && videosResponse.data.length > 0) {
         const videoToSelect = videosResponse.data.find(v => v.id === parseInt(videoId));
         if (videoToSelect) {
@@ -92,7 +105,11 @@ const CourseVideosPage = () => {
   useEffect(() => {
     fetchCourseInfo();
     fetchData();
-  }, [fetchCourseInfo, fetchData]);
+    fetchWatchedVideos();
+    
+    window.addEventListener('videoCompleted', fetchWatchedVideos);
+    return () => window.removeEventListener('videoCompleted', fetchWatchedVideos);
+  }, [fetchCourseInfo, fetchData, fetchWatchedVideos]);
 
   const handleVideoSelect = (video) => {
     console.log('Selected video:', video);
@@ -132,6 +149,7 @@ const CourseVideosPage = () => {
             videos={videos}
             chapters={chapters}
             quizzes={quizzes}
+            watchedVideos={watchedVideos}
             onVideoSelect={handleVideoSelect}
             onQuizSelect={handleQuizSelect}
           />
@@ -141,10 +159,19 @@ const CourseVideosPage = () => {
             <>
               <Videos 
                 video={selectedVideo} 
-                quizzes={quizzes.filter(q => 
-                  q.video_id === selectedVideo.id || 
-                  (q.chapter_id === selectedVideo.chapter_id && q.quiz_type === 'chapter')
-                )} 
+                quizzes={quizzes
+                  .filter(q => q.video_id === selectedVideo.id || (q.chapter_id === selectedVideo.chapter_id && q.quiz_type === 'chapter'))
+                  .map(q => {
+                    const isChapterQuiz = q.chapter_id === selectedVideo.chapter_id && q.quiz_type === 'chapter';
+                    if (isChapterQuiz) {
+                      const chapterVideos = videos.filter(v => v.chapter_id === selectedVideo.chapter_id);
+                      const isLocked = chapterVideos.length > 0 && !chapterVideos.every(v => watchedVideos.includes(v.id));
+                      return { ...q, locked: isLocked };
+                    }
+                    return { ...q, locked: false };
+                  })
+                } 
+                onQuizSelect={handleQuizSelect}
               />
               {documents.length > 0 && (
                 <div className="documents-section">

@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Quiz from '../quiz/Quiz';
+import { List, Button, Tag, Typography, Space, message } from 'antd';
+import { FileTextOutlined, LockOutlined } from '@ant-design/icons';
 import './videos.css';
 
-const Videos = ({ video, quizzes }) => {
+const { Title, Text } = Typography;
+
+const Videos = ({ video, quizzes, onQuizSelect }) => {
   const [player, setPlayer] = useState(null);
   const [isAPIReady, setIsAPIReady] = useState(false);
+
 
   // Hàm lấy videoId từ URL YouTube
   const getVideoId = (url) => {
@@ -96,11 +100,60 @@ const Videos = ({ video, quizzes }) => {
   return (
     <div className="content-section">
       <div className="video-section">
-        <h2>{video.title}</h2>
+        <Title level={2}>{video.title}</Title>
         <div className="video-wrapper">
           <div id="youtube-player"></div>
         </div>
       </div>
+
+      {quizzes && quizzes.length > 0 && (
+        <div className="video-quizzes-section">
+          <Title level={3}>
+            <Space>
+              <FileTextOutlined />
+              Bài kiểm tra liên quan
+            </Space>
+          </Title>
+          <List
+            className="quiz-list"
+            dataSource={quizzes}
+            renderItem={(quiz) => (
+              <List.Item
+                className={`quiz-item ${quiz.locked ? 'quiz-locked' : ''}`}
+                extra={
+                  <Button 
+                    type={quiz.locked ? "default" : "primary"}
+                    icon={quiz.locked ? <LockOutlined /> : <FileTextOutlined />}
+                    onClick={() => {
+                      if (quiz.locked) {
+                        message.warning('Bạn cần hoàn thành tất cả bài giảng trong chương để mở khóa bài kiểm tra này');
+                      } else {
+                        onQuizSelect(quiz);
+                      }
+                    }}
+                  >
+                    {quiz.locked ? 'Đang khóa' : 'Làm bài ngay'}
+                  </Button>
+                }
+              >
+                <List.Item.Meta
+                  title={<Text strong>{quiz.title}</Text>}
+                  description={
+                    <Space>
+                      <Tag color={quiz.quiz_type === 'chapter' ? 'blue' : 'green'}>
+                        {quiz.quiz_type === 'chapter' ? 'Quiz Chương' : 'Quiz Bài học'}
+                      </Tag>
+                      {quiz.locked && <Tag color="error">Cần hoàn thành chương</Tag>}
+                      <Text type="secondary">{quiz.duration_minutes} phút</Text>
+                      <Text type="secondary">{quiz.passing_score}% điểm đạt</Text>
+                    </Space>
+                  }
+                />
+              </List.Item>
+            )}
+          />
+        </div>
+      )}
     </div>
   );
 };
