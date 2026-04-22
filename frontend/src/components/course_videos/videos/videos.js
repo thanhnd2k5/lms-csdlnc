@@ -71,7 +71,7 @@ const Videos = ({ video, chapter, quizzes, onQuizSelect }) => {
       </div>
 
       {/* 3. Content below video - Full Width and Aligned with Title */}
-      <div className="w-full pb-20">
+      <div className="w-full pb-4">
         {quizzes && quizzes.length > 0 && (
           <div className="video-quizzes-section">
             <div className="section-header-aurora">
