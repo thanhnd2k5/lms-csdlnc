@@ -1,14 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Menu as AntMenu } from 'antd';
+import React, { useMemo } from 'react';
+import { Menu as AntMenu, message } from 'antd';
 import { PlayCircleOutlined, CheckCircleOutlined, ReadOutlined, FileTextOutlined, LockOutlined } from '@ant-design/icons';
-import { message } from 'antd';
-import axios from 'axios';
 import './menu.css';
 
 const Menu = ({ videos, chapters, quizzes, watchedVideos, onVideoSelect, onQuizSelect }) => {
-
-
-  const getMenuItems = () => {
+  const menuItems = useMemo(() => {
     return chapters.map(chapter => {
       const chapterVideos = videos.filter(video => video.chapter_id === chapter.id);
       const children = [];
@@ -37,15 +33,15 @@ const Menu = ({ videos, chapters, quizzes, watchedVideos, onVideoSelect, onQuizS
         });
       });
 
+      // Kiểm tra xem tất cả video trong chương đã xem hết chưa
+      const isChapterCompleted = chapterVideos.length === 0 || 
+        chapterVideos.every(video => watchedVideos.includes(video.id));
+
       // Thêm các quiz của chương (không gán cho video cụ thể)
       const chapterQuizzes = quizzes.filter(quiz =>
         quiz.chapter_id === chapter.id &&
         (!quiz.video_id || quiz.quiz_type === 'chapter')
       );
-
-      // Kiểm tra xem tất cả video trong chương đã xem hết chưa
-      const isChapterCompleted = chapterVideos.length === 0 || 
-        chapterVideos.every(video => watchedVideos.includes(video.id));
 
       chapterQuizzes.forEach(quiz => {
         children.push({
@@ -72,7 +68,7 @@ const Menu = ({ videos, chapters, quizzes, watchedVideos, onVideoSelect, onQuizS
         children: children
       };
     });
-  };
+  }, [chapters, videos, quizzes, watchedVideos, onVideoSelect, onQuizSelect]);
 
   return (
     <div className="menu-container">
@@ -81,7 +77,7 @@ const Menu = ({ videos, chapters, quizzes, watchedVideos, onVideoSelect, onQuizS
         mode="inline"
         className="video-menu"
         defaultOpenKeys={[`chapter-1`]}
-        items={getMenuItems()}
+        items={menuItems}
       />
     </div>
   );

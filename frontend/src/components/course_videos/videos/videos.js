@@ -6,7 +6,7 @@ import './videos.css';
 
 const { Title, Text } = Typography;
 
-const Videos = ({ video, quizzes, onQuizSelect }) => {
+const Videos = ({ video, chapter, quizzes, onQuizSelect }) => {
   const [player, setPlayer] = useState(null);
   const [isAPIReady, setIsAPIReady] = useState(false);
 
@@ -98,9 +98,20 @@ const Videos = ({ video, quizzes, onQuizSelect }) => {
   }, [video.video_url, isAPIReady]);
 
   return (
-    <div className="content-section">
+    <div className="content-section-inner">
+      <div className="video-info-section">
+        <div className="breadcrumb-area">
+          <Text type="secondary" className="chapter-label">
+            {chapter?.title}
+          </Text>
+        </div>
+        <div className="title-wrapper">
+          <Tag color="blue" className="lecture-badge">BÀI GIẢNG</Tag>
+          <Title level={2} className="main-video-title">{video.title}</Title>
+        </div>
+      </div>
+
       <div className="video-section">
-        <Title level={2}>{video.title}</Title>
         <div className="video-wrapper">
           <div id="youtube-player"></div>
         </div>
@@ -121,7 +132,7 @@ const Videos = ({ video, quizzes, onQuizSelect }) => {
               <List.Item
                 className={`quiz-item ${quiz.locked ? 'quiz-locked' : ''}`}
                 extra={
-                  <Button 
+                  <Button
                     type={quiz.locked ? "default" : "primary"}
                     icon={quiz.locked ? <LockOutlined /> : <FileTextOutlined />}
                     onClick={() => {

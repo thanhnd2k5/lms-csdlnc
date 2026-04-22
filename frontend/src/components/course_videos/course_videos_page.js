@@ -1,150 +1,93 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import axios from 'axios';
 import Videos from './videos/videos';
 import Menu from './menu/menu';
 import Quiz from './quiz/Quiz';
 import CourseVideoNavbar from './components/CourseVideoNavbar';
-import './course_videos_page.css';
-import { message, List } from 'antd';
+import DocumentsList from './components/DocumentsList';
+import { useCourseData } from './hooks/useCourseData';
 import { LoadingOutlined } from '@ant-design/icons';
+import './course_videos_page.css';
 
 const CourseVideosPage = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const videoId = searchParams.get('videoId');
-  const [chapters, setChapters] = useState([]);
-  const [videos, setVideos] = useState([]);
-  const [quizzes, setQuizzes] = useState([]);
-  const [documents, setDocuments] = useState([]);
+  
+  const {
+    chapters,
+    videos,
+    quizzes,
+    documents,
+    watchedVideos,
+    courseInfo,
+    loading,
+    error,
+    fetchDocuments,
+    fetchInitialData
+  } = useCourseData(courseId);
+
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [courseInfo, setCourseInfo] = useState(null);
-  const [watchedVideos, setWatchedVideos] = useState([]);
 
-  const fetchWatchedVideos = useCallback(async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/videos/completed`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setWatchedVideos(response.data.map(v => v.video_id));
-    } catch (error) {
-      console.error('Error fetching watched videos:', error);
-    }
-  }, []);
-
-  const fetchDocuments = useCallback(async (videoId, chapterId) => {
-    try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/documents`, {
-        params: {
-          courseId,
-          chapterId,
-          videoId
-        }
-      });
-      setDocuments(response.data);
-    } catch (error) {
-      console.error('Error fetching documents:', error);
-      message.error('Có lỗi xảy ra khi tải danh sách tài liệu');
-    }
-  }, [courseId]);
-
-  const fetchData = useCallback(async () => {
-    try {
-      const [chaptersResponse, videosResponse, quizzesResponse] = await Promise.all([
-        axios.get(`${process.env.REACT_APP_API_URL}/courses/${courseId}/chapters`),
-        axios.get(`${process.env.REACT_APP_API_URL}/courses/${courseId}/videos`),
-        axios.get(`${process.env.REACT_APP_API_URL}/courses/${courseId}/quizzes`)
-      ]);
-
-      setChapters(chaptersResponse.data);
-      setVideos(videosResponse.data);
-      setQuizzes(quizzesResponse.data);
-
-      if (videoId && videosResponse.data.length > 0) {
-        const videoToSelect = videosResponse.data.find(v => v.id === parseInt(videoId));
-        if (videoToSelect) {
-          setSelectedVideo(videoToSelect);
-          fetchDocuments(videoToSelect.id, videoToSelect.chapter_id);
-          setSelectedQuiz(null);
-        } else {
-          const firstVideo = videosResponse.data[0];
-          setSelectedVideo(firstVideo);
-          fetchDocuments(firstVideo.id, firstVideo.chapter_id);
-          setSelectedQuiz(null);
-          navigate(`/course/${courseId}?videoId=${firstVideo.id}`, { replace: true });
-        }
-      } else if (videosResponse.data.length > 0) {
-        const firstVideo = videosResponse.data[0];
-        setSelectedVideo(firstVideo);
-        fetchDocuments(firstVideo.id, firstVideo.chapter_id);
-        setSelectedQuiz(null);
-        navigate(`/course/${courseId}?videoId=${firstVideo.id}`, { replace: true });
-      }
-      setLoading(false);
-    } catch (err) {
-      console.error('Error fetching data:', err);
-      setError('Có lỗi xảy ra khi tải dữ liệu');
-      setLoading(false);
-    }
-  }, [courseId, fetchDocuments, navigate, videoId]);
-
-  const fetchCourseInfo = useCallback(async () => {
-    try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/courses/${courseId}`);
-      setCourseInfo(response.data);
-    } catch (error) {
-      console.error('Error fetching course info:', error);
-    }
-  }, [courseId]);
-
+  // Khởi tạo dữ liệu ban đầu
   useEffect(() => {
-    fetchCourseInfo();
-    fetchData();
-    fetchWatchedVideos();
-    
-    window.addEventListener('videoCompleted', fetchWatchedVideos);
-    return () => window.removeEventListener('videoCompleted', fetchWatchedVideos);
-  }, [fetchCourseInfo, fetchData, fetchWatchedVideos]);
+    const init = async () => {
+      const data = await fetchInitialData();
+      if (data.videos.length > 0) {
+        const targetVideo = videoId 
+          ? data.videos.find(v => v.id === parseInt(videoId)) || data.videos[0]
+          : data.videos[0];
+        
+        setSelectedVideo(targetVideo);
+        fetchDocuments(targetVideo.id, targetVideo.chapter_id);
+        if (!videoId) {
+          navigate(`/course/${courseId}?videoId=${targetVideo.id}`, { replace: true });
+        }
+      }
+    };
+    init();
+  }, [courseId, fetchInitialData]); // eslint-disable-line
 
-  const handleVideoSelect = (video) => {
-    console.log('Selected video:', video);
+  const handleVideoSelect = useCallback((video) => {
     setSelectedVideo(video);
     setSelectedQuiz(null);
     fetchDocuments(video.id, video.chapter_id);
     navigate(`/course/${courseId}?videoId=${video.id}`, { replace: true });
-  };
+  }, [courseId, fetchDocuments, navigate]);
 
-  const handleQuizSelect = (quiz) => {
-    console.log('Selected quiz:', quiz);
-    if (quiz && quiz.id) {
+  const handleQuizSelect = useCallback((quiz) => {
+    if (quiz?.id) {
       setSelectedQuiz(quiz);
       setSelectedVideo(null);
-    } else {
-      message.error('Không thể tải bài kiểm tra');
     }
-  };
+  }, []);
 
-  const handleDownload = async (document) => {
-    try {
-      window.open(`${process.env.REACT_APP_API_URL}/documents/${document.id}/download`, '_blank');
-    } catch (error) {
-      message.error('Có lỗi xảy ra khi tải tài liệu');
-    }
-  };
+  // Memoize danh sách quiz cho video hiện tại để tránh tính toán lại lãng phí
+  const filteredQuizzes = useMemo(() => {
+    if (!selectedVideo) return [];
+    return quizzes
+      .filter(q => q.video_id === selectedVideo.id || (q.chapter_id === selectedVideo.chapter_id && q.quiz_type === 'chapter'))
+      .map(q => {
+        const isChapterQuiz = q.chapter_id === selectedVideo.chapter_id && q.quiz_type === 'chapter';
+        if (isChapterQuiz) {
+          const chapterVideos = videos.filter(v => v.chapter_id === selectedVideo.chapter_id);
+          const isLocked = chapterVideos.length > 0 && !chapterVideos.every(v => watchedVideos.includes(v.id));
+          return { ...q, locked: isLocked };
+        }
+        return { ...q, locked: false };
+      });
+  }, [selectedVideo, quizzes, videos, watchedVideos]);
 
-  if (loading) return (<div className="loading-icon"><LoadingOutlined /></div>);
-  if (error) return <div>{error}</div>;
+  if (loading) return <div className="loading-icon"><LoadingOutlined /></div>;
+  if (error) return <div className="error-container">{error}</div>;
 
   return (
     <div className="course-page-layout">
       <CourseVideoNavbar courseTitle={courseInfo?.title} />
       <div className="course-videos-container">
-        <div className="menu-section">
+        <aside className="menu-section">
           <Menu
             videos={videos}
             chapters={chapters}
@@ -153,61 +96,24 @@ const CourseVideosPage = () => {
             onVideoSelect={handleVideoSelect}
             onQuizSelect={handleQuizSelect}
           />
-        </div>
-        <div className="content-section">
+        </aside>
+        <main className="content-section">
           {selectedVideo && (
             <>
               <Videos 
                 video={selectedVideo} 
-                quizzes={quizzes
-                  .filter(q => q.video_id === selectedVideo.id || (q.chapter_id === selectedVideo.chapter_id && q.quiz_type === 'chapter'))
-                  .map(q => {
-                    const isChapterQuiz = q.chapter_id === selectedVideo.chapter_id && q.quiz_type === 'chapter';
-                    if (isChapterQuiz) {
-                      const chapterVideos = videos.filter(v => v.chapter_id === selectedVideo.chapter_id);
-                      const isLocked = chapterVideos.length > 0 && !chapterVideos.every(v => watchedVideos.includes(v.id));
-                      return { ...q, locked: isLocked };
-                    }
-                    return { ...q, locked: false };
-                  })
-                } 
+                chapter={chapters.find(c => c.id === selectedVideo.chapter_id)}
+                quizzes={filteredQuizzes} 
                 onQuizSelect={handleQuizSelect}
               />
-              {documents.length > 0 && (
-                <div className="documents-section">
-                  <h3>Tài liệu</h3>
-                  <List
-                    size="small"
-                    dataSource={documents}
-                    renderItem={doc => (
-                      <List.Item
-                        className="document-item"
-                        onClick={() => handleDownload(doc)}
-                      >
-                        <List.Item.Meta
-                          title={
-                            <span className="document-title">
-                              {doc.title}
-                              <span className="document-type">
-                                ({doc.file_type.toUpperCase()})
-                              </span>
-                            </span>
-                          }
-                        />
-                      </List.Item>
-                    )}
-                  />
-                </div>
-              )}
+              <DocumentsList documents={documents} />
             </>
           )}
-          {selectedQuiz && Object.keys(selectedQuiz).length > 0 && (
-            <Quiz quiz={selectedQuiz} />
-          )}
-        </div>
+          {selectedQuiz && <Quiz quiz={selectedQuiz} />}
+        </main>
       </div>
     </div>
   );
 };
 
-export default CourseVideosPage;
+export default CourseVideosPage;
