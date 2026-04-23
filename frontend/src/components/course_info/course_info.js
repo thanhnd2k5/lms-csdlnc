@@ -67,7 +67,7 @@ const CourseInfo = () => {
 
   const fetchCourseDetails = async () => {
     try {
-
+      setLoading(true);
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/courseEnroll/courses/${courseId}/details`);
       setCourseDetails(response.data);
     } catch (error) {
