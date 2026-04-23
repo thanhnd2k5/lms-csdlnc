@@ -67,6 +67,7 @@ const CourseInfo = () => {
 
   const fetchCourseDetails = async () => {
     try {
+      setLoading(true);
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/courseEnroll/courses/${courseId}/details`);
       setCourseDetails(response.data);
     } catch (error) {
@@ -144,6 +145,7 @@ const CourseInfo = () => {
   );
 
   return (
+
     <div className="course-info-page">
       {/* Hero Section */}
       <div className="course-hero animate-fade-in">
@@ -154,9 +156,11 @@ const CourseInfo = () => {
               <div className="hero-badge-container">
                 <Tag color="blue" className="level-tag">{courseDetails.level || 'All Levels'}</Tag>
                 <Tag color="gold" className="new-tag">Mới cập nhật</Tag>
+
               </div>
               <h1 className="course-title">{courseDetails.title}</h1>
               <p className="course-subtitle">{courseDetails.description}</p>
+
 
               <div className="hero-meta">
                 <div className="meta-item">
@@ -203,6 +207,7 @@ const CourseInfo = () => {
                     </div>
                   </Button>
                 </div>
+
               )}
             </Col>
           </Row>
