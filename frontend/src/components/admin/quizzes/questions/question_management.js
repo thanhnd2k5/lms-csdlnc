@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Space, message, Typography, Modal, Radio } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { Form, Button, Space, message, Typography, Modal, Radio, Divider } from 'antd';
+import { PlusOutlined, RobotOutlined } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import QuestionItem from './QuestionItem';
+import AIGeneratorModal from '../../../common/quiz/AIGeneratorModal';
 import '../../admin_page.css';
 
 const { Title } = Typography;
@@ -18,6 +19,7 @@ const QuestionManagement = () => {
   const [questions, setQuestions] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [questionType, setQuestionType] = useState('single');
+  const [aiModalOpen, setAiModalOpen] = useState(false);
   const role = localStorage.getItem('role');
 
   useEffect(() => {
@@ -59,7 +61,7 @@ const QuestionManagement = () => {
     } catch (error) {
       console.error('Error fetching quiz:', error);
       message.error('Không thể tải thông tin quiz');
-      navigate('/admin/quiz');
+      navigate(role === 'admin' ? '/admin/quiz' : '/teacher/quiz');
     } finally {
       setLoading(false);
     }
@@ -124,6 +126,18 @@ const QuestionManagement = () => {
     setIsModalVisible(false);
   };
 
+  const handleAIQuestionsReceived = (aiQuestions) => {
+    const currentQuestions = form.getFieldValue('questions') || [];
+    
+    // Ghép câu hỏi cũ và mới
+    form.setFieldsValue({
+      questions: [...currentQuestions, ...aiQuestions]
+    });
+    
+    setAiModalOpen(false);
+    message.success('Đã thêm các câu hỏi từ AI. Đừng quên nhấn "Lưu thay đổi" nhé!');
+  };
+
   return (
     <>
       <div className="page-header" style={{ padding: 0, margin: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -151,25 +165,44 @@ const QuestionManagement = () => {
                       index={index}
                     />
                   ))}
-                  <Button
-                    type="dashed"
-                    onClick={showQuestionTypeModal}
-                    block
-                    icon={<PlusOutlined />}
-                    style={{ marginBottom: 24 }}
-                  >
-                    Thêm câu hỏi
-                  </Button>
+                  
+                  <Divider />
+                  
+                  <Space style={{ display: 'flex', justifyContent: 'center', marginBottom: 24 }}>
+                    <Button
+                        type="dashed"
+                        onClick={showQuestionTypeModal}
+                        icon={<PlusOutlined />}
+                        size="large"
+                    >
+                        Thêm câu hỏi thủ công
+                    </Button>
+                    
+                    <Button
+                        type="primary"
+                        onClick={() => setAiModalOpen(true)}
+                        icon={<RobotOutlined />}
+                        size="large"
+                        style={{ 
+                            background: 'linear-gradient(135deg, #1890ff 0%, #722ed1 100%)',
+                            border: 'none'
+                        }}
+                    >
+                        Tạo câu hỏi bằng AI (Gemini)
+                    </Button>
+                  </Space>
                 </>
               )}
             </Form.List>
 
-            <Form.Item>
-              <Space>
-                <Button type="primary" htmlType="submit" loading={submitting}>
+            <Divider />
+
+            <Form.Item style={{ textAlign: 'center' }}>
+              <Space size="middle">
+                <Button type="primary" htmlType="submit" loading={submitting} size="large" style={{ minWidth: 150 }}>
                   Lưu thay đổi
                 </Button>
-                <Button onClick={() => navigate(role === 'admin' ? '/admin/quiz' : '/teacher/quiz')}>
+                <Button onClick={() => navigate(role === 'admin' ? '/admin/quiz' : '/teacher/quiz')} size="large">
                   Quay lại
                 </Button>
               </Space>
@@ -195,8 +228,14 @@ const QuestionManagement = () => {
           </Space>
         </Radio.Group>
       </Modal>
+
+      <AIGeneratorModal 
+        open={aiModalOpen} 
+        onCancel={() => setAiModalOpen(false)} 
+        onSuccess={handleAIQuestionsReceived}
+      />
     </>
   );
 };
 
-export default QuestionManagement; 
+export default QuestionManagement;

@@ -110,7 +110,7 @@ class DbRouter {
     this.currentWriteTarget = nextTarget;
 
     if (previousWritePool) {
-      previousWritePool.end(() => {});
+      previousWritePool.end(() => { });
     }
   }
 

@@ -1,16 +1,16 @@
 -- 1. BẢNG users 
-INSERT INTO `users` (`id`, `username`, `email`, `password`, `full_name`, `role`, `email_verified`) VALUES
-(10, 'admin', 'admin@ptit.edu.vn', '$2b$10$cabE/OIv3HqEoRr/GLo75eGm6d6GxeOl8ZewdQzbxLx051FElnJqK', 'Admin', 'admin', 1),
-(11, 'gv_quang', 'quang.gv@ptit.edu.vn', '$2b$10$cabE/OIv3HqEoRr/GLo75eGm6d6GxeOl8ZewdQzbxLx051FElnJqK', 'Trần Văn Quang', 'teacher', 1),
-(12, 'gv_lan', 'lan.gv@ptit.edu.vn', '$2b$10$cabE/OIv3HqEoRr/GLo75eGm6d6GxeOl8ZewdQzbxLx051FElnJqK', 'Lê Thị Lan', 'teacher', 1),
-(13, 'gv_minh', 'minh.gv@ptit.edu.vn', '$2b$10$cabE/OIv3HqEoRr/GLo75eGm6d6GxeOl8ZewdQzbxLx051FElnJqK', 'Nguyễn Công Minh', 'teacher', 1),
-(21, 'sv_nam', 'nam.sv@gmail.com', '$2b$10$cabE/OIv3HqEoRr/GLo75eGm6d6GxeOl8ZewdQzbxLx051FElnJqK', 'Nguyễn Văn Nam', 'student', 1),
-(22, 'sv_linh', 'linh.sv@gmail.com', '$2b$10$cabE/OIv3HqEoRr/GLo75eGm6d6GxeOl8ZewdQzbxLx051FElnJqK', 'Mai Diệu Linh', 'student', 1),
-(23, 'sv_bach', 'bach.sv@gmail.com', '$2b$10$cabE/OIv3HqEoRr/GLo75eGm6d6GxeOl8ZewdQzbxLx051FElnJqK', 'Lê Xuân Bách', 'student', 1),
-(24, 'sv_an', 'an.sv@gmail.com', '$2b$10$cabE/OIv3HqEoRr/GLo75eGm6d6GxeOl8ZewdQzbxLx051FElnJqK', 'Phan Thiên An', 'student', 1),
-(25, 'sv_quynh', 'quynh.sv@gmail.com', '$2b$10$cabE/OIv3HqEoRr/GLo75eGm6d6GxeOl8ZewdQzbxLx051FElnJqK', 'Đặng Thúy Quỳnh', 'student', 1),
-(26, 'sv_tu', 'tu.sv@gmail.com', '$2b$10$cabE/OIv3HqEoRr/GLo75eGm6d6GxeOl8ZewdQzbxLx051FElnJqK', 'Hoàng Anh Tú', 'student', 1),
-(27, 'sv_hoa', 'hoa.sv@gmail.com', '$2b$10$cabE/OIv3HqEoRr/GLo75eGm6d6GxeOl8ZewdQzbxLx051FElnJqK', 'Lê Thị Hoa', 'student', 1);
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `full_name`, `role`, `email_verified`, `bio`) VALUES
+(10, 'admin', 'admin@ptit.edu.vn', '$2b$10$cabE/OIv3HqEoRr/GLo75eGm6d6GxeOl8ZewdQzbxLx051FElnJqK', 'Admin', 'admin', 1, 'Hệ thống quản trị viên LMS.'),
+(11, 'gv_quang', 'quang.gv@ptit.edu.vn', '$2b$10$cabE/OIv3HqEoRr/GLo75eGm6d6GxeOl8ZewdQzbxLx051FElnJqK', 'Trần Văn Quang', 'teacher', 1, 'Chuyên gia lập trình Frontend với hơn 10 năm kinh nghiệm làm việc với React và các framework hiện đại.'),
+(12, 'gv_lan', 'lan.gv@ptit.edu.vn', '$2b$10$cabE/OIv3HqEoRr/GLo75eGm6d6GxeOl8ZewdQzbxLx051FElnJqK', 'Lê Thị Lan', 'teacher', 1, 'Tiến sĩ chuyên ngành Cơ sở dữ liệu, chuyên nghiên cứu về tối ưu hóa truy vấn và bảo mật hệ thống.'),
+(13, 'gv_minh', 'minh.gv@ptit.edu.vn', '$2b$10$cabE/OIv3HqEoRr/GLo75eGm6d6GxeOl8ZewdQzbxLx051FElnJqK', 'Nguyễn Công Minh', 'teacher', 1, 'Kỹ sư phần mềm cao cấp, đam mê phát triển các ứng dụng Java quy mô lớn và kiến trúc Microservices.'),
+(21, 'sv_nam', 'nam.sv@gmail.com', '$2b$10$cabE/OIv3HqEoRr/GLo75eGm6d6GxeOl8ZewdQzbxLx051FElnJqK', 'Nguyễn Văn Nam', 'student', 1, NULL),
+(22, 'sv_linh', 'linh.sv@gmail.com', '$2b$10$cabE/OIv3HqEoRr/GLo75eGm6d6GxeOl8ZewdQzbxLx051FElnJqK', 'Mai Diệu Linh', 'student', 1, NULL),
+(23, 'sv_bach', 'bach.sv@gmail.com', '$2b$10$cabE/OIv3HqEoRr/GLo75eGm6d6GxeOl8ZewdQzbxLx051FElnJqK', 'Lê Xuân Bách', 'student', 1, NULL),
+(24, 'sv_an', 'an.sv@gmail.com', '$2b$10$cabE/OIv3HqEoRr/GLo75eGm6d6GxeOl8ZewdQzbxLx051FElnJqK', 'Phan Thiên An', 'student', 1, NULL),
+(25, 'sv_quynh', 'quynh.sv@gmail.com', '$2b$10$cabE/OIv3HqEoRr/GLo75eGm6d6GxeOl8ZewdQzbxLx051FElnJqK', 'Đặng Thúy Quỳnh', 'student', 1, NULL),
+(26, 'sv_tu', 'tu.sv@gmail.com', '$2b$10$cabE/OIv3HqEoRr/GLo75eGm6d6GxeOl8ZewdQzbxLx051FElnJqK', 'Hoàng Anh Tú', 'student', 1, NULL),
+(27, 'sv_hoa', 'hoa.sv@gmail.com', '$2b$10$cabE/OIv3HqEoRr/GLo75eGm6d6GxeOl8ZewdQzbxLx051FElnJqK', 'Lê Thị Hoa', 'student', 1, NULL);
 
 
 -- 2. CÁC BẢNG NỘI DUNG 
@@ -24,13 +24,13 @@ INSERT INTO `classes` (`id`, `name`, `teacher_id`, `class_code`, `status`, `max_
 (506, 'Lớp Java N02', 13, 'JAVA02', 'active', 30, 'https://png.pngtree.com/png-vector/20210906/ourlarge/pngtree-school-classroom-png-image_3867854.jpg');
 
 -- Bảng Course
-INSERT INTO `courses` (`id`, `title`, `description`, `is_public`, `teacher_id`, `thumbnail`) VALUES
-(101, 'ReactJS Cơ Bản', 'Học React từ đầu', 1, 11, 'https://files.f8.edu.vn/f8-prod/courses/13/13.png'),
-(102, 'ReactJS Nâng Cao', 'Redux và Performance', 1, 11, 'https://khoahochatde.com/wp-content/uploads/2025/07/reactjs-co-ban-den-nang-cao-1.jpg'),
-(103, 'Truy vấn SQL', 'Làm chủ SQL Server', 1, 12, 'https://cdn.mcivietnam.com/nhanvien/media/Blog/cau-lenh-sql-jpegdctc5c.jpeg'),
-(104, 'Tối ưu Database', 'Index và Tuning', 1, 12, 'https://s3-hfx03.fptcloud.com/codelearnstorage/Upload/Blog/toi-uu-truy-van-co-so-du-lieu-63729006273.3198.jpg'),
-(105, 'Java Core', 'Lập trình hướng đối tượng', 1, 13, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZ_nXs841cpPlRyc3rQUVAqF8bN_EJT9IDww&s'),
-(106, 'Spring Boot', 'Backend Framework', 1, 13, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTov1bHkTXIMbor4TWVnrQN0PjohxY5FsxCsg&s');
+INSERT INTO `courses` (`id`, `title`, `description`, `is_public`, `teacher_id`, `thumbnail`, `level`, `requirements`, `highlights`) VALUES
+(101, 'ReactJS Cơ Bản', 'Học React từ đầu', 1, 11, 'https://files.f8.edu.vn/f8-prod/courses/13/13.png', 'Beginner', '["Cơ bản về HTML, CSS", "Nắm vững JavaScript cơ bản (ES6+)"]', '["Hiểu tư duy Component-based", "Sử dụng Hooks căn bản (useState, useEffect)", "Quản lý Props và State hiệu quả"]'),
+(102, 'ReactJS Nâng Cao', 'Redux và Performance', 1, 11, 'https://khoahochatde.com/wp-content/uploads/2025/07/reactjs-co-ban-den-nang-cao-1.jpg', 'Advanced', '["Hoàn thành khóa ReactJS Cơ Bản", "Hiểu về Asynchronous JavaScript"]', '["Làm chủ Redux Toolkit", "Tối ưu hóa Performance với useMemo, useCallback", "Xây dựng Custom Hooks phức tạp"]'),
+(103, 'Truy vấn SQL', 'Làm chủ SQL Server', 1, 12, 'https://cdn.mcivietnam.com/nhanvien/media/Blog/cau-lenh-sql-jpegdctc5c.jpeg', 'Beginner', '["Biết sử dụng máy tính cơ bản", "Tư duy logic tốt"]', '["Viết thành thạo các câu lệnh SELECT, JOIN", "Sử dụng các hàm Aggregate", "Thiết kế database chuẩn hóa"]'),
+(104, 'Tối ưu Database', 'Index và Tuning', 1, 12, 'https://s3-hfx03.fptcloud.com/codelearnstorage/Upload/Blog/toi-uu-truy-van-co-so-du-lieu-63729006273.3198.jpg', 'Intermediate', '["Hiểu cơ bản về SQL", "Đã từng làm việc với một hệ quản trị CSDL bất kỳ"]', '["Hiểu cơ chế Indexing (B-Tree, Hash)", "Phân tích Execution Plan", "Kỹ thuật tối ưu hóa câu lệnh SQL phức tạp"]'),
+(105, 'Java Core', 'Lập trình hướng đối tượng', 1, 13, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZ_nXs841cpPlRyc3rQUVAqF8bN_EJT9IDww&s', 'Beginner', '["Không yêu cầu kiến thức lập trình trước đó"]', '["Nắm vững 4 tính chất của OOP", "Sử dụng thành thạo Java Collections", "Xử lý ngoại lệ (Exceptions) chuyên nghiệp"]'),
+(106, 'Spring Boot', 'Backend Framework', 1, 13, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTov1bHkTXIMbor4TWVnrQN0PjohxY5FsxCsg&s', 'Intermediate', '["Nắm vững Java Core", "Hiểu cơ bản về HTTP/REST"]', '["Xây dựng RESTful API chuẩn chỉnh", "Tích hợp Spring Security & JWT", "Làm việc với Spring Data JPA"]');
 
 -- Bảng Chapter
 INSERT INTO `chapters` (`id`, `course_id`, `title`, `order_index`) VALUES

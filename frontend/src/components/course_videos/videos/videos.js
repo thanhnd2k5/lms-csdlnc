@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { Typography, Tag, Space, Button, message } from 'antd';
-import { 
-  FileTextOutlined, 
+import axios from 'axios';
+import {
+  FileTextOutlined,
   LockOutlined
 } from '@ant-design/icons';
 import './videos.css';
@@ -13,6 +14,25 @@ const Videos = ({ video, chapter, quizzes, onQuizSelect }) => {
 
   useEffect(() => {
     let player;
+
+    const onPlayerStateChange = async (event) => {
+      // event.data === 0 means the video has ended
+      if (event.data === 0) {
+        try {
+          const token = localStorage.getItem('token');
+          await axios.post(
+            `${process.env.REACT_APP_API_URL}/videos/${video.id}/mark-watched`,
+            {},
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          
+          window.dispatchEvent(new Event('videoCompleted'));
+        } catch (error) {
+          console.error('Error marking video as watched:', error);
+        }
+      }
+    };
+
     const loadVideo = () => {
       if (window.YT && window.YT.Player) {
         const videoId = video.video_url.split('v=')[1]?.split('&')[0] || video.video_url.split('/').pop();
@@ -25,6 +45,9 @@ const Videos = ({ video, chapter, quizzes, onQuizSelect }) => {
             modestbranding: 1,
             rel: 0,
           },
+          events: {
+            'onStateChange': onPlayerStateChange
+          }
         });
       }
     };
@@ -85,7 +108,7 @@ const Videos = ({ video, chapter, quizzes, onQuizSelect }) => {
 
             <div className="quiz-grid-premium">
               {quizzes.map((quiz) => (
-                <div 
+                <div
                   key={quiz.id}
                   className={`quiz-card-premium ${quiz.locked ? 'quiz-locked-premium' : ''}`}
                   onClick={() => {
@@ -114,7 +137,7 @@ const Videos = ({ video, chapter, quizzes, onQuizSelect }) => {
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="quiz-card-footer">
                       <Button
                         type={quiz.locked ? "default" : "primary"}
