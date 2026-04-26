@@ -52,6 +52,18 @@ Video học tập:
 - `chapter_id`
 - `video_url`
 
+### `documents`
+
+Tài liệu học tập:
+
+- `title`
+- `file_path`
+- `file_type`
+- `course_id`
+- `chapter_id`
+- `video_id`
+- `teacher_id`
+
 ### `quizzes`
 
 Thông tin bài quiz:
@@ -126,18 +138,6 @@ Theo dõi tiến độ xem video:
 - `video_id`
 - `is_completed`
 - `completed_at`
-
-### `documents`
-
-Tài liệu học tập:
-
-- `title`
-- `file_path`
-- `file_type`
-- `course_id`
-- `chapter_id`
-- `video_id`
-- `teacher_id`
 
 ### `classes`
 

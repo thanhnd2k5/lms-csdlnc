@@ -66,7 +66,23 @@ Mục đích: Lưu bài giảng video.
 | `created_at` | `TIMESTAMP` | `DEFAULT CURRENT_TIMESTAMP` | Thời điểm tạo video |
 | `updated_at` | `TIMESTAMP` | `DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | Thời điểm cập nhật video |
 
-## 5. Bảng `quizzes`
+## 5. Bảng `documents`
+
+Mục đích: Lưu tài liệu học tập đính kèm.
+
+| Tên cột | Kiểu dữ liệu | Ràng buộc | Mô tả |
+|---|---|---|---|
+| `id` | `INT` | `PRIMARY KEY`, `AUTO_INCREMENT` | Mã tài liệu |
+| `title` | `VARCHAR(255)` | `NOT NULL` | Tiêu đề tài liệu |
+| `file_path` | `VARCHAR(255)` | `NOT NULL` | Đường dẫn lưu file |
+| `file_type` | `VARCHAR(50)` | `NOT NULL` | Định dạng file |
+| `course_id` | `INT` | `NOT NULL`, `FOREIGN KEY -> courses(id)` | Khóa học liên quan |
+| `chapter_id` | `INT` | `FOREIGN KEY -> chapters(id)` | Chương liên quan |
+| `video_id` | `INT` | `FOREIGN KEY -> videos(id)` | Video liên quan |
+| `teacher_id` | `INT` | `NOT NULL`, `FOREIGN KEY -> users(id)` | Giảng viên tải lên tài liệu |
+| `uploaded_at` | `TIMESTAMP` | `DEFAULT CURRENT_TIMESTAMP` | Thời điểm tải lên |
+
+## 6. Bảng `quizzes`
 
 Mục đích: Lưu thông tin bài kiểm tra trắc nghiệm.
 
@@ -84,7 +100,7 @@ Mục đích: Lưu thông tin bài kiểm tra trắc nghiệm.
 | `created_at` | `TIMESTAMP` | `DEFAULT CURRENT_TIMESTAMP` | Thời điểm tạo bài kiểm tra |
 | `updated_at` | `TIMESTAMP` | `DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | Thời điểm cập nhật bài kiểm tra |
 
-## 6. Bảng `quiz_questions`
+## 7. Bảng `quiz_questions`
 
 Mục đích: Lưu câu hỏi của bài kiểm tra.
 
@@ -97,7 +113,7 @@ Mục đích: Lưu câu hỏi của bài kiểm tra.
 | `allows_multiple_correct` | `BOOLEAN` | `DEFAULT FALSE` | Cho phép nhiều đáp án đúng hay không |
 | `created_at` | `TIMESTAMP` | `DEFAULT CURRENT_TIMESTAMP` | Thời điểm tạo câu hỏi |
 
-## 7. Bảng `quiz_options`
+## 8. Bảng `quiz_options`
 
 Mục đích: Lưu các phương án trả lời của câu hỏi.
 
@@ -108,7 +124,7 @@ Mục đích: Lưu các phương án trả lời của câu hỏi.
 | `option_text` | `TEXT` | `NOT NULL` | Nội dung đáp án |
 | `is_correct` | `BOOLEAN` | `DEFAULT FALSE` | Xác định đáp án đúng hay sai |
 
-## 8. Bảng `quiz_attempts`
+## 9. Bảng `quiz_attempts`
 
 Mục đích: Lưu thông tin lần làm bài kiểm tra của học viên.
 
@@ -121,7 +137,7 @@ Mục đích: Lưu thông tin lần làm bài kiểm tra của học viên.
 | `status` | `ENUM('completed', 'failed')` | `NOT NULL` | Trạng thái kết quả bài làm |
 | `end_time` | `TIMESTAMP` | `DEFAULT CURRENT_TIMESTAMP` | Thời điểm kết thúc bài làm |
 
-## 9. Bảng `quiz_answers`
+## 10. Bảng `quiz_answers`
 
 Mục đích: Lưu đáp án mà học viên đã chọn trong mỗi lần làm bài.
 
@@ -133,7 +149,7 @@ Mục đích: Lưu đáp án mà học viên đã chọn trong mỗi lần làm 
 | `selected_option_id` | `INT` | `NOT NULL`, `FOREIGN KEY -> quiz_options(id)` | Đáp án được chọn |
 | `created_at` | `TIMESTAMP` | `DEFAULT CURRENT_TIMESTAMP` | Thời điểm ghi nhận câu trả lời |
 
-## 10. Bảng `course_enrollments`
+## 11. Bảng `course_enrollments`
 
 Mục đích: Lưu thông tin học viên đăng ký khóa học.
 
@@ -148,7 +164,7 @@ Ràng buộc bổ sung:
 
 - `UNIQUE KEY unique_enrollment (user_id, course_id)`
 
-## 11. Bảng `video_completion`
+## 12. Bảng `video_completion`
 
 Mục đích: Lưu tiến độ hoàn thành video của học viên.
 
@@ -163,22 +179,6 @@ Mục đích: Lưu tiến độ hoàn thành video của học viên.
 Ràng buộc bổ sung:
 
 - `UNIQUE KEY unique_completion (user_id, video_id)`
-
-## 12. Bảng `documents`
-
-Mục đích: Lưu tài liệu học tập đính kèm.
-
-| Tên cột | Kiểu dữ liệu | Ràng buộc | Mô tả |
-|---|---|---|---|
-| `id` | `INT` | `PRIMARY KEY`, `AUTO_INCREMENT` | Mã tài liệu |
-| `title` | `VARCHAR(255)` | `NOT NULL` | Tiêu đề tài liệu |
-| `file_path` | `VARCHAR(255)` | `NOT NULL` | Đường dẫn lưu file |
-| `file_type` | `VARCHAR(50)` | `NOT NULL` | Định dạng file |
-| `course_id` | `INT` | `NOT NULL`, `FOREIGN KEY -> courses(id)` | Khóa học liên quan |
-| `chapter_id` | `INT` | `FOREIGN KEY -> chapters(id)` | Chương liên quan |
-| `video_id` | `INT` | `FOREIGN KEY -> videos(id)` | Video liên quan |
-| `teacher_id` | `INT` | `NOT NULL`, `FOREIGN KEY -> users(id)` | Giảng viên tải lên tài liệu |
-| `uploaded_at` | `TIMESTAMP` | `DEFAULT CURRENT_TIMESTAMP` | Thời điểm tải lên |
 
 ## 13. Bảng `classes`
 
