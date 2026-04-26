@@ -13,6 +13,7 @@ Nguồn đối chiếu chính: `backend/lms.sql`
 | `quizzes` | `idx_quiz_type` | `quiz_type` | Lọc bài kiểm tra theo phạm vi gắn |
 | `quiz_attempts` | `idx_attempt_user_quiz` | `user_id, quiz_id` | Tra cứu kết quả bài làm theo học viên và bài kiểm tra |
 | `classes` | `idx_class_code` | `class_code` | Tìm lớp học theo mã lớp |
+| `course_reviews` | `idx_course_rating` | `course_id, rating` | Tối ưu tính toán điểm trung bình và lọc rating |
 
 ## 2. Unique key có tác dụng như chỉ mục
 
@@ -23,6 +24,7 @@ Nguồn đối chiếu chính: `backend/lms.sql`
 | `classes` | `class_code UNIQUE` | Tránh trùng mã lớp |
 | `course_enrollments` | `UNIQUE (user_id, course_id)` | Tránh đăng ký khóa học trùng |
 | `video_completion` | `UNIQUE (user_id, video_id)` | Tránh đánh dấu hoàn thành trùng |
+| `course_reviews` | `unique_user_course_review (user_id, course_id)` | Mỗi học viên chỉ đánh giá một khóa học một lần |
 
 ## 3. Các chỉ mục đề xuất bổ sung
 

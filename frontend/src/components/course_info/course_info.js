@@ -165,7 +165,7 @@ const CourseInfo = () => {
               <div className="hero-meta">
                 <div className="meta-item">
                   <StarOutlined style={{ color: '#fadb14' }} />
-                  <span>4.8 (1,240 đánh giá)</span>
+                  <span>{courseDetails.avg_rating || 0} ({courseDetails.total_reviews || 0} đánh giá)</span>
                 </div>
                 <div className="meta-item">
                   <TeamOutlined />
@@ -177,7 +177,7 @@ const CourseInfo = () => {
                 </div>
                 <div className="meta-item">
                   <ClockCircleOutlined />
-                  <span>Cập nhật 04/2026</span>
+                  <span>Cập nhật {new Date(courseDetails.updated_at).toLocaleDateString('vi-VN', { month: '2-digit', year: 'numeric' })}</span>
                 </div>
               </div>
 
@@ -314,9 +314,9 @@ const CourseInfo = () => {
                       <h3>{courseDetails.teacher_name}</h3>
                       <p className="instructor-headline">Giảng viên chuyên nghiệp tại LMS Platform</p>
                       <div className="instructor-stats">
-                        <span><StarOutlined /> 4.9 Xếp hạng</span>
-                        <span><TeamOutlined /> 12,500 Học viên</span>
-                        <span><PlayCircleOutlined /> 15 Khóa học</span>
+                        <span><StarOutlined /> {courseDetails.teacher_avg_rating || 0} Xếp hạng</span>
+                        <span><TeamOutlined /> {courseDetails.teacher_total_students || 0} Học viên</span>
+                        <span><PlayCircleOutlined /> {courseDetails.teacher_total_courses || 0} Khóa học</span>
                       </div>
                     </div>
                   </div>

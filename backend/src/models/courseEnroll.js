@@ -82,7 +82,12 @@ const getCourseDetails = (courseId) => {
         u.full_name as teacher_name,
         u.bio as teacher_bio,
         u.avatar as teacher_avatar,
-        COUNT(DISTINCT ce.user_id) as total_students
+        COUNT(DISTINCT ce.user_id) as total_students,
+        (SELECT COALESCE(ROUND(AVG(rating), 1), 0) FROM course_reviews WHERE course_id = c.id) as avg_rating,
+        (SELECT COUNT(*) FROM course_reviews WHERE course_id = c.id) as total_reviews,
+        (SELECT COUNT(*) FROM courses WHERE teacher_id = c.teacher_id) as teacher_total_courses,
+        (SELECT COUNT(DISTINCT user_id) FROM course_enrollments ce_inner JOIN courses c_inner ON ce_inner.course_id = c_inner.id WHERE c_inner.teacher_id = c.teacher_id) as teacher_total_students,
+        (SELECT COALESCE(ROUND(AVG(rating), 1), 0) FROM course_reviews cr JOIN courses c_inner ON cr.course_id = c_inner.id WHERE c_inner.teacher_id = c.teacher_id) as teacher_avg_rating
       FROM courses c
       LEFT JOIN users u ON c.teacher_id = u.id
       LEFT JOIN course_enrollments ce ON c.id = ce.course_id

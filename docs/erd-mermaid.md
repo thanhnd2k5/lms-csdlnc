@@ -40,10 +40,13 @@ erDiagram
     users ||--o{ quiz_attempts : performs
     users ||--o{ class_students : joins
     users ||--o{ class_students_courses_approval : reviewed_for
+    users ||--o{ course_reviews : evaluates
 
     classes ||--o{ class_courses : contains
     classes ||--o{ class_students : has
     classes ||--o{ class_students_courses_approval : controls
+
+    courses ||--o{ course_reviews : rated_by
 ```
 
 Caption goi y:

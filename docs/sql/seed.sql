@@ -74,7 +74,7 @@ INSERT INTO `videos` (`id`, `title`, `course_id`, `chapter_id`, `video_url`) VAL
 (17,'Video 3.1: COUNT, SUM, AVG',103,9,'https://www.youtube.com/watch?v=9Pzj7Aj25lw'),
 (18,'Video 3.2: GROUP BY & HAVING',103,9,'https://www.youtube.com/watch?v=7sG7A7K4Gjw'),
 (19,'Video 1.1: Index là gì',104,10,'https://www.youtube.com/watch?v=FSg9Pz4o6uY'),
-(20,'Video 1.2: Tối ưu query với index',104,10,'https://www.youtube.com/watch?v=0oD9P7sH5Yc'),
+(20,'Video 1.2: Tối ưu query with index',104,10,'https://www.youtube.com/watch?v=0oD9P7sH5Yc'),
 (21,'Video 2.1: SQL Profiler',104,11,'https://www.youtube.com/watch?v=Q6kY6F7sQ1c'),
 (22,'Video 2.2: Phân tích hiệu năng',104,11,'https://www.youtube.com/watch?v=6PBt6hR4pYc'),
 (23,'Video 3.1: Execution Plan',104,12,'https://www.youtube.com/watch?v=2eHf7n7ZP1Q'),
@@ -209,10 +209,9 @@ INSERT INTO `quiz_answers` (`attempt_id`, `question_id`, `selected_option_id`) V
 INSERT INTO `class_students_courses_approval` (`class_id`, `student_id`, `course_id`, `status`) VALUES
 (502, 21, 102, 'pending'), (504, 26, 104, 'pending');
 
-
-
-
-
-
-
-
+-- Seed data for course_reviews
+INSERT INTO `course_reviews` (`course_id`, `user_id`, `rating`, `comment`) VALUES
+(101, 21, 5, 'Khóa học tuyệt vời!'),
+(101, 22, 4, 'Nội dung rất chi tiết'),
+(102, 21, 5, 'Rất dễ hiểu'),
+(102, 23, 5, 'Giảng viên nhiệt tình');

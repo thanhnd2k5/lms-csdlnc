@@ -40,3 +40,14 @@ EXPLAIN
 SELECT *
 FROM classes
 WHERE class_code = 'CSDL17';
+
+EXPLAIN
+SELECT 
+    c.*,
+    u.full_name as teacher_name,
+    (SELECT COALESCE(ROUND(AVG(rating), 1), 0) FROM course_reviews WHERE course_id = c.id) as avg_rating,
+    (SELECT COUNT(*) FROM course_reviews WHERE course_id = c.id) as total_reviews
+FROM courses c
+LEFT JOIN users u ON c.teacher_id = u.id
+WHERE c.id = 101
+GROUP BY c.id, u.full_name;

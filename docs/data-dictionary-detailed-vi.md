@@ -17,6 +17,7 @@ Mục đích: Lưu thông tin tài khoản người dùng trong hệ thống.
 | `email_verified` | `BOOLEAN` | `DEFAULT FALSE` | Trạng thái xác thực email |
 | `verification_token` | `VARCHAR(255)` | Nullable | Mã token phục vụ xác thực email |
 | `avatar` | `VARCHAR(255)` | `DEFAULT NULL` | Đường dẫn ảnh đại diện |
+| `bio` | `TEXT` | `DEFAULT NULL` | Tiểu sử tóm tắt của giảng viên |
 | `created_at` | `TIMESTAMP` | `DEFAULT CURRENT_TIMESTAMP` | Thời điểm tạo tài khoản |
 | `updated_at` | `TIMESTAMP` | `DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | Thời điểm cập nhật gần nhất |
 
@@ -32,6 +33,9 @@ Mục đích: Lưu thông tin khóa học.
 | `thumbnail` | `VARCHAR(255)` | `DEFAULT NULL` | Ảnh đại diện khóa học |
 | `is_public` | `BOOLEAN` | `DEFAULT FALSE` | Trạng thái công khai của khóa học |
 | `teacher_id` | `INT` | `FOREIGN KEY -> users(id)` | Giảng viên phụ trách khóa học |
+| `level` | `ENUM(...)` | `DEFAULT 'All Levels'` | Trình độ khóa học (Beginner, Intermediate, Advanced, All Levels) |
+| `requirements` | `TEXT` | `DEFAULT NULL` | Các yêu cầu đầu vào (mảng JSON) |
+| `highlights` | `TEXT` | `DEFAULT NULL` | Các điểm nổi bật sẽ đạt được (mảng JSON) |
 | `created_at` | `TIMESTAMP` | `DEFAULT CURRENT_TIMESTAMP` | Thời điểm tạo khóa học |
 | `updated_at` | `TIMESTAMP` | `DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | Thời điểm cập nhật khóa học |
 
@@ -227,3 +231,21 @@ Mục đích: Lưu thông tin phê duyệt học viên theo từng khóa học t
 | `course_id` | `INT` | `NOT NULL`, `PRIMARY KEY`, `FOREIGN KEY -> courses(id)` | Mã khóa học |
 | `status` | `ENUM('pending', 'approved', 'rejected', 'blocked')` | `DEFAULT 'pending'` | Trạng thái phê duyệt |
 | `updated_at` | `TIMESTAMP` | `DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | Thời điểm cập nhật trạng thái |
+
+## 17. Bảng `course_reviews`
+
+Mục đích: Lưu trữ đánh giá và nhận xét của học viên cho các khóa học.
+
+| Tên cột | Kiểu dữ liệu | Ràng buộc | Mô tả |
+|---|---|---|---|
+| `id` | `INT` | `PRIMARY KEY`, `AUTO_INCREMENT` | Mã định danh duy nhất của đánh giá |
+| `course_id` | `INT` | `NOT NULL`, `FOREIGN KEY -> courses(id)` | Khóa học được đánh giá |
+| `user_id` | `INT` | `NOT NULL`, `FOREIGN KEY -> users(id)` | Học viên thực hiện đánh giá |
+| `rating` | `TINYINT` | `NOT NULL`, `CHECK (1-5)` | Điểm đánh giá từ 1 đến 5 sao |
+| `comment` | `TEXT` | `DEFAULT NULL` | Nội dung nhận xét chi tiết |
+| `created_at` | `TIMESTAMP` | `DEFAULT CURRENT_TIMESTAMP` | Thời điểm tạo đánh giá |
+
+Ràng buộc bổ sung:
+
+- `UNIQUE KEY unique_user_course_review (user_id, course_id)`: Một học viên chỉ được đánh giá một khóa học một lần.
+- `INDEX idx_course_rating (course_id, rating)`: Tối ưu hiệu năng tính toán điểm trung bình.

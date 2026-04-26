@@ -90,7 +90,7 @@ Base route: `/courseEnroll`
 - `POST /courseEnroll/enroll`: đăng ký học một khóa học.
 - `GET /courseEnroll/check/:courseId`: kiểm tra đã đăng ký hay chưa.
 - `GET /courseEnroll/stats`: thống kê số học viên theo khóa học của teacher hiện tại.
-- `GET /courseEnroll/courses/:courseId/details`: chi tiết khóa học, công khai.
+- `GET /courseEnroll/courses/:courseId/details`: chi tiết khóa học công khai, bao gồm: Metadata (level, requirements, highlights), thông tin giảng viên (bio, avatar), Rating trung bình, và các thống kê tổng quát của giảng viên.
 - `GET /courseEnroll/teacher/student-enrollment-details`: teacher xem tiến độ học viên theo khóa học.
 
 ## 6. Documents

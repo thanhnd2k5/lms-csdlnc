@@ -133,3 +133,38 @@ Không nên viết:
 - “dự án đã quản lý migration theo các phiên bản này từ đầu”
 
 vì hiện tại repo gốc của anh không có sẵn lịch sử migration thật theo từng version.
+
+### V5 - Cập nhật thông tin chi tiết và tiểu sử
+
+File:
+
+- [V5__add_course_metadata_and_instructor_bio.sql](/D:/lms-csdlnc/docs/sql/migrations/V5__add_course_metadata_and_instructor_bio.sql)
+- [V5__add_course_metadata_and_instructor_bio_down.sql](/D:/lms-csdlnc/docs/sql/migrations/V5__add_course_metadata_and_instructor_bio_down.sql)
+
+Nội dung:
+
+- thêm cột `bio` vào bảng `users` cho giảng viên
+- thêm cột `level`, `requirements`, `highlights` vào bảng `courses`
+
+Ý nghĩa:
+
+- hiện đại hóa trang chi tiết khóa học, cung cấp nhiều thông tin metadata hơn
+- tăng trải nghiệm người dùng (UX) và giúp học viên hiểu rõ yêu cầu khóa học
+
+### V6 - Bổ sung đánh giá khóa học
+
+File:
+
+- [V6__add_course_reviews.sql](/D:/lms-csdlnc/docs/sql/migrations/V6__add_course_reviews.sql)
+- [V6__add_course_reviews_down.sql](/D:/lms-csdlnc/docs/sql/migrations/V6__add_course_reviews_down.sql)
+
+Nội dung:
+
+- thêm bảng `course_reviews`
+- thêm index `idx_course_rating` để tối ưu thống kê
+
+Ý nghĩa:
+
+- hệ thống chuyển từ mô hình tương tác một chiều sang tương tác hai chiều
+- cho phép thu thập phản hồi của học viên để cải thiện chất lượng giảng dạy
+- cung cấp minh chứng về tính hiệu quả của khóa học thông qua điểm đánh giá trung bình
