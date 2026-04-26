@@ -169,7 +169,7 @@ const CourseInfo = () => {
                 </div>
                 <div className="meta-item">
                   <TeamOutlined />
-                  <span>{courseDetails.total_students || 0} học viên</span>
+                  <span>{courseDetails.total_students ?? courseDetails.student_count ?? 0} học viên</span>
                 </div>
                 <div className="meta-item">
                   <UserOutlined />
@@ -315,7 +315,7 @@ const CourseInfo = () => {
                       <p className="instructor-headline">Giảng viên chuyên nghiệp tại LMS Platform</p>
                       <div className="instructor-stats">
                         <span><StarOutlined /> {courseDetails.teacher_avg_rating || 0} Xếp hạng</span>
-                        <span><TeamOutlined /> {courseDetails.teacher_total_students || 0} Học viên</span>
+                        <span><TeamOutlined /> {courseDetails.teacher_total_students ?? courseDetails.teacher_student_count ?? 0} Học viên</span>
                         <span><PlayCircleOutlined /> {courseDetails.teacher_total_courses || 0} Khóa học</span>
                       </div>
                     </div>

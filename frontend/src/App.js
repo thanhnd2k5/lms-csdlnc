@@ -33,6 +33,7 @@ import EnrolledClasses from "./components/user/classes/EnrolledClasses";
 import ClassCourse from "./components/user/classes/classCourse";
 import TeacherCreatedCourses from "./components/teacher/courses/TeacherCreatedCourses";
 import AllCoursesPage from "./components/home/AllCoursesPage";
+import ScrollToTop from "./components/common/ScrollToTop";
 
 function App() {
   useEffect(() => {
@@ -47,6 +48,7 @@ function App() {
 
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
         {/* Auth Routes - No Layout */}
         <Route path="/login" element={<Login />} />

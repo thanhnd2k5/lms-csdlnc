@@ -97,7 +97,7 @@ const CourseCard = ({
           
           <div className="meta-item">
             <Users size={16} />
-            <span className="students-count">{course.total_students || 0} học viên</span>
+            <span className="students-count">{course.total_students ?? course.student_count ?? 0} học viên</span>
           </div>
         </div>
       </div>
