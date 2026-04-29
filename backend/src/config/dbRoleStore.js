@@ -4,6 +4,8 @@ const path = require("path");
 const DEFAULT_STATE = {
   activeWriteHost: process.env.DB_WRITE_HOST || process.env.DB_HOST || "127.0.0.1",
   activeWritePort: Number(process.env.DB_WRITE_PORT || process.env.DB_PORT || 3306),
+  standbyHost: process.env.DB_READ_HOST || process.env.DB_HOST || "127.0.0.1",
+  standbyPort: Number(process.env.DB_READ_PORT || process.env.DB_PORT || 3306),
   lastFailoverAt: null,
 };
 

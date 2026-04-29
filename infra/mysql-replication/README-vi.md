@@ -9,6 +9,13 @@ Tài liệu này là runbook thao tác nhanh cho mô hình:
 
 Mục tiêu của file này là giúp chạy lại môi trường, test replication, test failover, rejoin node cũ và chụp minh chứng mà không cần nhớ lại toàn bộ lệnh.
 
+Lưu ý kiến trúc hiện tại:
+
+- backend duy trì `topology state` gồm `active writer` và `standby`
+- khi failover xảy ra, `failover-manager` cập nhật lại node ghi hiện tại
+- khi node cũ được rejoin, script rejoin cập nhật lại `standby` cho backend
+- nhờ đó mô hình có thể tiếp tục phục vụ các vòng failover tiếp theo theo hướng hai chiều
+
 ## 1. Khởi động môi trường
 
 Từ thư mục:
@@ -166,6 +173,11 @@ Kết quả mong đợi trong log:
 - `Automatic failover completed. New primary: 127.0.0.1:3308`
 - sau đó backend vẫn ghi được với log `[DB:write] ...`
 
+Sau failover đầu tiên:
+
+- `127.0.0.1:3308` trở thành writer hiện tại
+- `127.0.0.1:3307` chỉ quay lại làm standby sau khi chạy rejoin
+
 ## 9. Rejoin primary cũ thành replica
 
 Sau khi `automatic failover` hoàn tất, node `mysql-primary` cũ không tự động quay lại làm replica. Để đưa node này trở lại cụm ở vai trò replica, thực hiện theo hướng thủ công có kiểm soát.
@@ -194,6 +206,7 @@ Script này sẽ:
 - cấu hình node này bám theo primary mới tại `mysql-replica:3306`
 - bật lại `read_only`
 - hiển thị `SHOW REPLICA STATUS`
+- cập nhật lại `standby` trong `backend\tmp\db-role-state.json`
 
 ### 9.3. Kiểm tra kết quả
 
@@ -202,12 +215,14 @@ Kết quả mong đợi:
 - `Replica_IO_Running: Yes`
 - `Replica_SQL_Running: Yes`
 - node `lms-mysql-primary` đã trở lại vai trò replica
+- backend ghi nhận lại `127.0.0.1:3307` là standby cho các vòng failover tiếp theo
 
 ### 9.4. Ghi chú kỹ thuật
 
 - đây là quy trình `manual rejoin`, chưa phải `automatic failback`
-- primary mới vẫn tiếp tục là `lms-mysql-replica`
+- primary mới vẫn tiếp tục là `lms-mysql-replica` cho đến khi có một lần failover tiếp theo
 - node cũ chỉ quay lại với vai trò replica để tránh ghi lệch dữ liệu
+- sau khi rejoin hoàn tất, mô hình quay về trạng thái có `writer` và `standby`, sẵn sàng cho vòng failover kế tiếp
 
 ## 10. Minh chứng nên chụp cho báo cáo
 

@@ -2,6 +2,9 @@ param(
   [string]$OldPrimaryContainer = "lms-mysql-primary",
   [string]$NewPrimaryHost = "mysql-replica",
   [int]$NewPrimaryPort = 3306,
+  [string]$StateFilePath = "D:\lms-csdlnc\backend\tmp\db-role-state.json",
+  [string]$BackendStandbyHost = "127.0.0.1",
+  [int]$BackendStandbyPort = 3307,
   [string]$ReplicationUser = "repl",
   [string]$ReplicationPassword = "replpass"
 )
@@ -25,3 +28,11 @@ SHOW REPLICA STATUS\G
 "@
 
 docker exec -i $OldPrimaryContainer mysql -uroot -proot -e $sql
+
+if (Test-Path $StateFilePath) {
+  $state = Get-Content $StateFilePath -Raw | ConvertFrom-Json
+  $state.standbyHost = $BackendStandbyHost
+  $state.standbyPort = $BackendStandbyPort
+  $state | ConvertTo-Json | Set-Content -LiteralPath $StateFilePath
+  Write-Output "Updated backend state standby to ${BackendStandbyHost}:${BackendStandbyPort}"
+}

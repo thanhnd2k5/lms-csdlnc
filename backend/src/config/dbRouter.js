@@ -56,6 +56,19 @@ function createPool(host, port) {
   return mysql.createPool(createPoolConfig(host, port));
 }
 
+function getConfiguredTargets() {
+  return {
+    active: {
+      host: process.env.DB_WRITE_HOST || process.env.DB_HOST || "127.0.0.1",
+      port: Number(process.env.DB_WRITE_PORT || process.env.DB_PORT || 3306),
+    },
+    standby: {
+      host: process.env.DB_READ_HOST || process.env.DB_HOST || "127.0.0.1",
+      port: Number(process.env.DB_READ_PORT || process.env.DB_PORT || 3306),
+    },
+  };
+}
+
 function normalizeQueryArgs(sql, values, callback) {
   if (typeof values === "function") {
     return { sql, values: [], callback: values };
@@ -86,29 +99,64 @@ function getSqlType(sql) {
 class DbRouter {
   constructor() {
     this.readWriteSplitEnabled = isTrue(process.env.DB_ENABLE_READ_WRITE_SPLIT);
-    this.readPool = createPool(
-      process.env.DB_READ_HOST || process.env.DB_HOST || "127.0.0.1",
-      process.env.DB_READ_PORT || process.env.DB_PORT || 3306,
-    );
+    this.readPool = null;
     this.writePool = null;
+    this.currentReadTarget = null;
     this.currentWriteTarget = null;
+    this.refreshReadPool();
     this.refreshWritePool();
   }
 
+  getCurrentTopology() {
+    if (!isAutomaticFailoverEnabled()) {
+      return getConfiguredTargets();
+    }
+
+    const state = readState();
+    const configured = getConfiguredTargets();
+
+    return {
+      active: {
+        host: state.activeWriteHost || configured.active.host,
+        port: Number(state.activeWritePort || configured.active.port),
+      },
+      standby: {
+        host: state.standbyHost || configured.standby.host,
+        port: Number(state.standbyPort || configured.standby.port),
+      },
+    };
+  }
+
+  refreshReadPool() {
+    const topology = this.getCurrentTopology();
+    const readTarget =
+      topology.standby.host && topology.standby.port ? topology.standby : topology.active;
+    const nextTarget = `${readTarget.host}:${readTarget.port}`;
+
+    if (this.currentReadTarget === nextTarget && this.readPool) {
+      return;
+    }
+
+    const nextReadPool = createPool(readTarget.host, readTarget.port);
+    const previousReadPool = this.readPool;
+
+    this.readPool = nextReadPool;
+    this.currentReadTarget = nextTarget;
+
+    if (previousReadPool) {
+      previousReadPool.end(() => { });
+    }
+  }
+
   refreshWritePool() {
-    const state = isAutomaticFailoverEnabled()
-      ? readState()
-      : {
-          activeWriteHost: process.env.DB_WRITE_HOST || process.env.DB_HOST || "127.0.0.1",
-          activeWritePort: Number(process.env.DB_WRITE_PORT || process.env.DB_PORT || 3306),
-        };
-    const nextTarget = `${state.activeWriteHost}:${state.activeWritePort}`;
+    const topology = this.getCurrentTopology();
+    const nextTarget = `${topology.active.host}:${topology.active.port}`;
 
     if (this.currentWriteTarget === nextTarget && this.writePool) {
       return;
     }
 
-    const nextWritePool = createPool(state.activeWriteHost, state.activeWritePort);
+    const nextWritePool = createPool(topology.active.host, topology.active.port);
     const previousWritePool = this.writePool;
 
     this.writePool = nextWritePool;
@@ -131,6 +179,7 @@ class DbRouter {
 
     const sqlType = getSqlType(sql);
     if (sqlType === "read") {
+      this.refreshReadPool();
       return { pool: this.readPool, mode: "read" };
     }
 

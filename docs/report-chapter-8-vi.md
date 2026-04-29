@@ -14,7 +14,7 @@ Bên cạnh các kết quả đã đạt được, đề tài vẫn còn một s
 
 ## 8.4. Hướng phát triển
 
-Trong thời gian tới, hệ thống có thể được hoàn thiện theo một số hướng chính. Thứ nhất là tiếp tục đồng bộ giữa lược đồ dữ liệu và mã nguồn backend để giảm sai lệch trong quá trình triển khai. Thứ hai là bổ sung đầy đủ minh chứng thực nghiệm cho `EXPLAIN`, sao lưu và phục hồi khi có môi trường MySQL phù hợp. Thứ ba là hoàn thiện hơn bộ migration, seed và dữ liệu mẫu để phục vụ kiểm thử và minh họa rõ hơn quá trình phát triển cơ sở dữ liệu. Thứ tư là mở rộng mô hình replication hiện tại theo hướng nhiều replica, cơ chế rejoin cho node cũ, và tích hợp monitoring đầy đủ hơn. Cuối cùng, khi quy mô hệ thống tiếp tục tăng mạnh, có thể nghiên cứu thêm các kỹ thuật phân tán sâu hơn như quorum, consensus hoặc sharding cho các bảng giao dịch lớn.
+Trong thời gian tới, hệ thống có thể được hoàn thiện theo một số hướng chính. Thứ nhất là tiếp tục đồng bộ giữa lược đồ dữ liệu và mã nguồn backend để giảm sai lệch trong quá trình triển khai. Thứ hai là bổ sung đầy đủ minh chứng thực nghiệm cho `EXPLAIN`, sao lưu và phục hồi khi có môi trường MySQL phù hợp. Thứ ba là hoàn thiện hơn bộ migration, seed và dữ liệu mẫu để phục vụ kiểm thử và minh họa rõ hơn quá trình phát triển cơ sở dữ liệu. Thứ tư là mở rộng mô hình replication hiện tại theo hướng nhiều replica, cơ chế `automatic rejoin` hoặc `automatic failback` cho node cũ, và tích hợp monitoring đầy đủ hơn. Cuối cùng, khi quy mô hệ thống tiếp tục tăng mạnh, có thể nghiên cứu thêm các kỹ thuật phân tán sâu hơn như quorum, consensus hoặc sharding cho các bảng giao dịch lớn.
 
 ## 8.5. Kết luận chung
 

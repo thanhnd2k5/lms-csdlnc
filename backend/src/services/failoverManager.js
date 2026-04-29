@@ -15,12 +15,12 @@ function getNodeConfig() {
   };
 
   return {
-    primary: {
+    configuredPrimary: {
       host: process.env.DB_WRITE_HOST || process.env.DB_HOST || "127.0.0.1",
       port: Number(process.env.DB_WRITE_PORT || process.env.DB_PORT || 3306),
       ...common,
     },
-    replica: {
+    configuredReplica: {
       host: process.env.DB_READ_HOST || process.env.DB_HOST || "127.0.0.1",
       port: Number(process.env.DB_READ_PORT || process.env.DB_PORT || 3306),
       ...common,
@@ -30,6 +30,31 @@ function getNodeConfig() {
       password: process.env.DB_ADMIN_PASSWORD || process.env.DB_PASSWORD || "",
       useSsl,
     },
+  };
+}
+
+function getTopologyState() {
+  const state = readState();
+  const nodes = getNodeConfig();
+
+  return {
+    active: {
+      host: state.activeWriteHost || nodes.configuredPrimary.host,
+      port: Number(state.activeWritePort || nodes.configuredPrimary.port),
+      user: nodes.configuredPrimary.user,
+      password: nodes.configuredPrimary.password,
+      database: nodes.configuredPrimary.database,
+      useSsl: nodes.configuredPrimary.useSsl,
+    },
+    standby: {
+      host: state.standbyHost || nodes.configuredReplica.host,
+      port: Number(state.standbyPort || nodes.configuredReplica.port),
+      user: nodes.configuredReplica.user,
+      password: nodes.configuredReplica.password,
+      database: nodes.configuredReplica.database,
+      useSsl: nodes.configuredReplica.useSsl,
+    },
+    admin: nodes.admin,
   };
 }
 
@@ -44,16 +69,8 @@ class FailoverManager {
   }
 
   async checkPrimary() {
-    const state = readState();
-    const nodes = getNodeConfig();
-    const health = await pingNode({
-      host: state.activeWriteHost,
-      port: state.activeWritePort,
-      user: nodes.primary.user,
-      password: nodes.primary.password,
-      database: nodes.primary.database,
-      useSsl: nodes.primary.useSsl,
-    });
+    const topology = getTopologyState();
+    const health = await pingNode(topology.active);
 
     if (health.ok) {
       this.failureCount = 0;
@@ -76,21 +93,21 @@ class FailoverManager {
     }
 
     this.promoting = true;
-    const nodes = getNodeConfig();
+    const topology = getTopologyState();
 
     try {
-      const replicaHealth = await pingNode(nodes.replica);
-      if (!replicaHealth.ok) {
-        console.error(`Replica is not healthy enough for failover: ${replicaHealth.error}`);
+      const standbyHealth = await pingNode(topology.standby);
+      if (!standbyHealth.ok) {
+        console.error(`Standby node is not healthy enough for failover: ${standbyHealth.error}`);
         return;
       }
 
       const promoteResult = await runAdminSql({
-        host: nodes.replica.host,
-        port: nodes.replica.port,
-        user: nodes.admin.user,
-        password: nodes.admin.password,
-        useSsl: nodes.admin.useSsl,
+        host: topology.standby.host,
+        port: topology.standby.port,
+        user: topology.admin.user,
+        password: topology.admin.password,
+        useSsl: topology.admin.useSsl,
         statements: `
           STOP REPLICA;
           RESET REPLICA ALL;
@@ -105,8 +122,10 @@ class FailoverManager {
       }
 
       const nextState = writeState({
-        activeWriteHost: nodes.replica.host,
-        activeWritePort: nodes.replica.port,
+        activeWriteHost: topology.standby.host,
+        activeWritePort: topology.standby.port,
+        standbyHost: topology.standby.host,
+        standbyPort: topology.standby.port,
         lastFailoverAt: new Date().toISOString(),
       });
 

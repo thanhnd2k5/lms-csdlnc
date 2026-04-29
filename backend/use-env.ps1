@@ -39,6 +39,8 @@ if (-not (Test-Path $stateDir)) {
 $state = @{
   activeWriteHost = $envMap["DB_WRITE_HOST"]
   activeWritePort = [int]$envMap["DB_WRITE_PORT"]
+  standbyHost = $envMap["DB_READ_HOST"]
+  standbyPort = [int]$envMap["DB_READ_PORT"]
   lastFailoverAt = $null
 }
 
