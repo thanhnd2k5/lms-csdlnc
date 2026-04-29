@@ -1,8 +1,10 @@
 require("dotenv").config();
 const { DbRouter } = require("./dbRouter");
-const { ensureStateFile } = require("./dbRoleStore");
+const { ensureStateFile, isAutomaticFailoverEnabled } = require("./dbRoleStore");
 
-ensureStateFile();
+if (isAutomaticFailoverEnabled()) {
+  ensureStateFile();
+}
 
 const db = new DbRouter();
 

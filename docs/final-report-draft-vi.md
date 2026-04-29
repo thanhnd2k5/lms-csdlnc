@@ -400,44 +400,54 @@ Phương án sao lưu bằng file SQL là cách tiếp cận phù hợp trong ph
 
 ## Chương 7. Kỹ thuật nâng cao
 
-Phần kỹ thuật nâng cao được đưa vào báo cáo nhằm mở rộng góc nhìn từ một hệ cơ sở dữ liệu phục vụ học tập sang khả năng vận hành ở quy mô lớn hơn trong tương lai. Trong đó, replication và sharding là hai hướng thường được nhắc đến khi hệ thống cần tăng khả năng sẵn sàng, mở rộng tải hoặc phục vụ số lượng người dùng lớn.
+Phần kỹ thuật nâng cao trong báo cáo không chỉ dừng ở mức định hướng lý thuyết mà đã được triển khai thực nghiệm trên môi trường container. Trọng tâm của phần này là mô hình replication `primary - replica`, cơ chế `read/write split` ở backend và `automatic failover` thông qua một thành phần `failover-manager`.
 
-Trong phạm vi đề tài này, hai kỹ thuật trên được phân tích ở mức định hướng lý thuyết. Mục tiêu của phần này là chỉ ra khả năng áp dụng đối với hệ thống LMS, không phải mô tả một giải pháp đã được triển khai và kiểm chứng thực tế.
+### 7.1. Mục tiêu triển khai
 
-### 7.1. Replication
+Phần thực nghiệm hướng tới ba mục tiêu chính:
 
-Replication là cơ chế sao chép dữ liệu từ máy chủ chính sang một hoặc nhiều máy chủ phụ nhằm tăng độ sẵn sàng của hệ thống. Đối với bài toán LMS, replication phù hợp trong trường hợp cần tăng khả năng dự phòng và phân tách tải đọc khỏi máy chủ xử lý ghi chính.
+- triển khai được replication dữ liệu giữa hai node cơ sở dữ liệu
+- tách được truy vấn đọc và truy vấn ghi ở tầng ứng dụng
+- tự động chuyển vai trò ghi sang node còn sống khi primary gặp sự cố
 
-Những lợi ích chính của replication có thể kể đến:
+### 7.2. Kiến trúc thực nghiệm
 
-- tăng tính sẵn sàng
-- giảm tải truy vấn đọc
-- hỗ trợ dự phòng
+Mô hình được triển khai gồm ba thành phần:
 
-### 7.2. Sharding
+- `mysql-primary` tiếp nhận thao tác ghi
+- `mysql-replica` đồng bộ dữ liệu và phục vụ truy vấn đọc
+- `failover-manager` giám sát trạng thái node và hỗ trợ failover tự động
 
-Sharding là kỹ thuật phân tách dữ liệu thành nhiều phần và lưu trữ trên nhiều máy chủ khác nhau. So với replication, sharding không chỉ sao chép dữ liệu mà còn phân chia dữ liệu để phục vụ hệ thống ở quy mô rất lớn.
+Ở tầng backend, các truy vấn `SELECT`, `SHOW`, `DESCRIBE`, `EXPLAIN` được định tuyến sang replica, trong khi `INSERT`, `UPDATE`, `DELETE` được gửi tới primary.
 
-Trong hệ thống LMS, các bảng có thể xem xét sharding về mặt lý thuyết là:
+### 7.3. Kết quả replication và read/write split
 
-- `course_enrollments`
-- `video_completion`
-- `quiz_attempts`
-- `quiz_answers`
+Replication được cấu hình theo `GTID auto-position`. Trạng thái kiểm tra cho thấy `Replica_IO_Running = Yes`, `Replica_SQL_Running = Yes` và độ trễ đồng bộ ở mức ổn định. Trong quá trình chạy thử, dữ liệu được ghi từ ứng dụng vào primary và truy vấn thấy ở replica sau khi đồng bộ.
 
-### 7.3. Đánh giá khả năng áp dụng
+Log backend cũng ghi nhận rõ hai hướng truy vấn:
 
-Trong giai đoạn hiện tại của đề tài, replication là hướng nâng cấp thực tế hơn vì có thể áp dụng sớm để tăng khả năng dự phòng và hỗ trợ phân tải truy vấn đọc. Trong khi đó, sharding chỉ thực sự cần thiết khi hệ thống đạt đến quy mô dữ liệu rất lớn và phát sinh yêu cầu phân tán dữ liệu trên nhiều máy chủ.
+- `[DB:read]` cho các truy vấn đọc
+- `[DB:write]` cho các truy vấn ghi
 
-### 7.4. Kết luận
+Điều này xác nhận cơ chế `read/write split` đã được tích hợp thành công vào backend.
 
-Hai kỹ thuật trên được đưa vào báo cáo như nội dung mở rộng mang tính định hướng. Trong phạm vi hiện tại, hệ thống chưa triển khai thực tế replication hoặc sharding, do đó phần này chỉ dừng ở mức đề xuất khả năng áp dụng và phân tích lý thuyết.
+### 7.4. Automatic failover
+
+Khi dừng node `mysql-primary`, `failover-manager` phát hiện lỗi kết nối sau nhiều lần kiểm tra liên tiếp, sau đó promote replica thành primary mới. Log hệ thống ghi nhận thông báo hoàn tất failover và cập nhật node ghi sang `127.0.0.1:3308`. Sau khi quá trình này kết thúc, backend vẫn tiếp tục thực hiện thành công các truy vấn ghi và đọc.
+
+### 7.5. Liên hệ với sharding
+
+So với replication, sharding vẫn được giữ ở mức định hướng nghiên cứu. Các bảng như `course_enrollments`, `video_completion`, `quiz_attempts` và `quiz_answers` là nhóm có thể xem xét sharding khi hệ thống đạt quy mô lớn hơn. Tuy nhiên, trong phạm vi hiện tại, replication là hướng triển khai phù hợp và thực tế hơn.
+
+### 7.6. Kết luận
+
+Phần kỹ thuật nâng cao đã được kiểm chứng trong môi trường thực nghiệm với mô hình `primary - replica`, `read/write split` và `automatic failover`. Kết quả này cho thấy hệ thống LMS có thể được mở rộng theo hướng tăng tính sẵn sàng và tăng khả năng chịu lỗi mà không cần thay đổi toàn bộ kiến trúc nghiệp vụ hiện có.
 
 ## Chương 8. Kết luận và hướng phát triển
 
 ### 8.1. Kết quả đạt được
 
-Báo cáo đã trình bày được các nội dung cốt lõi của một đề tài cơ sở dữ liệu gắn với hệ thống LMS. Cụ thể, báo cáo đã mô tả bài toán nghiệp vụ, xác định các thực thể dữ liệu chính, xây dựng lược đồ logic và lược đồ vật lý, phân tích mức độ chuẩn hóa, trình bày quá trình khởi tạo cơ sở dữ liệu, xem xét các yếu tố tối ưu truy vấn, đồng thời đề xuất quy trình sao lưu, phục hồi và các hướng mở rộng nâng cao.
+Báo cáo đã trình bày được các nội dung cốt lõi của một đề tài cơ sở dữ liệu gắn với hệ thống LMS. Cụ thể, báo cáo đã mô tả bài toán nghiệp vụ, xác định các thực thể dữ liệu chính, xây dựng lược đồ logic và lược đồ vật lý, phân tích mức độ chuẩn hóa, trình bày quá trình khởi tạo cơ sở dữ liệu, xem xét các yếu tố tối ưu truy vấn, đồng thời triển khai được phần thực nghiệm kỹ thuật nâng cao với replication, tách truy vấn đọc và ghi ở backend, và automatic failover được kiểm thử trong môi trường thực nghiệm.
 
 ### 8.2. Đánh giá tổng quát về lược đồ dữ liệu của hệ thống
 
@@ -445,11 +455,11 @@ Lược đồ dữ liệu của hệ thống có cấu trúc tương đối hợ
 
 ### 8.3. Hạn chế của đề tài
 
-Bên cạnh các kết quả đã đạt được, đề tài vẫn còn một số hạn chế. Trước hết, phần minh chứng thực nghiệm cho `EXPLAIN`, sao lưu và phục hồi còn phụ thuộc vào môi trường MySQL thực tế nên chưa thể hoàn thiện đầy đủ ngay trong toàn bộ tài liệu. Ngoài ra, một số nội dung nâng cao như replication và sharding mới được phân tích ở mức định hướng, chưa có điều kiện triển khai thực tế. Bên cạnh đó, giữa lược đồ dữ liệu và phần triển khai backend vẫn còn một vài điểm chưa đồng bộ và cần tiếp tục chỉnh sửa trong giai đoạn sau.
+Bên cạnh các kết quả đã đạt được, đề tài vẫn còn một số hạn chế. Trước hết, phần minh chứng thực nghiệm cho `EXPLAIN`, sao lưu và phục hồi cần được bổ sung đầy đủ hơn dưới dạng ảnh chụp và phụ lục thao tác. Đối với phần replication, mô hình hiện tại mới dừng ở một `primary`, một `replica` và một `failover-manager`, chưa có nhiều replica, chưa có cơ chế quorum hoặc consensus, và quy trình đưa primary cũ quay lại làm replica vẫn là `manual rejoin` chứ chưa tự động hoàn toàn. Bên cạnh đó, giữa lược đồ dữ liệu và phần triển khai backend vẫn còn một vài điểm chưa đồng bộ và cần tiếp tục chỉnh sửa trong giai đoạn sau.
 
 ### 8.4. Hướng phát triển
 
-Trong thời gian tới, hệ thống có thể được hoàn thiện theo một số hướng chính. Thứ nhất là tiếp tục đồng bộ giữa lược đồ dữ liệu và mã nguồn backend để giảm sai lệch trong quá trình triển khai. Thứ hai là bổ sung đầy đủ minh chứng thực nghiệm cho `EXPLAIN`, sao lưu và phục hồi khi có môi trường MySQL phù hợp. Thứ ba là hoàn thiện hơn bộ migration, seed và dữ liệu mẫu để phục vụ kiểm thử và minh họa rõ hơn quá trình phát triển cơ sở dữ liệu. Cuối cùng, nếu hệ thống được mở rộng trong tương lai, có thể nghiên cứu triển khai replication ở mức cơ bản như một bước đi thực tế trước khi xem xét các kỹ thuật phân tán phức tạp hơn.
+Trong thời gian tới, hệ thống có thể được hoàn thiện theo một số hướng chính. Thứ nhất là tiếp tục đồng bộ giữa lược đồ dữ liệu và mã nguồn backend để giảm sai lệch trong quá trình triển khai. Thứ hai là bổ sung đầy đủ minh chứng thực nghiệm cho `EXPLAIN`, sao lưu và phục hồi khi có môi trường MySQL phù hợp. Thứ ba là hoàn thiện hơn bộ migration, seed và dữ liệu mẫu để phục vụ kiểm thử và minh họa rõ hơn quá trình phát triển cơ sở dữ liệu. Thứ tư là mở rộng mô hình replication hiện tại theo hướng nhiều replica, cơ chế rejoin cho node cũ và monitoring đầy đủ hơn. Cuối cùng, khi hệ thống đạt quy mô lớn hơn, có thể nghiên cứu thêm các kỹ thuật phân tán sâu hơn như quorum, consensus hoặc sharding cho các bảng giao dịch lớn.
 
 ### 8.5. Kết luận chung
 

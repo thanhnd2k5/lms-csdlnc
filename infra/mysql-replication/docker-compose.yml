@@ -5,6 +5,14 @@ services:
     image: mysql:8.0
     container_name: lms-mysql-primary
     restart: unless-stopped
+    command:
+      - --server-id=1
+      - --log-bin=mysql-bin
+      - --binlog-format=ROW
+      - --gtid-mode=ON
+      - --enforce-gtid-consistency=ON
+      - --skip-name-resolve=ON
+      - --bind-address=0.0.0.0
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: lms
@@ -12,13 +20,20 @@ services:
       - "3307:3306"
     volumes:
       - primary-data:/var/lib/mysql
-      - ./primary/conf.d:/etc/mysql/conf.d
       - ./primary/init:/docker-entrypoint-initdb.d
 
   mysql-replica:
     image: mysql:8.0
     container_name: lms-mysql-replica
     restart: unless-stopped
+    command:
+      - --server-id=2
+      - --log-bin=mysql-bin
+      - --relay-log=mysql-relay-bin
+      - --gtid-mode=ON
+      - --enforce-gtid-consistency=ON
+      - --skip-name-resolve=ON
+      - --bind-address=0.0.0.0
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: lms
@@ -28,7 +43,6 @@ services:
       - mysql-primary
     volumes:
       - replica-data:/var/lib/mysql
-      - ./replica/conf.d:/etc/mysql/conf.d
 
 volumes:
   primary-data:

@@ -7,6 +7,10 @@ const DEFAULT_STATE = {
   lastFailoverAt: null,
 };
 
+function isAutomaticFailoverEnabled() {
+  return String(process.env.DB_ENABLE_AUTOMATIC_FAILOVER).toLowerCase() === "true";
+}
+
 function getStateFilePath() {
   const configuredPath = process.env.DB_ROLE_STATE_FILE || "./tmp/db-role-state.json";
   return path.resolve(process.cwd(), configuredPath);
@@ -28,6 +32,10 @@ function ensureStateFile() {
 }
 
 function readState() {
+  if (!isAutomaticFailoverEnabled()) {
+    return { ...DEFAULT_STATE };
+  }
+
   const stateFile = ensureStateFile();
 
   try {
@@ -52,6 +60,7 @@ function writeState(nextState) {
 
 module.exports = {
   ensureStateFile,
+  isAutomaticFailoverEnabled,
   readState,
   writeState,
 };

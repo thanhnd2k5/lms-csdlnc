@@ -1,5 +1,5 @@
 const mysql = require("mysql2");
-const { readState } = require("./dbRoleStore");
+const { isAutomaticFailoverEnabled, readState } = require("./dbRoleStore");
 
 function isTrue(value) {
   return String(value).toLowerCase() === "true";
@@ -96,7 +96,12 @@ class DbRouter {
   }
 
   refreshWritePool() {
-    const state = readState();
+    const state = isAutomaticFailoverEnabled()
+      ? readState()
+      : {
+          activeWriteHost: process.env.DB_WRITE_HOST || process.env.DB_HOST || "127.0.0.1",
+          activeWritePort: Number(process.env.DB_WRITE_PORT || process.env.DB_PORT || 3306),
+        };
     const nextTarget = `${state.activeWriteHost}:${state.activeWritePort}`;
 
     if (this.currentWriteTarget === nextTarget && this.writePool) {

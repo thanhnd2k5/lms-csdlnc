@@ -17,7 +17,7 @@ Những gì không đặt làm mục tiêu chính trong vòng đầu:
 - monitoring/alerting hoàn chỉnh
 - khôi phục tự động node cũ về replica
 
-## 2. Kiến trúc đề xuất
+## 2. Kiến trúc đã chốt
 
 Thành phần cần có:
 
@@ -116,6 +116,11 @@ Tiêu chí hoàn thành:
 - replica được promote
 - backend ghi tiếp được mà không cần sửa tay cấu hình
 
+Trạng thái hiện tại:
+
+- đã hoàn thành trong môi trường thực nghiệm
+- log đã xác nhận quá trình phát hiện lỗi, promote replica và tiếp tục ghi dữ liệu
+
 ### 3.5. Giai đoạn 5: Ổn định hóa
 
 Việc nên làm thêm:
@@ -125,12 +130,18 @@ Việc nên làm thêm:
 - viết kịch bản demo ổn định
 - chốt bộ ảnh minh chứng cho báo cáo
 
-## 4. Cây file đề xuất
+Trạng thái hiện tại:
+
+- đã có runbook trong `infra/mysql-replication/README-vi.md`
+- vẫn nên bổ sung bộ ảnh minh chứng đẹp để chèn Word/PDF
+
+## 4. Cây file hiện tại
 
 ```text
 infra/
   mysql-replication/
     docker-compose.yml
+    README-vi.md
     primary/
       conf.d/my.cnf
       init/01-create-replication-user.sql
@@ -151,6 +162,11 @@ backend/
       dbHealth.js
     services/
       failoverManager.js
+
+Lưu ý:
+
+- hai file `conf.d/my.cnf` còn tồn tại trong repo nhưng không còn được mount vào container
+- cấu hình MySQL hiện đang được truyền trực tiếp qua `docker-compose`
 ```
 
 ## 5. Kịch bản kiểm thử bắt buộc

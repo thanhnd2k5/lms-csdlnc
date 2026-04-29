@@ -1,6 +1,7 @@
 param(
-  [string]$ReplicaContainer = "lms-mysql-replica",
-  [string]$PrimaryHost = "mysql-primary",
+  [string]$OldPrimaryContainer = "lms-mysql-primary",
+  [string]$NewPrimaryHost = "mysql-replica",
+  [int]$NewPrimaryPort = 3306,
   [string]$ReplicationUser = "repl",
   [string]$ReplicationPassword = "replpass"
 )
@@ -8,9 +9,11 @@ param(
 $sql = @"
 STOP REPLICA;
 RESET REPLICA ALL;
+SET GLOBAL read_only = OFF;
+SET GLOBAL super_read_only = OFF;
 CHANGE REPLICATION SOURCE TO
-  SOURCE_HOST='$PrimaryHost',
-  SOURCE_PORT=3306,
+  SOURCE_HOST='$NewPrimaryHost',
+  SOURCE_PORT=$NewPrimaryPort,
   SOURCE_USER='$ReplicationUser',
   SOURCE_PASSWORD='$ReplicationPassword',
   SOURCE_AUTO_POSITION=1,
@@ -21,4 +24,4 @@ SET GLOBAL super_read_only = ON;
 SHOW REPLICA STATUS\G
 "@
 
-docker exec -i $ReplicaContainer mysql -uroot -proot -e $sql
+docker exec -i $OldPrimaryContainer mysql -uroot -proot -e $sql
