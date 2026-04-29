@@ -45,7 +45,7 @@ Cần thực hiện trên một máy đã cài MySQL hoặc đang chạy Docker 
 1. Tạo database `lms`
 2. Chạy schema `backend/lms.sql`
 3. Chạy seed SQL
-4. Chạy các truy vấn trong `docs/sql/explain_queries.sql`
+4. Chạy các truy vấn trong `docs/optimization/sql/explain_queries.sql`
 5. Chụp màn hình kết quả `EXPLAIN`
 6. Chạy backup/restore và chụp minh chứng
 

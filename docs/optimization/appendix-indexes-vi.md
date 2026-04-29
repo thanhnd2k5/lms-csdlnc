@@ -26,18 +26,21 @@ Nguồn đối chiếu chính: `backend/lms.sql`
 | `video_completion` | `UNIQUE (user_id, video_id)` | Tránh đánh dấu hoàn thành trùng |
 | `course_reviews` | `unique_user_course_review (user_id, course_id)` | Mỗi học viên chỉ đánh giá một khóa học một lần |
 
-## 3. Các chỉ mục đề xuất bổ sung
+## 3. Các chỉ mục có trong lược đồ chính thức nhưng không có trong cấu hình before
 
 | Bảng | Cột | Lý do |
 |---|---|---|
-| `courses` | `teacher_id` | Thường xuyên join và lọc theo giảng viên |
-| `videos` | `course_id` | Thường xuyên lấy video theo khóa học |
-| `documents` | `course_id` | Thường xuyên lấy tài liệu theo khóa học |
-| `course_enrollments` | `course_id` | Hỗ trợ thống kê số học viên theo khóa học |
-| `video_completion` | `video_id` | Hỗ trợ thống kê tiến độ học tập |
+| `users` | `role` | Hỗ trợ lọc người dùng theo vai trò |
+| `courses` | `is_public` | Hỗ trợ lọc khóa học công khai |
+| `chapters` | `course_id, order_index` | Hỗ trợ lấy và sắp xếp chương theo khóa học |
+| `videos` | `chapter_id` | Hỗ trợ lấy video theo chương |
+| `quizzes` | `quiz_type` | Hỗ trợ lọc bài kiểm tra theo phạm vi gắn |
+| `quiz_attempts` | `user_id, quiz_id` | Hỗ trợ tra cứu bài làm theo học viên và bài kiểm tra |
+| `classes` | `class_code` | Hỗ trợ tìm lớp theo mã lớp |
+| `course_reviews` | `course_id, rating` | Hỗ trợ truy vấn thống kê đánh giá |
 
 ## 4. Cách viết vào báo cáo
 
 Có thể trình bày:
 
-“Schema hiện tại đã có một số chỉ mục cơ bản phục vụ các truy vấn nghiệp vụ quan trọng. Tuy nhiên, để nâng cao hiệu năng khi dữ liệu tăng lên, hệ thống có thể bổ sung thêm một số chỉ mục trên các cột join và cột lọc thường xuyên, đặc biệt trong các bảng giao dịch và thống kê.”
+“Để đánh giá tác động của chỉ mục đối với hiệu năng truy vấn, báo cáo sử dụng hai cấu hình thực nghiệm: cấu hình before với lược đồ giản lược chỉ mục và cấu hình after là lược đồ chính thức của hệ thống. Việc so sánh hai cấu hình này giúp làm rõ vai trò của các chỉ mục đã được thiết kế trong schema hiện tại.”

@@ -33,7 +33,7 @@ Mục đích:
 
 Anh cần chạy:
 
-- [explain_queries.sql](/D:/lms-csdlnc/docs/sql/explain_queries.sql)
+- [explain_queries.sql](/D:/lms-csdlnc/docs/optimization/sql/explain_queries.sql)
 
 Mục đích:
 
@@ -126,7 +126,7 @@ Nếu anh muốn đi nhanh, làm theo đúng thứ tự này:
 1. Dùng [final-report-draft-vi.md](/D:/lms-csdlnc/docs/final-report-draft-vi.md) làm bản chính
 2. Import `backend/lms.sql`
 3. Chạy [seed.sql](/D:/lms-csdlnc/docs/sql/seed.sql)
-4. Chạy [explain_queries.sql](/D:/lms-csdlnc/docs/sql/explain_queries.sql)
+4. Chạy [explain_queries.sql](/D:/lms-csdlnc/docs/optimization/sql/explain_queries.sql)
 5. Chạy backup/restore
 6. Chụp ảnh ứng dụng
 7. Chèn hình vào báo cáo

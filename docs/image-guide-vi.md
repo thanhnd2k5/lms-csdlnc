@@ -88,9 +88,9 @@ Gợi ý chú thích:
 - nếu có, ảnh so sánh trước và sau khi thêm chỉ mục
 
 Cách thực hiện:
-1. Chạy các truy vấn trong [explain_queries.sql](/D:/lms-csdlnc/docs/sql/explain_queries.sql).
+1. Chạy các truy vấn trong [explain_queries.sql](/D:/lms-csdlnc/docs/optimization/sql/explain_queries.sql).
 2. Chạy `SHOW INDEX FROM <ten_bang>;` với các bảng cần minh họa.
-3. Nếu làm phần đo hiệu năng, chạy thêm script trong `performance_before_after.sql`.
+3. Nếu làm phần đo hiệu năng, chạy thêm script trong `docs/optimization/sql/performance_before_after.sql`.
 4. Chụp ảnh vùng kết quả sao cho thấy rõ:
    - tên truy vấn
    - cột chỉ mục hoặc kế hoạch thực thi

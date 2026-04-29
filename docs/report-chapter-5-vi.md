@@ -18,6 +18,8 @@ Khi trình bày trong báo cáo, có thể tổng hợp các chỉ mục này th
 
 Trong số đó, lệnh `EXPLAIN` được sử dụng để phân tích cách hệ quản trị cơ sở dữ liệu xây dựng kế hoạch thực thi truy vấn. Nói cách khác, `EXPLAIN` giúp người thực hiện biết được hệ quản trị đang quét bảng như thế nào, có sử dụng chỉ mục hay không và truy vấn có dấu hiệu kém hiệu quả ở đâu. Vì vậy, đây là công cụ phù hợp để minh chứng cho phần tối ưu trong báo cáo môn học.
 
+Trong phần thực nghiệm, báo cáo sử dụng hai cấu hình để so sánh. Cấu hình thứ nhất là lược đồ giản lược chỉ mục, chỉ giữ các ràng buộc nền tảng cần thiết để hệ thống hoạt động đúng. Cấu hình thứ hai là lược đồ chính thức của hệ thống, được lấy từ file `lms.sql`, trong đó đã bao gồm các chỉ mục phục vụ truy vấn nghiệp vụ. Việc so sánh hai cấu hình này giúp làm rõ vai trò của các chỉ mục trong thiết kế hiện tại mà không cần tự tạo thêm một bộ chỉ mục ngoài schema chuẩn.
+
 `[Chèn Hình 5.1. Kết quả EXPLAIN tại đây]`
 
 ## 5.4. Nhận xét về hiệu năng của lược đồ
