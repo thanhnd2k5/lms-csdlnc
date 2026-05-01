@@ -1,6 +1,6 @@
 const User = require('../models/userModel');
-const fs = require('fs').promises;
 const path = require('path');
+const fileHelper = require('../utils/fileHelper');
 
 const getProfile = async (req, res) => {
   try {
@@ -64,12 +64,7 @@ const uploadAvatar = async (req, res) => {
     // Kiểm tra và xóa avatar cũ nếu có
     const currentAvatar = await User.getCurrentAvatar(userId);
     if (currentAvatar) {
-      const oldAvatarPath = path.join(__dirname, '../../uploads/avatars', path.basename(currentAvatar));
-      try {
-        await fs.unlink(oldAvatarPath);
-      } catch (error) {
-        console.error('Error deleting old avatar:', error);
-      }
+      await fileHelper.deleteFile(currentAvatar);
     }
 
     // Tạo đường dẫn cho avatar mới

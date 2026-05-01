@@ -566,6 +566,37 @@ const lms = {
         });
     },
 
+    getDocumentsByChapterId: (chapterId) => {
+        return new Promise((resolve, reject) => {
+            db.query(
+                'SELECT * FROM documents WHERE chapter_id = ?',
+                [chapterId],
+                (error, results) => {
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
+                    resolve(results);
+                }
+            );
+        });
+    },
+
+    getDocumentsByVideoId: (videoId) => {
+        return new Promise((resolve, reject) => {
+            db.query(
+                'SELECT * FROM documents WHERE video_id = ?',
+                [videoId],
+                (error, results) => {
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
+                    resolve(results);
+                }
+            );
+        });
+    },
 }
 
 

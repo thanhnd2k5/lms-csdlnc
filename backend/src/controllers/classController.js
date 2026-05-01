@@ -1,4 +1,5 @@
 const classModel = require('../models/classModel');
+const fileHelper = require('../utils/fileHelper');
 
 const classController = {
     // Lấy danh sách tất cả lớp học của giáo viên
@@ -95,6 +96,16 @@ const classController = {
             const teacherId = req.user.id;
             const { name, description, max_students, requires_password, password, status, thumbnail } = req.body;
 
+            // Lấy thông tin lớp học hiện tại để kiểm tra thumbnail cũ
+            const currentClass = await classModel.getClassById(classId, teacherId);
+            if (!currentClass) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Không tìm thấy lớp học hoặc bạn không có quyền truy cập'
+                });
+            }
+
+            const oldThumbnail = currentClass.thumbnail;
             const classData = {
                 name,
                 description,
@@ -106,11 +117,10 @@ const classController = {
             };
 
             const updatedClass = await classModel.updateClass(classId, teacherId, classData);
-            if (!updatedClass) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'Không tìm thấy lớp học hoặc bạn không có quyền truy cập'
-                });
+            
+            // Nếu update DB thành công và thumbnail thay đổi, xóa file cũ
+            if (updatedClass && thumbnail && oldThumbnail && thumbnail !== oldThumbnail) {
+                await fileHelper.deleteFile(oldThumbnail);
             }
 
             res.json({
@@ -133,12 +143,23 @@ const classController = {
             const { classId } = req.params;
             const teacherId = req.user.id;
 
-            const result = await classModel.deleteClass(classId, teacherId);
-            if (!result) {
+            // Lấy thông tin lớp học trước khi xóa để lấy đường dẫn thumbnail
+            const classInfo = await classModel.getClassById(classId, teacherId);
+            if (!classInfo) {
                 return res.status(404).json({
                     success: false,
                     message: 'Không tìm thấy lớp học hoặc bạn không có quyền truy cập'
                 });
+            }
+
+            const thumbnailToDelete = classInfo.thumbnail;
+
+            // Xóa record trong database
+            const result = await classModel.deleteClass(classId, teacherId);
+            
+            // Nếu xóa DB thành công, tiến hành xóa file thumbnail
+            if (result && thumbnailToDelete) {
+                await fileHelper.deleteFile(thumbnailToDelete);
             }
 
             res.json({

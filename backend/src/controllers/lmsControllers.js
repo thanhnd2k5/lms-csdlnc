@@ -1,5 +1,6 @@
 const lms = require('../models/lms');
 const document = require('../models/document');
+const fileHelper = require('../utils/fileHelper');
 
 const getAllCourses = async (req, res) => {
     try {
@@ -148,16 +149,32 @@ const deleteCourse = async (req, res) => {
     try {
         const courseId = req.params.courseId;
 
-        // Kiểm tra khóa học có tồn tại không (chỉ để trả về đúng lỗi 404 nếu cần, 
-        // mặc dù middleware đã kiểm tra, nhưng middleware ném lỗi 404 cho course 
-        // nên đoạn này có thể bỏ qua hoặc giữ lại để chắc chắn)
         const course = await lms.getCourseById(courseId);
         if (!course) {
             return res.status(404).json({ message: 'Không tìm thấy khóa học' });
         }
 
-        // Xóa course
+        // Thu thập danh sách file cần xóa TRƯỚC KHI xóa trong DB
+        // 1. Thumbnail của khóa học
+        const filesToDelete = [];
+        if (course.thumbnail) {
+            filesToDelete.push(course.thumbnail);
+        }
+
+        // 2. Toàn bộ documents của khóa học (bao gồm documents của các videos/chapters thuộc khóa học)
+        // Vì bảng documents có course_id nên lms.getDocumentsByCourseId sẽ lấy hết
+        const courseDocuments = await lms.getDocumentsByCourseId(courseId);
+        courseDocuments.forEach(doc => {
+            if (doc.file_path) {
+                filesToDelete.push(doc.file_path);
+            }
+        });
+
+        // Thực hiện xóa Course trong DB (Cascade sẽ tự động xóa chapters, videos, documents record)
         await lms.deleteCourse(courseId);
+
+        // Xóa file vật lý sau khi DB đã sạch
+        await fileHelper.deleteMultipleFiles(filesToDelete);
 
         res.status(200).json({ message: 'Xóa khóa học thành công' });
     } catch (error) {
@@ -177,6 +194,7 @@ const updateCourse = async (req, res) => {
         }
 
         const { title, description, thumbnail, is_public, level, requirements, highlights } = req.body;
+        const oldThumbnail = course.thumbnail;
 
         const updatedCourse = await lms.updateCourse(courseId, {
             title,
@@ -187,6 +205,11 @@ const updateCourse = async (req, res) => {
             requirements: requirements ? JSON.stringify(requirements) : course.requirements,
             highlights: highlights ? JSON.stringify(highlights) : course.highlights
         });
+
+        // Nếu thumbnail thay đổi, xóa file cũ
+        if (thumbnail && oldThumbnail && thumbnail !== oldThumbnail) {
+            await fileHelper.deleteFile(oldThumbnail);
+        }
 
         res.status(200).json(updatedCourse);
     } catch (error) {
@@ -250,7 +273,16 @@ const deleteChapter = async (req, res) => {
     try {
         const chapterId = req.params.chapterId;
 
+        // Lấy danh sách tài liệu của chương trước khi xóa
+        const chapterDocs = await lms.getDocumentsByChapterId(chapterId);
+        const filesToDelete = chapterDocs.map(doc => doc.file_path).filter(path => !!path);
+
+        // Xóa chương trong DB
         await lms.deleteChapter(chapterId);
+
+        // Dọn dẹp file sau khi DB thành công
+        await fileHelper.deleteMultipleFiles(filesToDelete);
+
         res.status(200).json({ message: 'Xóa chương thành công' });
     } catch (error) {
         console.error('Error deleting chapter:', error);
@@ -309,7 +341,16 @@ const deleteVideo = async (req, res) => {
     try {
         const videoId = req.params.videoId;
 
+        // Lấy danh sách tài liệu của video trước khi xóa
+        const videoDocs = await lms.getDocumentsByVideoId(videoId);
+        const filesToDelete = videoDocs.map(doc => doc.file_path).filter(path => !!path);
+
+        // Xóa video trong DB
         await lms.deleteVideo(videoId);
+
+        // Dọn dẹp file sau khi DB thành công
+        await fileHelper.deleteMultipleFiles(filesToDelete);
+
         res.status(200).json({ message: 'Xóa video thành công' });
     } catch (error) {
         console.error('Error deleting video:', error);

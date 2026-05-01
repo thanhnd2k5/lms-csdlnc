@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const document = require('../models/document');
 const lms = require('../models/lms');
+const fileHelper = require('../utils/fileHelper');
 
 // Cấu hình multer để lưu file
 const storage = multer.diskStorage({
@@ -57,19 +58,19 @@ const documentController = {
             const { courseId, chapterId, videoId, title } = req.body;
             
             if (!courseId) {
-                if (req.file && req.file.path) fs.unlinkSync(req.file.path);
+                if (req.file && req.file.path) await fileHelper.deleteFile(req.file.path);
                 return res.status(400).json({ message: 'Course ID is required' });
             }
 
             // Kiểm tra quyền sở hữu khóa học
             const courseDataFromDb = await lms.getCourseById(courseId);
             if (!courseDataFromDb) {
-                if (req.file && req.file.path) fs.unlinkSync(req.file.path);
+                if (req.file && req.file.path) await fileHelper.deleteFile(req.file.path);
                 return res.status(404).json({ message: 'Course not found' });
             }
 
             if (req.user.role !== 'admin' && courseDataFromDb.teacher_id !== req.user.id) {
-                if (req.file && req.file.path) fs.unlinkSync(req.file.path);
+                if (req.file && req.file.path) await fileHelper.deleteFile(req.file.path);
                 return res.status(403).json({ message: 'You do not have permission to upload documents to this course' });
             }
 
@@ -94,7 +95,7 @@ const documentController = {
             console.error('Error uploading document:', error);
             // Xóa file nếu có lỗi xảy ra khi lưu vào database
             if (req.file && req.file.path) {
-                fs.unlinkSync(req.file.path);
+                await fileHelper.deleteFile(req.file.path);
             }
             res.status(500).json({ message: 'Internal server error' });
         }
@@ -141,13 +142,13 @@ const documentController = {
                 return res.status(404).json({ message: 'Document not found' });
             }
 
-            // Xóa file vật lý
-            if (fs.existsSync(doc.file_path)) {
-                fs.unlinkSync(doc.file_path);
-            }
+            const filePathToDelete = doc.file_path;
 
-            // Xóa record trong database
+            // Xóa record trong database trước để đảm bảo tính toàn vẹn
             await document.deleteDocument(documentId);
+
+            // Xóa file vật lý sau khi DB đã được cập nhật thành công
+            await fileHelper.deleteFile(filePathToDelete);
 
             res.json({ message: 'Document deleted successfully' });
         } catch (error) {
