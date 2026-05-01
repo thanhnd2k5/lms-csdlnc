@@ -1,7 +1,7 @@
 {
     "activeWriteHost":  "127.0.0.1",
-    "activeWritePort":  3307,
-    "lastFailoverAt":  null,
+    "activeWritePort":  3308,
+    "standbyHost":  "127.0.0.1",
     "standbyPort":  3307,
-    "standbyHost":  "127.0.0.1"
+    "lastFailoverAt":  "2026-04-29T18:44:56.746Z"
 }

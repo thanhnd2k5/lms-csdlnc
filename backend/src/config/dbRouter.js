@@ -117,12 +117,20 @@ class DbRouter {
 
     return {
       active: {
-        host: state.activeWriteHost || configured.active.host,
-        port: Number(state.activeWritePort || configured.active.port),
+        host:
+          state.activeWriteHost !== undefined ? state.activeWriteHost : configured.active.host,
+        port:
+          state.activeWritePort !== undefined
+            ? Number(state.activeWritePort)
+            : configured.active.port,
       },
       standby: {
-        host: state.standbyHost || configured.standby.host,
-        port: Number(state.standbyPort || configured.standby.port),
+        host:
+          state.standbyHost !== undefined ? state.standbyHost : configured.standby.host,
+        port:
+          state.standbyPort !== undefined
+            ? (state.standbyPort === null ? null : Number(state.standbyPort))
+            : configured.standby.port,
       },
     };
   }

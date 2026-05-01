@@ -39,16 +39,28 @@ function getTopologyState() {
 
   return {
     active: {
-      host: state.activeWriteHost || nodes.configuredPrimary.host,
-      port: Number(state.activeWritePort || nodes.configuredPrimary.port),
+      host:
+        state.activeWriteHost !== undefined
+          ? state.activeWriteHost
+          : nodes.configuredPrimary.host,
+      port:
+        state.activeWritePort !== undefined
+          ? Number(state.activeWritePort)
+          : nodes.configuredPrimary.port,
       user: nodes.configuredPrimary.user,
       password: nodes.configuredPrimary.password,
       database: nodes.configuredPrimary.database,
       useSsl: nodes.configuredPrimary.useSsl,
     },
     standby: {
-      host: state.standbyHost || nodes.configuredReplica.host,
-      port: Number(state.standbyPort || nodes.configuredReplica.port),
+      host:
+        state.standbyHost !== undefined
+          ? state.standbyHost
+          : nodes.configuredReplica.host,
+      port:
+        state.standbyPort !== undefined
+          ? (state.standbyPort === null ? null : Number(state.standbyPort))
+          : nodes.configuredReplica.port,
       user: nodes.configuredReplica.user,
       password: nodes.configuredReplica.password,
       database: nodes.configuredReplica.database,
@@ -124,8 +136,8 @@ class FailoverManager {
       const nextState = writeState({
         activeWriteHost: topology.standby.host,
         activeWritePort: topology.standby.port,
-        standbyHost: topology.standby.host,
-        standbyPort: topology.standby.port,
+        standbyHost: null,
+        standbyPort: null,
         lastFailoverAt: new Date().toISOString(),
       });
 
