@@ -8,6 +8,7 @@ Tài liệu này chốt cách thực hiện phần benchmark chỉ mục trong C
 - Cấu hình `after` trong thực nghiệm chính là lược đồ chính thức này.
 - Không tự bổ sung thêm chỉ mục ngoài những gì đã có trong `lms.sql`.
 - Cấu hình `before` chỉ dùng cho mục đích benchmark, được xây dựng bằng cách bỏ các chỉ mục tối ưu tường minh nhưng vẫn giữ `PRIMARY KEY`, `UNIQUE` và `FOREIGN KEY` cần thiết.
+- Vì vậy, khi chọn truy vấn benchmark, nên ưu tiên các truy vấn dùng trực tiếp các chỉ mục chỉ xuất hiện ở `after`, tránh các truy vấn chủ yếu dựa vào `PRIMARY KEY` hoặc `UNIQUE` vốn đã tồn tại ở cả hai cấu hình.
 
 ## 2. Hai cấu hình dùng để đo hiệu năng
 
@@ -43,6 +44,11 @@ Dùng file:
 7. Nạp lại cùng bộ dữ liệu mẫu.
 8. Chạy lại đúng các truy vấn benchmark như ở bước 4.
 9. So sánh kết quả giữa hai cấu hình.
+
+Gợi ý lựa chọn:
+- Nên ưu tiên các truy vấn nhiều bảng nhưng vẫn có điều kiện lọc bám sát các chỉ mục chỉ tồn tại ở `after`, ví dụ `users.role`, `courses.is_public`, `quizzes.quiz_type`, `quiz_attempts(user_id, quiz_id)`, `chapters(course_id, order_index)`.
+- Có thể giữ thêm một truy vấn phụ gọn hơn trên `course_reviews(course_id, rating)` để chụp rất rõ hiệu ứng của composite index.
+- Không nên dùng truy vấn `class_code` làm ví dụ chính vì `UNIQUE` trên `class_code` đã tồn tại ngay cả trong cấu hình `before`.
 
 ## 4. Ý nghĩa học thuật của cách làm này
 

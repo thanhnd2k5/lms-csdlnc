@@ -16,8 +16,10 @@ Chỉ nên chọn 1 đến 2 truy vấn tiêu biểu để phần này gọn mà
 
 Khuyến nghị:
 
-1. Truy vấn thống kê số học viên theo khóa học
-2. Truy vấn tiến độ học tập của học viên
+1. Truy vấn báo cáo kết quả học tập của học viên theo khóa học công khai
+2. Truy vấn phân rã tiến độ học tập của học viên theo từng chương
+
+Có thể dùng thêm truy vấn phân bố đánh giá theo `course_id` và `rating` như ví dụ bổ sung để chụp rất rõ tác dụng của composite index.
 
 ## 3. Cách thực hiện
 
@@ -64,8 +66,8 @@ Nên có một bảng so sánh:
 
 | Truy vấn | Trạng thái | Chỉ mục sử dụng | Thời gian thực thi | Nhận xét |
 |---|---|---|---|---|
-| Thống kê học viên theo khóa học | Before | ... | ... ms | Quét nhiều dữ liệu hơn |
-| Thống kê học viên theo khóa học | After | ... | ... ms | Kế hoạch truy vấn tốt hơn |
+| Báo cáo kết quả học tập của học viên | Before | ... | ... ms | Quét và nối nhiều dữ liệu hơn |
+| Báo cáo kết quả học tập của học viên | After | ... | ... ms | Tận dụng tốt hơn các chỉ mục lọc và nối |
 
 ## 7. Nếu chênh lệch thời gian không lớn
 
@@ -73,8 +75,9 @@ Nên có một bảng so sánh:
 
 Khi đó nên viết:
 
-- Trên tập dữ liệu thử nghiệm có kích thước nhỏ, sự khác biệt về thời gian chưa quá rõ rệt.
-- Tuy nhiên, kết quả `EXPLAIN` cho thấy kế hoạch truy vấn đã được cải thiện nhờ hệ quản trị sử dụng chỉ mục thay vì quét toàn bảng hoặc giảm mức độ quét dữ liệu.
+- Trên tập dữ liệu thử nghiệm có kích thước nhỏ, sự khác biệt về thời gian có thể chưa quá rõ rệt.
+- Tuy nhiên, kết quả `EXPLAIN` vẫn có ý nghĩa nếu cho thấy hệ quản trị giảm `filesort`, giảm mức độ quét dữ liệu, hoặc sử dụng composite index đúng với cột lọc và sắp xếp.
+- Nếu mục tiêu là chứng minh chênh lệch thời gian rõ ràng, nên tăng thêm dữ liệu ở các bảng `quiz_attempts`, `course_enrollments`, `video_completion`, `course_reviews` trước khi chạy benchmark.
 
 ## 8. Kết luận gợi ý
 

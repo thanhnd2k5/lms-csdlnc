@@ -2,7 +2,7 @@
 
 Anh có thể copy bảng này vào báo cáo sau khi chạy thực tế.
 
-## 1. Truy vấn thống kê số học viên theo khóa học
+## 1. Truy vấn báo cáo kết quả học tập của học viên theo khóa học công khai
 
 | Tiêu chí | Before | After |
 |---|---|---|
@@ -17,7 +17,22 @@ Nhận xét gợi ý:
 - After:
   - ...
 
-## 2. Truy vấn tiến độ học tập của học viên
+## 2. Truy vấn phân rã tiến độ học tập của học viên theo từng chương
+
+| Tiêu chí | Before | After |
+|---|---|---|
+| Chỉ mục sử dụng | ... | ... |
+| Thời gian thực thi | ... ms | ... ms |
+| Nhận xét `EXPLAIN` | ... | ... |
+
+Nhận xét gợi ý:
+
+- Before:
+  - ...
+- After:
+  - ...
+
+## 3. Truy vấn bổ sung: phân bố đánh giá của một khóa học theo mức sao
 
 | Tiêu chí | Before | After |
 |---|---|---|
