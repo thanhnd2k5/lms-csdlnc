@@ -419,13 +419,13 @@ Bên cạnh full backup, hệ thống cần bật `binary log` trong MySQL để
 
 ### 6.4. Phục hồi dữ liệu
 
-Trong trường hợp cần khôi phục dữ liệu, bản full backup có thể được nạp lại vào một cơ sở dữ liệu phục hồi riêng để kiểm tra trước khi áp dụng cho môi trường chính. Ví dụ:
+Trong trường hợp cần khôi phục dữ liệu, quá trình phục hồi có thể được thực hiện theo hai bước. Trước hết, bản `full backup` được nạp lại vào một cơ sở dữ liệu phục hồi riêng để tái tạo trạng thái dữ liệu tại thời điểm sao lưu. Ví dụ:
 
 ```powershell
 mysql -u root -p lms_restore < lms_backup_2026_05_02.sql
 ```
 
-Nếu cần phục hồi đến thời điểm gần hơn với lúc xảy ra sự cố, có thể áp dụng thêm các thay đổi được lưu trong `binary log`. Trong phạm vi báo cáo, không nhất thiết phải trình diễn toàn bộ quy trình `point-in-time recovery`, nhưng cần nêu rõ đây là thành phần giúp chiến lược sao lưu có chiều sâu hơn so với restore từ một file SQL đơn lẻ.
+Sau khi khôi phục từ bản sao lưu toàn phần, nếu cần đưa dữ liệu tiến gần hơn tới thời điểm xảy ra sự cố, có thể áp dụng thêm các thay đổi được lưu trong `binary log` bằng công cụ `mysqlbinlog`. Cách làm này cho phép phục hồi theo hướng `point-in-time recovery`, thay vì chỉ dừng ở trạng thái của bản sao lưu toàn phần. Về nguyên tắc, cơ sở dữ liệu được phục hồi từ `full backup` sẽ đóng vai trò nền ban đầu, sau đó các thay đổi phát sinh sau thời điểm backup được phát lại từ log để tái tạo trạng thái dữ liệu mới hơn.
 
 Sau khi restore, cần kiểm tra lại:
 
@@ -434,9 +434,13 @@ Sau khi restore, cần kiểm tra lại:
 - dữ liệu tiếng Việt hoặc dữ liệu có dấu không bị lỗi mã hóa;
 - các truy vấn nghiệp vụ cơ bản vẫn thực thi được trên cơ sở dữ liệu đã phục hồi.
 
-Việc kiểm tra restore là bước quan trọng vì một bản sao lưu chỉ thực sự có giá trị khi có thể khôi phục thành công. Do đó, chiến lược sao lưu không chỉ dừng ở bước tạo file backup mà còn phải bao gồm kiểm tra khả năng phục hồi định kỳ.
+Việc kiểm tra restore là bước quan trọng vì một bản sao lưu chỉ thực sự có giá trị khi có thể khôi phục thành công. Do đó, chiến lược sao lưu không chỉ dừng ở bước tạo file backup mà còn phải bao gồm kiểm tra khả năng phục hồi định kỳ, cũng như khả năng tái áp dụng các thay đổi mới hơn từ `binary log` khi cần.
 
-`[Chèn Hình 6.3. Lệnh restore và kết quả tại đây]`
+`[Chèn Hình 6.3. Khôi phục dữ liệu từ full backup tại đây]`
+
+`[Chèn Hình 6.4. Kiểm tra dữ liệu sau khi restore full backup tại đây]`
+
+`[Chèn Hình 6.5. Áp dụng binary log và kiểm tra dữ liệu sau phục hồi tại đây]`
 
 ### 6.5. Kết luận
 

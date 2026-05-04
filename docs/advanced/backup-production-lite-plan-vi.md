@@ -4,11 +4,12 @@ Tài liệu này dùng làm phần hướng dẫn kỹ thuật và checklist tri
 
 ## 1. Mục tiêu kỹ thuật
 
-Phương án được chốt gồm ba lớp:
+Phương án được chốt gồm bốn lớp:
 
 1. Tạo `full backup` định kỳ bằng `mysqldump`.
 2. Bật `binary log` để lưu lại các thay đổi giữa hai lần full backup.
 3. Kiểm tra khả năng phục hồi bằng cách restore sang một database khác.
+4. Áp dụng `binary log` để chứng minh khả năng phục hồi tới trạng thái mới hơn sau thời điểm backup.
 
 Những gì không đặt làm mục tiêu chính trong vòng này:
 
@@ -99,13 +100,28 @@ Sau khi restore, nên kiểm tra:
 - dữ liệu tiếng Việt không bị lỗi mã hóa;
 - truy vấn nghiệp vụ cơ bản vẫn chạy được.
 
-### 5.4. Bước 4: Ghi nhận hướng phục hồi sâu hơn
+### 5.4. Bước 4: Áp dụng binary log sau full restore
 
-Nếu muốn phần trình bày chắc hơn, có thể ghi chú thêm:
+Sau khi restore `full backup` vào `lms_restore`, có thể áp dụng thêm các thay đổi phát sinh sau thời điểm backup bằng công cụ `mysqlbinlog`.
 
-- sau khi restore full backup, hệ thống còn có thể áp dụng thêm dữ liệu từ `binary log`;
-- đây là nền tảng của `point-in-time recovery`;
-- trong phạm vi môn học, có thể mô tả nguyên lý mà không cần demo đầy đủ.
+Ý tưởng thực hiện:
+
+- xác định `File` và `Position` của `SHOW MASTER STATUS` ngay sau thời điểm backup;
+- tạo một thay đổi dữ liệu nhỏ sau backup trên database `lms`;
+- restore `full backup` vào `lms_restore`;
+- dùng `mysqlbinlog` để phát lại các thay đổi sau mốc backup vào `lms_restore`;
+- kiểm tra lại dữ liệu để xác nhận thay đổi đã được khôi phục.
+
+Ví dụ dạng lệnh:
+
+```powershell
+mysqlbinlog --start-position=BACKUP_LOG_POSITION BACKUP_LOG_FILE | mysql -u root -p lms_restore
+```
+
+Trong đó:
+
+- `BACKUP_LOG_POSITION` là vị trí log được ghi nhận ngay sau khi tạo `full backup`;
+- `BACKUP_LOG_FILE` là file binlog tương ứng tại thời điểm đó.
 
 ## 6. Minh chứng cần chụp
 
@@ -113,15 +129,18 @@ Bộ ảnh nên chuẩn bị gồm:
 
 - lệnh `mysqldump` và file `.sql` sau khi backup;
 - cấu hình hoặc danh sách file `binary log`;
+- thay đổi dữ liệu phát sinh sau thời điểm backup;
 - lệnh restore vào `lms_restore`;
-- danh sách bảng trong `lms_restore`;
-- một vài truy vấn đếm dữ liệu sau khi phục hồi.
+- danh sách bảng hoặc dữ liệu kiểm tra trong `lms_restore` sau full restore;
+- kết quả sau khi áp dụng `binary log` vào `lms_restore`.
 
-Nếu muốn bài nhìn gọn và chắc, chỉ cần 3 hình chính:
+Nếu muốn bài nhìn gọn và chắc, có thể dùng 5 hình chính:
 
 1. Hình backup thành công
-2. Hình binary log
-3. Hình restore thành công
+2. Hình kiểm tra binary log
+3. Hình thay đổi dữ liệu sau backup
+4. Hình restore full backup
+5. Hình áp dụng binary log và kiểm tra kết quả
 
 ## 7. Cách viết lại vào báo cáo
 
@@ -130,7 +149,7 @@ Khi đưa vào Chương 6, chỉ nên giữ:
 - lý do cần backup;
 - chiến lược `full backup + binary log`;
 - một ví dụ backup;
-- một ví dụ restore;
+- quy trình phục hồi gồm restore full backup và áp dụng `binary log`;
 - kết luận ngắn về ưu điểm và giới hạn.
 
 Không nên đưa toàn bộ checklist triển khai, vì phần đó thuộc tài liệu hỗ trợ chứ không phải văn bản báo cáo.
@@ -150,5 +169,6 @@ Không nên đưa toàn bộ checklist triển khai, vì phần đó thuộc tà
 2. Tạo full backup bằng `mysqldump`.
 3. Kiểm tra `binary log`.
 4. Restore sang `lms_restore`.
-5. Chụp hình minh chứng.
-6. Chèn hình vào Chương 6 trong báo cáo.
+5. Áp dụng `binary log` vào `lms_restore`.
+6. Chụp hình minh chứng.
+7. Chèn hình vào Chương 6 trong báo cáo.
