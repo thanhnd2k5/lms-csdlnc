@@ -45,17 +45,22 @@ Mục đích:
 Anh cần tự chạy trên máy có MySQL:
 
 ```powershell
-mysqldump -u root -p lms > lms_backup.sql
+mysqldump -u root -p --single-transaction --routines --triggers lms > lms_backup_2026_05_02.sql
 ```
 
 ```powershell
-mysql -u root -p lms_restore < lms_backup.sql
+mysql -u root -p lms_restore < lms_backup_2026_05_02.sql
 ```
 
 Mục đích:
 
 - Chụp minh chứng cho Chương 6
 - Làm phần backup/restore thuyết phục hơn
+
+Tham khảo thêm:
+
+- [Kế hoạch backup production-lite](/D:/lms-csdlnc/docs/advanced/backup-production-lite-plan-vi.md)
+- [Checklist minh chứng Chương 6](/D:/lms-csdlnc/docs/advanced/backup-evidence-checklist-vi.md)
 
 ### 1.5. Chụp ảnh giao diện ứng dụng
 
