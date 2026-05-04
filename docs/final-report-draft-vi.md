@@ -374,7 +374,7 @@ Chiến lược này hướng tới ba mục tiêu chính:
 
 - giảm nguy cơ mất dữ liệu khi xảy ra lỗi thao tác, lỗi phần mềm hoặc hỏng môi trường chạy;
 - bảo đảm có thể phục hồi lại trạng thái dữ liệu gần nhất trong thời gian ngắn;
-- tạo được minh chứng rõ ràng cho quy trình backup và restore trong báo cáo.
+- hỗ trợ phục hồi dữ liệu về trạng thái gần thời điểm xảy ra sự cố.
 
 Trong ngữ cảnh hệ thống LMS, nhóm dữ liệu cần ưu tiên bảo vệ gồm:
 
