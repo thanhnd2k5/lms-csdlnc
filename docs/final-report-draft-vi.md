@@ -333,7 +333,7 @@ Nếu không quan tâm đến tối ưu truy vấn ngay từ giai đoạn thiế
 
 Trong lược đồ chính thức của hệ thống, các bảng đều được thiết kế với khóa chính, khóa ngoại và một số chỉ mục phục vụ trực tiếp cho truy vấn nghiệp vụ. Khóa chính giúp định danh duy nhất từng bản ghi và hỗ trợ truy vấn theo `id`. Khóa ngoại giúp duy trì toàn vẹn tham chiếu giữa các bảng như khóa học, chương, video, ghi danh và bài kiểm tra. Bên cạnh đó, các chỉ mục tường minh được bổ sung trên những cột thường xuyên xuất hiện trong điều kiện lọc, sắp xếp hoặc nối bảng.
 
-Điểm quan trọng là chương này không tạo thêm một bộ chỉ mục mới ngoài lược đồ chính thức. Cấu hình `after` chính là schema thật của hệ thống trong file `backend/lms.sql`. Cấu hình `before` chỉ là schema phục vụ thực nghiệm, được giản lược các chỉ mục tối ưu tường minh nhưng vẫn giữ các ràng buộc nền tảng như `PRIMARY KEY`, `UNIQUE` và `FOREIGN KEY`. Cách làm này giúp chứng minh rằng các chỉ mục đã có trong thiết kế hiện tại thực sự có tác dụng đối với hiệu năng truy vấn.
+Điểm quan trọng là chương này không tạo thêm một bộ chỉ mục mới ngoài lược đồ chính thức. Cấu hình sau tối ưu sử dụng đúng lược đồ chính thức của hệ thống, còn cấu hình trước tối ưu chỉ là lược đồ phục vụ thực nghiệm, được giản lược các chỉ mục tối ưu tường minh nhưng vẫn giữ các ràng buộc nền tảng như `PRIMARY KEY`, `UNIQUE` và `FOREIGN KEY`. Cách làm này giúp chứng minh rằng các chỉ mục đã có trong thiết kế hiện tại thực sự có tác dụng đối với hiệu năng truy vấn.
 
 ### 5.3. Danh sách chỉ mục và mục đích sử dụng
 
@@ -365,14 +365,9 @@ Như vậy, hệ thống không chỉ dựa vào khóa chính mà còn có các 
 
 ### 5.4. Thiết lập thực nghiệm before/after
 
-Để đánh giá tác động của chỉ mục, báo cáo sử dụng hai cấu hình thực nghiệm:
+Để đánh giá tác động của chỉ mục, báo cáo sử dụng phương pháp so sánh trước và sau khi áp dụng các chỉ mục tối ưu. Ở cấu hình trước tối ưu, lược đồ cơ sở dữ liệu vẫn giữ nguyên cấu trúc bảng, khóa chính, khóa ngoại và các ràng buộc duy nhất cần thiết để đảm bảo tính đúng đắn của dữ liệu, nhưng loại bỏ các chỉ mục tường minh phục vụ tối ưu truy vấn. Ở cấu hình sau tối ưu, hệ thống sử dụng lược đồ chính thức với đầy đủ các chỉ mục đã được thiết kế cho các nghiệp vụ chính.
 
-| Cấu hình | Schema sử dụng | Đặc điểm |
-| --- | --- | --- |
-| `before` | `docs/optimization/sql/schema_benchmark_before.sql` | Giữ cấu trúc bảng và ràng buộc nền tảng, nhưng bỏ các chỉ mục tối ưu tường minh. |
-| `after` | `backend/lms.sql` | Là lược đồ chính thức của hệ thống, có đầy đủ các chỉ mục đã thiết kế. |
-
-Quy trình kiểm tra được thực hiện theo cùng một bộ dữ liệu để đảm bảo so sánh công bằng. Trước hết, database thử nghiệm `before` được tạo bằng schema giản lược chỉ mục, sau đó nạp dữ liệu mẫu và chạy các truy vấn benchmark. Tiếp theo, database thử nghiệm `after` được tạo bằng lược đồ chính thức, nạp lại cùng dữ liệu và chạy lại đúng các truy vấn đó. Kết quả được so sánh thông qua biểu đồ `EXPLAIN` và chỉ số `query cost` do optimizer ước lượng.
+Hai cấu hình được nạp cùng một bộ dữ liệu mẫu và chạy cùng một tập truy vấn benchmark. Cách làm này giúp việc so sánh tập trung vào ảnh hưởng của chỉ mục, thay vì bị nhiễu bởi sự khác nhau về dữ liệu hoặc logic truy vấn. Kết quả được đánh giá thông qua biểu đồ `EXPLAIN` và chỉ số `query cost` do optimizer ước lượng.
 
 Chỉ số `query cost` không phải là thời gian thực thi tuyệt đối, nhưng có giá trị tham khảo quan trọng vì nó phản ánh mức chi phí mà hệ quản trị dự đoán khi lựa chọn kế hoạch thực thi. Khi cùng một truy vấn và cùng một bộ dữ liệu cho thấy `query cost` giảm rõ rệt sau khi có chỉ mục, có thể kết luận rằng lược đồ tối ưu hơn đã giúp optimizer chọn được kế hoạch truy vấn hợp lý hơn.
 
