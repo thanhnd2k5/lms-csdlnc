@@ -39,6 +39,8 @@ Phương án áp dụng cho báo cáo được tóm tắt như sau:
 
 Ưu điểm của phương án này là có tính thực tiễn cao hơn so với backup thuần bằng file SQL, đồng thời vẫn có thể triển khai bằng các công cụ sẵn có của MySQL. Với hệ thống có quy mô lớn hơn, phương án này có thể được mở rộng bằng các công cụ `physical backup` chuyên dụng.
 
+Trong trường hợp hệ thống phát triển với quy mô dữ liệu lớn hơn và tần suất cập nhật cao hơn, chiến lược sao lưu còn có thể được mở rộng theo hướng kết hợp `full backup`, `incremental backup` và `binary log`. Khi đó, `incremental backup` giúp chỉ sao lưu phần dữ liệu thay đổi kể từ lần backup trước, qua đó giảm thời gian sao lưu và dung lượng lưu trữ cần sử dụng. Tuy nhiên, do phương án này thường cần tới các công cụ `physical backup` chuyên dụng và quy trình quản trị phức tạp hơn, nên trong phạm vi đề tài hiện tại, giải pháp `full backup` kết hợp `binary log` vẫn là lựa chọn phù hợp hơn.
+
 ## 6.3. Sao lưu dữ liệu
 
 Trong môi trường MySQL, một bản sao lưu đầy đủ có thể được tạo bằng công cụ `mysqldump`. Ví dụ:
@@ -84,7 +86,7 @@ Sau khi restore, cần kiểm tra lại:
 - dữ liệu tiếng Việt hoặc dữ liệu có dấu không bị lỗi mã hóa;
 - các truy vấn nghiệp vụ cơ bản vẫn thực thi được trên cơ sở dữ liệu đã phục hồi.
 
-Việc kiểm tra restore là bước quan trọng vì một bản sao lưu chỉ thực sự có giá trị khi có thể khôi phục thành công. Do đó, chiến lược sao lưu không chỉ dừng ở bước tạo file backup mà còn phải bao gồm kiểm tra khả năng phục hồi định kỳ, cũng như khả năng tái áp dụng các thay đổi mới hơn từ `binary log` khi cần.
+Việc kiểm tra restore là bước quan trọng vì một bản sao lưu chỉ thực sự có giá trị khi có thể khôi phục thành công. Do đó, chiến lược sao lưu không chỉ dừng ở bước tạo file backup mà còn phải bao gồm kiểm tra khả năng phục hồi định kỳ, cũng như khả năng tái áp dụng các thay đổi mới hơn từ binary log khi cần.
 
 `[Chèn Hình 6.3. Khôi phục dữ liệu từ full backup tại đây]`
 

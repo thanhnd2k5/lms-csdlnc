@@ -399,6 +399,8 @@ Phương án áp dụng cho báo cáo được tóm tắt như sau:
 
 Ưu điểm của phương án này là có tính thực tiễn cao hơn so với backup thuần bằng file SQL, đồng thời vẫn có thể triển khai bằng các công cụ sẵn có của MySQL. Với hệ thống có quy mô lớn hơn, phương án này có thể được mở rộng bằng các công cụ `physical backup` chuyên dụng.
 
+Trong trường hợp hệ thống phát triển với quy mô dữ liệu lớn hơn và tần suất cập nhật cao hơn, chiến lược sao lưu còn có thể được mở rộng theo hướng kết hợp `full backup`, `incremental backup` và `binary log`. Khi đó, `incremental backup` giúp chỉ sao lưu phần dữ liệu thay đổi kể từ lần backup trước, qua đó giảm thời gian sao lưu và dung lượng lưu trữ cần sử dụng. Tuy nhiên, do phương án này thường cần tới các công cụ `physical backup` chuyên dụng và quy trình quản trị phức tạp hơn, nên trong phạm vi đề tài hiện tại, giải pháp `full backup` kết hợp `binary log` vẫn là lựa chọn phù hợp hơn.
+
 ### 6.3. Sao lưu dữ liệu
 
 Trong môi trường MySQL, một bản sao lưu đầy đủ có thể được tạo bằng công cụ `mysqldump`. Ví dụ:
