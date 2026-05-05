@@ -85,17 +85,11 @@ Kết quả thực nghiệm cho thấy các chỉ mục trong lược đồ chí
 
 Tuy nhiên, một số bước như `tmp table` và `filesort` vẫn xuất hiện trong biểu đồ `EXPLAIN`. Đây là hiện tượng hợp lý vì hai truy vấn đều có nhóm kết quả, tính toán tổng hợp và sắp xếp dữ liệu bằng `GROUP BY`, `HAVING` hoặc `ORDER BY`. Chỉ mục có thể giúp giảm chi phí lọc và nối bảng, nhưng không phải lúc nào cũng loại bỏ hoàn toàn chi phí sắp xếp hoặc tạo bảng tạm, nhất là với các truy vấn báo cáo tổng hợp.
 
-Từ góc độ vận hành, kết quả này cho thấy lược đồ hiện tại có nền tảng tối ưu tốt cho các chức năng cốt lõi của hệ thống LMS. Khi dữ liệu tăng lên, các bảng có tốc độ phát sinh lớn như `course_enrollments`, `video_completion`, `quiz_attempts`, `quiz_answers` và `course_reviews` vẫn cần được theo dõi định kỳ bằng `EXPLAIN`, slow query log hoặc công cụ giám sát hiệu năng để kịp thời phát hiện truy vấn chậm.
+Từ góc độ vận hành, kết quả này cho thấy lược đồ hiện tại có nền tảng tối ưu tốt cho các chức năng cốt lõi của hệ thống LMS. Khi dữ liệu tăng lên, các bảng có tốc độ phát sinh lớn như `course_enrollments`, `video_completion`, `quiz_attempts`, `quiz_answers` và `course_reviews` vẫn cần được theo dõi định kỳ bằng `EXPLAIN`, slow query log hoặc công cụ giám sát hiệu năng để kịp thời phát hiện truy vấn chậm. Trong phạm vi thực nghiệm hiện tại, báo cáo ưu tiên phân tích `EXPLAIN` và `query cost` thay vì thời gian chạy tuyệt đối, vì thời gian thực thi trên tập dữ liệu nhỏ có thể dao động và chưa phản ánh đầy đủ lợi ích của chỉ mục khi dữ liệu tăng lớn.
 
-## 5.7. Lưu ý khi đánh giá kết quả
+## 5.7. Hướng cải tiến
 
-Phần thực nghiệm hiện đã có bốn hình `EXPLAIN` so sánh trước/sau chỉ mục cho hai truy vấn chính. Các hình này đủ để chứng minh sự khác biệt về kế hoạch thực thi và `query cost`. Nếu muốn phần báo cáo hoàn chỉnh hơn khi dàn vào Word, có thể bổ sung thêm ảnh kết quả truy vấn, tức là ảnh bảng dữ liệu trả về sau khi chạy câu SQL, để cho thấy truy vấn không chỉ có kế hoạch thực thi mà còn trả về dữ liệu đúng theo nghiệp vụ.
-
-Về thời gian thực thi thực tế, báo cáo chỉ nên đưa vào khi kết quả đo nhất quán với phân tích `EXPLAIN`. Trên tập dữ liệu nhỏ, có trường hợp truy vấn `full table scan` vẫn chạy nhanh hơn do chi phí đọc dữ liệu ít và hệ quản trị không phải đi qua nhiều bước tra cứu chỉ mục. Vì vậy, nếu kết quả thời gian của truy vấn thứ hai không thể hiện rõ lợi ích của chỉ mục, phần báo cáo nên ưu tiên phân tích `query cost`, số dòng ước lượng và kế hoạch thực thi thay vì dùng thời gian chạy tuyệt đối.
-
-Nói cách khác, ảnh kết quả truy vấn là minh chứng bổ sung nếu muốn trình bày đầy đủ hơn, còn ảnh thời gian thực thi không bắt buộc. Với dữ liệu hiện tại, trọng tâm hợp lý nhất của chương 5 vẫn là bốn hình `EXPLAIN` và bảng so sánh `query cost`.
-
-Ngoài ra, các chỉ mục đề xuất trong tương lai có thể xem xét thêm khi hệ thống phát sinh dữ liệu lớn hơn gồm:
+Khi hệ thống phát sinh dữ liệu lớn hơn, có thể xem xét bổ sung thêm chỉ mục cho một số cột thường xuyên tham gia lọc hoặc nối bảng, chẳng hạn:
 
 - `courses.teacher_id` để lọc khóa học theo giáo viên;
 - `videos.course_id` nếu hệ thống thường xuyên lấy video trực tiếp theo khóa học;
