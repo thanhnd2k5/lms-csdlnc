@@ -97,3 +97,25 @@ Sau hình restore:
 Sau hình áp dụng binary log:
 
 - Dữ liệu sau phục hồi cho thấy các thay đổi phát sinh sau thời điểm tạo full backup có thể được tái áp dụng từ `binary log`.
+
+## 5. Mô tả ngắn dưới từng hình
+
+Hình 6.1:
+
+- Kết quả cho thấy hệ thống đã tạo được file sao lưu toàn phần của cơ sở dữ liệu tại thời điểm thực hiện backup. File này đóng vai trò là mốc phục hồi nền trong quy trình sao lưu.
+
+Hình 6.2:
+
+- Kết quả kiểm tra cho thấy `binary log` đã được bật và MySQL đang duy trì các file log tương ứng trong quá trình vận hành hệ thống.
+
+Hình 6.3:
+
+- Sau thao tác cập nhật dữ liệu, thông tin mới được ghi nhận trong `binary log`, cho thấy các thay đổi phát sinh sau thời điểm backup có thể được lưu lại để phục vụ phục hồi.
+
+Hình 6.4:
+
+- Dữ liệu trong `lms_restore` sau khi nạp `full backup` vẫn phản ánh trạng thái tại thời điểm sao lưu, tức là chưa bao gồm thay đổi phát sinh sau mốc backup.
+
+Hình 6.5:
+
+- Sau khi áp dụng `binary log`, dữ liệu trong `lms_restore` đã được đưa tiến gần hơn tới thời điểm xảy ra sự cố, qua đó minh họa khả năng phục hồi dữ liệu theo mốc thời gian mong muốn.
