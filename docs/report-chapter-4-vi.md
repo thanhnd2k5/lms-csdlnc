@@ -97,7 +97,7 @@ Sau khi nạp schema và dữ liệu mẫu, cần kiểm tra lại kết quả k
 - dữ liệu mẫu đã được nạp vào các bảng lõi;
 - các truy vấn kiểm tra cơ bản có thể thực thi thành công.
 
-Một số truy vấn kiểm tra tiêu biểu:
+Một số truy vấn kiểm tra tiêu biểu được sử dụng để đối chiếu kết quả khởi tạo gồm:
 
 ```sql
 SHOW TABLES;
@@ -126,13 +126,23 @@ JOIN quizzes q ON q.id = qa.quiz_id
 JOIN courses c ON c.id = q.course_id;
 ```
 
+Kết quả kiểm tra danh sách bảng sau khi khởi tạo được thể hiện ở Hình 4.1. Kết quả này cho thấy các bảng chính của hệ thống đã được tạo thành công và sẵn sàng cho bước nạp dữ liệu mẫu.
+
+![Hình 4.1. Kết quả kiểm tra danh sách bảng sau khi khởi tạo schema](images/chapter-4/show_tables.png)
+
+Sau khi nạp dữ liệu mẫu, báo cáo tiếp tục kiểm tra số lượng bản ghi ở các bảng quan trọng. Hình 4.2 cho thấy dữ liệu đã được đưa vào nhiều nhóm bảng khác nhau như người dùng, khóa học, chương học, video, quiz và các bảng liên quan đến lớp học.
+
+![Hình 4.2. Kết quả kiểm tra số lượng bản ghi sau khi nạp dữ liệu mẫu](images/chapter-4/record_counts.png)
+
+Để kiểm tra quan hệ giữa các bảng nội dung học tập, báo cáo sử dụng truy vấn kết hợp `courses`, `chapters` và `videos`. Kết quả ở Hình 4.3 cho thấy dữ liệu khóa học, chương học và video đã liên kết đúng theo khóa ngoại.
+
+![Hình 4.3. Kết quả truy vấn liên kết khóa học, chương học và video](images/chapter-4/course_chapter_video_query.png)
+
+Ngoài nhóm dữ liệu nội dung học tập, báo cáo cũng kiểm tra dữ liệu bài kiểm tra thông qua truy vấn kết hợp `quiz_attempts`, `users`, `quizzes` và `courses`. Hình 4.4 minh họa kết quả điểm làm bài của học viên theo khóa học.
+
+![Hình 4.4. Kết quả truy vấn kiểm tra điểm làm bài của học viên](images/chapter-4/quiz_score_query.png)
+
 Nếu các truy vấn trên trả về kết quả hợp lý, có thể kết luận rằng lược đồ đã được tạo đúng, các quan hệ giữa bảng đã được liên kết đúng hướng và bộ dữ liệu mẫu đủ để phục vụ cho các bước phân tích, tối ưu và vận hành ở các chương tiếp theo.
-
-`[Chèn Hình 4.1. Kết quả tạo schema tại đây]`
-
-`[Chèn Hình 4.2. Kết quả nạp dữ liệu seed tại đây]`
-
-`[Chèn Hình 4.3. Kiểm tra danh sách bảng hoặc truy vấn đối chiếu dữ liệu tại đây]`
 
 ## 4.7. Nhận xét
 
