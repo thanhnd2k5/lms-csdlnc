@@ -75,25 +75,18 @@ Mỗi phiên bản migration đều đi kèm script `down` tương ứng. Việc
 
 ## 4.5. Quy trình khởi tạo và nạp dữ liệu mẫu
 
-Trong trường hợp cần khởi tạo nhanh cơ sở dữ liệu hoàn chỉnh, quy trình triển khai có thể thực hiện theo các bước sau:
+Sau khi chuẩn bị đầy đủ các script cần thiết, quá trình khởi tạo cơ sở dữ liệu được thực hiện theo một trình tự thống nhất để bảo đảm lược đồ, ràng buộc và dữ liệu mẫu được nạp đúng thứ tự. Trình tự này giúp hạn chế lỗi phụ thuộc giữa các bảng, đặc biệt ở những bảng có quan hệ khóa ngoại.
 
-1. Tạo cơ sở dữ liệu rỗng với bộ mã ký tự `utf8mb4`.
-2. Nạp script lược đồ chính để tạo toàn bộ bảng, khóa và chỉ mục.
-3. Nạp script dữ liệu mẫu để sinh dữ liệu phục vụ kiểm thử.
-4. Kiểm tra danh sách bảng và một số bản ghi mẫu để xác nhận lược đồ hoạt động đúng.
+| Bước | Nội dung thực hiện | Kết quả mong đợi |
+| --- | --- | --- |
+| 1 | Tạo cơ sở dữ liệu rỗng với bộ mã ký tự hỗ trợ tiếng Việt. | Cơ sở dữ liệu sẵn sàng để nạp cấu trúc bảng. |
+| 2 | Nạp script lược đồ chính. | Toàn bộ bảng, khóa chính, khóa ngoại, ràng buộc và chỉ mục được tạo đầy đủ. |
+| 3 | Nạp script dữ liệu mẫu. | Hệ thống có dữ liệu ban đầu để kiểm thử và minh họa nghiệp vụ. |
+| 4 | Kiểm tra lại danh sách bảng, số lượng bản ghi và một số quan hệ dữ liệu tiêu biểu. | Cơ sở dữ liệu ở trạng thái có thể sử dụng cho các phần phân tích tiếp theo. |
 
-Ví dụ minh họa:
+Trong trường hợp muốn trình bày theo hướng phát triển qua nhiều phiên bản, bước nạp lược đồ tổng thể có thể được thay bằng việc áp dụng tuần tự các migration từ `V1` đến `V4`. Cách thực hiện này giúp thể hiện rõ quá trình cơ sở dữ liệu được bổ sung theo từng nhóm nghiệp vụ, từ phần lõi của hệ thống đến kiểm tra đánh giá, tiến độ học tập và quản lý lớp học.
 
-```sql
-CREATE DATABASE lms CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-```
-
-```powershell
-mysql -u root -p lms < schema.sql
-mysql -u root -p lms < seed.sql
-```
-
-Nếu cần trình bày quá trình phát triển lược đồ theo tư duy migration, bước nạp script lược đồ tổng thể có thể được thay bằng việc chạy lần lượt các script `V1`, `V2`, `V3`, `V4`. Cách này phù hợp khi muốn minh họa rõ cơ sở dữ liệu đã mở rộng theo từng giai đoạn nghiệp vụ thay vì xuất hiện đầy đủ ngay từ đầu.
+Các lệnh triển khai cụ thể được trình bày tại phần phụ lục để nội dung chính của chương tập trung vào quy trình và ý nghĩa của từng bước khởi tạo.
 
 ## 4.6. Kiểm tra kết quả khởi tạo
 
