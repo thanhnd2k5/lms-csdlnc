@@ -36,16 +36,16 @@ Bên cạnh đó, schema cũng bổ sung các ràng buộc và chỉ mục phụ
 
 Chi tiết các lệnh `CREATE TABLE`, khai báo khóa ngoại, ràng buộc duy nhất và chỉ mục được trình bày ở phần phụ lục để bảo đảm mạch nội dung chính của chương tập trung vào cấu trúc triển khai và ý nghĩa của lược đồ thay vì sa vào chi tiết cú pháp.
 
-## 4.4. Mô phỏng quá trình phát triển lược đồ theo migration
+## 4.4. Quá trình mở rộng lược đồ dữ liệu qua các phiên bản migration
 
-Ngoài script lược đồ hoàn chỉnh, đề tài còn xây dựng bộ migration để mô phỏng tiến trình phát triển cơ sở dữ liệu theo từng phiên bản. Cách trình bày này phù hợp hơn với thực tế phát triển phần mềm, nơi lược đồ thường được mở rộng dần khi nghiệp vụ tăng lên.
+Bên cạnh script lược đồ tổng thể, đề tài sử dụng bộ migration để quản lý và theo dõi các thay đổi của cơ sở dữ liệu qua từng phiên bản. Cách tổ chức này phù hợp với thực tế phát triển phần mềm, khi lược đồ dữ liệu thường được bổ sung và hoàn thiện dần theo sự mở rộng của nghiệp vụ.
 
-| Phiên bản | Script `up` | Nội dung mở rộng chính |
-| --- | --- | --- |
-| `V1` | `V1__init_core.sql` | Khởi tạo dữ liệu lõi: người dùng, khóa học, chương học và video. |
-| `V2` | `V2__add_quiz_module.sql` | Bổ sung module kiểm tra gồm quiz, câu hỏi, đáp án và lịch sử làm bài. |
-| `V3` | `V3__add_enrollment_progress_documents.sql` | Bổ sung ghi danh khóa học, theo dõi tiến độ và tài liệu học tập. |
-| `V4` | `V4__add_class_management.sql` | Bổ sung mô hình lớp học, học viên trong lớp và cơ chế phê duyệt theo khóa học. |
+| Phiên bản | Nội dung mở rộng chính |
+| --- | --- |
+| `V1` | Khởi tạo dữ liệu lõi của hệ thống, gồm người dùng, khóa học, chương học và video. |
+| `V2` | Bổ sung nhóm chức năng kiểm tra, đánh giá kết quả học tập của học viên. |
+| `V3` | Bổ sung ghi danh khóa học, theo dõi tiến độ học tập và tài liệu học tập. |
+| `V4` | Bổ sung mô hình quản lý lớp học và cơ chế phê duyệt học viên theo khóa học. |
 
 ### Phiên bản V1 - Khởi tạo lõi hệ thống
 
