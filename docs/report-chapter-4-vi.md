@@ -4,23 +4,23 @@
 
 Mục tiêu của giai đoạn khởi tạo cơ sở dữ liệu là hình thành đầy đủ lược đồ lưu trữ cho hệ thống LMS, bảo đảm hệ thống có thể quản lý nhất quán dữ liệu người dùng, khóa học, nội dung học tập, bài kiểm tra, tiến độ học tập và lớp học. Ở mức triển khai, phần này không chỉ dừng ở việc tạo được các bảng dữ liệu, mà còn phải thể hiện rõ các khóa chính, khóa ngoại, ràng buộc duy nhất, chỉ mục và dữ liệu mẫu cần thiết để phục vụ kiểm thử.
 
-Trong phạm vi báo cáo, Chương 4 tập trung làm rõ ba nội dung chính. Thứ nhất, mô tả script lược đồ chính dùng để khởi tạo toàn bộ cơ sở dữ liệu. Thứ hai, trình bày bộ migration mô phỏng quá trình lược đồ được mở rộng theo từng giai đoạn nghiệp vụ. Thứ ba, minh họa quy trình nạp schema, seed dữ liệu và kiểm tra kết quả khởi tạo trên môi trường MySQL.
+Trong phạm vi báo cáo, Chương 4 tập trung làm rõ ba nội dung chính. Thứ nhất, mô tả bộ script lược đồ chính dùng để khởi tạo toàn bộ cơ sở dữ liệu. Thứ hai, trình bày bộ migration mô phỏng quá trình lược đồ được mở rộng theo từng giai đoạn nghiệp vụ. Thứ ba, minh họa quy trình nạp cấu trúc dữ liệu, nạp dữ liệu mẫu và kiểm tra kết quả khởi tạo trên môi trường MySQL.
 
 ## 4.2. Thành phần script khởi tạo
 
 Quá trình khởi tạo cơ sở dữ liệu của đề tài được tổ chức thành ba nhóm script có vai trò khác nhau:
 
-| Nhóm script | Vị trí | Vai trò |
-| --- | --- | --- |
-| Lược đồ chính | `backend/lms.sql` | Tạo toàn bộ cơ sở dữ liệu ở trạng thái hoàn chỉnh nhất, bao gồm bảng, khóa, ràng buộc và chỉ mục chính. |
-| Dữ liệu mẫu | `docs/sql/seed.sql` | Nạp dữ liệu khởi tạo để phục vụ kiểm thử truy vấn, minh họa nghiệp vụ và đối chiếu kết quả sau khi triển khai. |
-| Migration phiên bản | `docs/sql/migrations/V1...V4` | Mô phỏng quá trình phát triển lược đồ theo từng giai đoạn thay vì xuất hiện đầy đủ ngay từ đầu. |
+| Nhóm script | Vai trò |
+| --- | --- |
+| Lược đồ chính | Tạo toàn bộ cơ sở dữ liệu ở trạng thái hoàn chỉnh nhất, bao gồm bảng, khóa, ràng buộc và chỉ mục chính. |
+| Dữ liệu mẫu | Nạp dữ liệu khởi tạo để phục vụ kiểm thử truy vấn, minh họa nghiệp vụ và đối chiếu kết quả sau khi triển khai. |
+| Migration phiên bản | Mô phỏng quá trình phát triển lược đồ theo từng giai đoạn thay vì xuất hiện đầy đủ ngay từ đầu. |
 
-Việc tách riêng ba nhóm script giúp phần triển khai rõ ràng hơn về mặt kỹ thuật. File `lms.sql` đại diện cho trạng thái schema chính thức của hệ thống tại thời điểm hoàn thiện; `seed.sql` đóng vai trò tạo dữ liệu nền; còn bộ migration cho thấy lược đồ đã được mở rộng dần theo nhu cầu nghiệp vụ như thế nào.
+Việc tách riêng ba nhóm script giúp phần triển khai rõ ràng hơn về mặt kỹ thuật. Script lược đồ chính đại diện cho trạng thái cấu trúc dữ liệu hoàn chỉnh của hệ thống tại thời điểm hiện tại; script dữ liệu mẫu đóng vai trò tạo dữ liệu nền; còn bộ migration cho thấy lược đồ đã được mở rộng dần theo nhu cầu nghiệp vụ như thế nào. Chi tiết tên file và nội dung cụ thể được trình bày ở phần phụ lục.
 
 ## 4.3. Cấu trúc lược đồ chính
 
-Lược đồ chính của hệ thống được khai báo trong file `backend/lms.sql`. File này tạo tổng cộng 17 bảng dữ liệu, có thể nhóm thành các cụm chức năng như sau:
+Lược đồ chính của hệ thống được xây dựng dưới dạng một script khởi tạo tổng thể. Script này tạo tổng cộng 17 bảng dữ liệu, có thể nhóm thành các cụm chức năng như sau:
 
 | Nhóm dữ liệu | Các bảng tiêu biểu | Mục đích |
 | --- | --- | --- |
@@ -38,7 +38,7 @@ Chi tiết các lệnh `CREATE TABLE`, khai báo khóa ngoại, ràng buộc duy
 
 ## 4.4. Mô phỏng quá trình phát triển lược đồ theo migration
 
-Ngoài lược đồ hoàn chỉnh trong `lms.sql`, đề tài còn xây dựng bộ migration để mô phỏng tiến trình phát triển cơ sở dữ liệu theo từng phiên bản. Cách trình bày này phù hợp hơn với thực tế phát triển phần mềm, nơi lược đồ thường được mở rộng dần khi nghiệp vụ tăng lên.
+Ngoài script lược đồ hoàn chỉnh, đề tài còn xây dựng bộ migration để mô phỏng tiến trình phát triển cơ sở dữ liệu theo từng phiên bản. Cách trình bày này phù hợp hơn với thực tế phát triển phần mềm, nơi lược đồ thường được mở rộng dần khi nghiệp vụ tăng lên.
 
 | Phiên bản | Script `up` | Nội dung mở rộng chính |
 | --- | --- | --- |
@@ -78,8 +78,8 @@ Mỗi phiên bản migration đều đi kèm script `down` tương ứng. Việc
 Trong trường hợp cần khởi tạo nhanh cơ sở dữ liệu hoàn chỉnh, quy trình triển khai có thể thực hiện theo các bước sau:
 
 1. Tạo cơ sở dữ liệu rỗng với bộ mã ký tự `utf8mb4`.
-2. Nạp file `backend/lms.sql` để tạo toàn bộ bảng, khóa và chỉ mục.
-3. Nạp file `docs/sql/seed.sql` để sinh dữ liệu mẫu phục vụ kiểm thử.
+2. Nạp script lược đồ chính để tạo toàn bộ bảng, khóa và chỉ mục.
+3. Nạp script dữ liệu mẫu để sinh dữ liệu phục vụ kiểm thử.
 4. Kiểm tra danh sách bảng và một số bản ghi mẫu để xác nhận lược đồ hoạt động đúng.
 
 Ví dụ minh họa:
@@ -89,11 +89,11 @@ CREATE DATABASE lms CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 ```
 
 ```powershell
-mysql -u root -p lms < backend/lms.sql
-mysql -u root -p lms < docs/sql/seed.sql
+mysql -u root -p lms < schema.sql
+mysql -u root -p lms < seed.sql
 ```
 
-Nếu cần trình bày quá trình phát triển lược đồ theo tư duy migration, bước nạp `lms.sql` có thể được thay bằng việc chạy lần lượt các script `V1`, `V2`, `V3`, `V4`. Cách này phù hợp khi muốn minh họa rõ cơ sở dữ liệu đã mở rộng theo từng giai đoạn nghiệp vụ thay vì xuất hiện đầy đủ ngay từ đầu.
+Nếu cần trình bày quá trình phát triển lược đồ theo tư duy migration, bước nạp script lược đồ tổng thể có thể được thay bằng việc chạy lần lượt các script `V1`, `V2`, `V3`, `V4`. Cách này phù hợp khi muốn minh họa rõ cơ sở dữ liệu đã mở rộng theo từng giai đoạn nghiệp vụ thay vì xuất hiện đầy đủ ngay từ đầu.
 
 ## 4.6. Kiểm tra kết quả khởi tạo
 
@@ -143,8 +143,8 @@ Nếu các truy vấn trên trả về kết quả hợp lý, có thể kết lu
 
 ## 4.7. Nhận xét
 
-Phần khởi tạo cơ sở dữ liệu của hệ thống LMS cho thấy lược đồ đã được tổ chức tương đối đầy đủ và có tính triển khai thực tế. File `lms.sql` cung cấp một trạng thái schema hoàn chỉnh, phù hợp cho việc dựng nhanh môi trường làm việc hoặc kiểm thử. Trong khi đó, bộ migration `V1` đến `V4` giúp thể hiện rõ cách cơ sở dữ liệu được mở rộng dần theo nhu cầu nghiệp vụ, từ nội dung học tập cơ bản đến đánh giá, tiến độ và quản lý lớp học.
+Phần khởi tạo cơ sở dữ liệu của hệ thống LMS cho thấy lược đồ đã được tổ chức tương đối đầy đủ và có tính triển khai thực tế. Script lược đồ chính cung cấp một trạng thái cấu trúc dữ liệu hoàn chỉnh, phù hợp cho việc dựng nhanh môi trường làm việc hoặc kiểm thử. Trong khi đó, bộ migration `V1` đến `V4` giúp thể hiện rõ cách cơ sở dữ liệu được mở rộng dần theo nhu cầu nghiệp vụ, từ nội dung học tập cơ bản đến đánh giá, tiến độ và quản lý lớp học.
 
-Điểm mạnh của cách tổ chức này là kết hợp được cả hai góc nhìn: góc nhìn triển khai nhanh với một schema hoàn chỉnh, và góc nhìn phát triển phần mềm với lược đồ tiến hóa theo phiên bản. Nhờ có `seed.sql`, hệ thống cũng có ngay dữ liệu nền để phục vụ kiểm tra liên kết bảng, viết truy vấn nghiệp vụ và đánh giá hiệu năng ở các chương sau.
+Điểm mạnh của cách tổ chức này là kết hợp được cả hai góc nhìn: góc nhìn triển khai nhanh với một cấu trúc dữ liệu hoàn chỉnh, và góc nhìn phát triển phần mềm với lược đồ tiến hóa theo phiên bản. Nhờ có script dữ liệu mẫu, hệ thống cũng có ngay dữ liệu nền để phục vụ kiểm tra liên kết bảng, viết truy vấn nghiệp vụ và đánh giá hiệu năng ở các chương sau.
 
 Tuy vậy, nếu triển khai ở quy mô lớn hơn, hệ thống vẫn nên tiếp tục chuẩn hóa bộ migration, bổ sung công cụ quản lý version chuyên dụng và mở rộng dữ liệu seed theo các kịch bản tải lớn hơn. Trong phạm vi đề tài hiện tại, cấu trúc khởi tạo như trên là phù hợp, đủ rõ về mặt kỹ thuật và đủ chắc để làm nền cho các nội dung tối ưu, sao lưu và replication ở các chương tiếp theo.
