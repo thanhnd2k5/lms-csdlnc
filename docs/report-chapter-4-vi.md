@@ -2,90 +2,149 @@
 
 ## 4.1. Mục tiêu khởi tạo cơ sở dữ liệu
 
-Mục tiêu của giai đoạn khởi tạo cơ sở dữ liệu là xây dựng đầy đủ cấu trúc lưu trữ cho hệ thống LMS, bao gồm các bảng dữ liệu, khóa chính, khóa ngoại, ràng buộc toàn vẹn, chỉ mục cơ bản và dữ liệu mẫu ban đầu. Đây là bước cần thiết để hệ thống có thể lưu trữ thông tin người dùng, khóa học, nội dung học tập, bài kiểm tra, kết quả học tập và dữ liệu lớp học một cách nhất quán.
+Mục tiêu của giai đoạn khởi tạo cơ sở dữ liệu là hình thành đầy đủ lược đồ lưu trữ cho hệ thống LMS, bảo đảm hệ thống có thể quản lý nhất quán dữ liệu người dùng, khóa học, nội dung học tập, bài kiểm tra, tiến độ học tập và lớp học. Ở mức triển khai, phần này không chỉ dừng ở việc tạo được các bảng dữ liệu, mà còn phải thể hiện rõ các khóa chính, khóa ngoại, ràng buộc duy nhất, chỉ mục và dữ liệu mẫu cần thiết để phục vụ kiểm thử.
 
-Trong phạm vi báo cáo, phần khởi tạo cơ sở dữ liệu không chỉ nhằm tạo được các bảng cần thiết, mà còn nhằm chứng minh rằng lược đồ dữ liệu đã được tổ chức theo một trình tự hợp lý, có thể triển khai, có thể mở rộng và có thể hoàn tác khi cần thiết.
+Trong phạm vi báo cáo, Chương 4 tập trung làm rõ ba nội dung chính. Thứ nhất, mô tả script lược đồ chính dùng để khởi tạo toàn bộ cơ sở dữ liệu. Thứ hai, trình bày bộ migration mô phỏng quá trình lược đồ được mở rộng theo từng giai đoạn nghiệp vụ. Thứ ba, minh họa quy trình nạp schema, seed dữ liệu và kiểm tra kết quả khởi tạo trên môi trường MySQL.
 
-## 4.2. Script tạo bảng
+## 4.2. Thành phần script khởi tạo
 
-Trong đề tài này, file `backend/lms.sql` được sử dụng làm script lược đồ chính. Có thể hiểu đây là file SQL tổng hợp dùng để khởi tạo phiên bản hoàn chỉnh của cơ sở dữ liệu ở trạng thái cuối cùng. File này chứa toàn bộ các câu lệnh `CREATE TABLE`, định nghĩa khóa chính, khóa ngoại, chỉ mục và các ràng buộc cơ bản của hệ thống.
+Quá trình khởi tạo cơ sở dữ liệu của đề tài được tổ chức thành ba nhóm script có vai trò khác nhau:
 
-Nói cách khác, nếu người triển khai muốn tạo nhanh toàn bộ cơ sở dữ liệu của hệ thống LMS trong một lần, chỉ cần tạo cơ sở dữ liệu rỗng và chạy file `lms.sql`. Sau bước này, toàn bộ cấu trúc bảng cần thiết của hệ thống sẽ được hình thành.
+| Nhóm script | Vị trí | Vai trò |
+| --- | --- | --- |
+| Lược đồ chính | `backend/lms.sql` | Tạo toàn bộ cơ sở dữ liệu ở trạng thái hoàn chỉnh nhất, bao gồm bảng, khóa, ràng buộc và chỉ mục chính. |
+| Dữ liệu mẫu | `docs/sql/seed.sql` | Nạp dữ liệu khởi tạo để phục vụ kiểm thử truy vấn, minh họa nghiệp vụ và đối chiếu kết quả sau khi triển khai. |
+| Migration phiên bản | `docs/sql/migrations/V1...V4` | Mô phỏng quá trình phát triển lược đồ theo từng giai đoạn thay vì xuất hiện đầy đủ ngay từ đầu. |
 
-Trong Chương 4, báo cáo chỉ cần trích dẫn một số đoạn lệnh SQL tiêu biểu để minh họa cách cài đặt lược đồ ở mức vật lý. Toàn bộ script chi tiết được trình bày ở phần phụ lục để thuận tiện tra cứu.
+Việc tách riêng ba nhóm script giúp phần triển khai rõ ràng hơn về mặt kỹ thuật. File `lms.sql` đại diện cho trạng thái schema chính thức của hệ thống tại thời điểm hoàn thiện; `seed.sql` đóng vai trò tạo dữ liệu nền; còn bộ migration cho thấy lược đồ đã được mở rộng dần theo nhu cầu nghiệp vụ như thế nào.
 
-## 4.3. Mô tả các script khởi tạo
+## 4.3. Cấu trúc lược đồ chính
 
-Để phần khởi tạo cơ sở dữ liệu được trình bày rõ ràng hơn, báo cáo sử dụng ba nhóm script với vai trò khác nhau:
+Lược đồ chính của hệ thống được khai báo trong file `backend/lms.sql`. File này tạo tổng cộng 17 bảng dữ liệu, có thể nhóm thành các cụm chức năng như sau:
 
-- Nhóm thứ nhất là script lược đồ tổng thể `lms.sql`. Đây là script dùng để tạo toàn bộ cơ sở dữ liệu ở trạng thái đầy đủ nhất.
-- Nhóm thứ hai là script `seed.sql`. Script này dùng để nạp dữ liệu mẫu ban đầu nhằm phục vụ kiểm thử, minh họa truy vấn và kiểm tra các quan hệ giữa các bảng.
-- Nhóm thứ ba là bộ migration mô phỏng quá trình phát triển cơ sở dữ liệu theo từng phiên bản. Nhóm script này không thay thế `lms.sql`, mà được dùng để trình bày quá trình cơ sở dữ liệu được mở rộng dần theo nhu cầu nghiệp vụ.
+| Nhóm dữ liệu | Các bảng tiêu biểu | Mục đích |
+| --- | --- | --- |
+| Người dùng và phân quyền | `users` | Quản lý tài khoản, vai trò `admin`, `teacher`, `student` và thông tin hồ sơ cơ bản. |
+| Nội dung khóa học | `courses`, `chapters`, `videos`, `documents` | Mô tả khóa học, cấu trúc chương, video bài giảng và tài liệu đính kèm. |
+| Kiểm tra đánh giá | `quizzes`, `quiz_questions`, `quiz_options`, `quiz_attempts`, `quiz_answers` | Lưu cấu trúc bài kiểm tra, câu hỏi, phương án trả lời và lịch sử làm bài. |
+| Tiến độ học tập | `course_enrollments`, `video_completion` | Theo dõi việc ghi danh khóa học và trạng thái hoàn thành video của học viên. |
+| Quản lý lớp học | `classes`, `class_courses`, `class_students`, `class_students_courses_approval`, `course_reviews` | Tổ chức lớp học, gán khóa học cho lớp, quản lý thành viên và đánh giá khóa học. |
 
-Việc tách riêng ba nhóm script nêu trên giúp phần trình bày trong báo cáo rõ hơn về mặt học thuật: `lms.sql` đại diện cho lược đồ hoàn chỉnh, `seed.sql` đại diện cho dữ liệu mẫu, còn bộ migration thể hiện tư duy quản lý phiên bản và phát triển hệ thống theo từng giai đoạn.
+Lược đồ này thể hiện rõ đặc điểm của một hệ thống LMS có cả phần học nội dung, đánh giá kết quả và quản lý lớp học. Các quan hệ phụ thuộc chính đều được ràng buộc bằng khóa ngoại, ví dụ: `courses.teacher_id` tham chiếu `users.id`, `chapters.course_id` tham chiếu `courses.id`, `videos.chapter_id` tham chiếu `chapters.id`, `quiz_attempts.quiz_id` tham chiếu `quizzes.id` và `class_students.student_id` tham chiếu `users.id`.
+
+Bên cạnh đó, schema cũng bổ sung các ràng buộc và chỉ mục phục vụ trực tiếp cho vận hành. Một số ví dụ tiêu biểu gồm `username UNIQUE`, `email UNIQUE`, `class_code UNIQUE`, `UNIQUE (user_id, course_id)` trong `course_enrollments`, `UNIQUE (user_id, video_id)` trong `video_completion`, cùng các chỉ mục như `idx_user_role`, `idx_course_public`, `idx_chapter_order`, `idx_video_chapter`, `idx_quiz_type`, `idx_attempt_user_quiz` và `idx_course_rating`. Những thành phần này vừa giúp bảo đảm toàn vẹn dữ liệu, vừa tạo nền tảng cho tối ưu truy vấn ở Chương 5.
+
+Chi tiết các lệnh `CREATE TABLE`, khai báo khóa ngoại, ràng buộc duy nhất và chỉ mục được trình bày ở phần phụ lục để bảo đảm mạch nội dung chính của chương tập trung vào cấu trúc triển khai và ý nghĩa của lược đồ thay vì sa vào chi tiết cú pháp.
 
 ## 4.4. Mô phỏng quá trình phát triển lược đồ theo migration
 
-Trong thực tế phát triển phần mềm, cơ sở dữ liệu thường không xuất hiện đầy đủ ngay từ đầu. Khi nghiệp vụ mở rộng, cơ sở dữ liệu cũng được bổ sung dần các bảng và ràng buộc tương ứng. Vì vậy, để phần Chương 4 không chỉ dừng ở việc “chạy một file SQL”, báo cáo mô phỏng quá trình phát triển lược đồ dữ liệu qua nhiều phiên bản migration.
+Ngoài lược đồ hoàn chỉnh trong `lms.sql`, đề tài còn xây dựng bộ migration để mô phỏng tiến trình phát triển cơ sở dữ liệu theo từng phiên bản. Cách trình bày này phù hợp hơn với thực tế phát triển phần mềm, nơi lược đồ thường được mở rộng dần khi nghiệp vụ tăng lên.
 
-Trong báo cáo này, ký hiệu `V1`, `V2`, `V3`, `V4` được dùng để chỉ bốn giai đoạn phát triển giả lập của cơ sở dữ liệu.
+| Phiên bản | Script `up` | Nội dung mở rộng chính |
+| --- | --- | --- |
+| `V1` | `V1__init_core.sql` | Khởi tạo dữ liệu lõi: người dùng, khóa học, chương học và video. |
+| `V2` | `V2__add_quiz_module.sql` | Bổ sung module kiểm tra gồm quiz, câu hỏi, đáp án và lịch sử làm bài. |
+| `V3` | `V3__add_enrollment_progress_documents.sql` | Bổ sung ghi danh khóa học, theo dõi tiến độ và tài liệu học tập. |
+| `V4` | `V4__add_class_management.sql` | Bổ sung mô hình lớp học, học viên trong lớp và cơ chế phê duyệt theo khóa học. |
 
 ### Phiên bản V1 - Khởi tạo lõi hệ thống
 
-Đây là phiên bản đầu tiên, đại diện cho giai đoạn hệ thống mới chỉ cần các chức năng cốt lõi nhất. Ở giai đoạn này, cơ sở dữ liệu tập trung vào bốn nhóm dữ liệu nền tảng là người dùng, khóa học, chương học và video bài giảng. Đây là cấu trúc tối thiểu để hình thành một hệ thống học tập trực tuyến cơ bản.
+Phiên bản `V1` đại diện cho giai đoạn hệ thống mới hình thành, khi nghiệp vụ tập trung vào việc quản lý người dùng, khóa học và nội dung học tập cơ bản. Bốn bảng trọng tâm ở giai đoạn này là `users`, `courses`, `chapters` và `videos`. Đây là mức tối thiểu để một hệ thống LMS có thể lưu được tài khoản, cấu trúc khóa học và video bài giảng.
 
-Trong phiên bản này:
+Điểm quan trọng của `V1` là đã thiết lập sẵn các quan hệ nền tảng giữa giáo viên với khóa học, giữa khóa học với chương và giữa chương với video. Nhờ đó, các phiên bản sau chỉ cần mở rộng theo chiều ngang mà không phải thay đổi lại toàn bộ mô hình lõi.
 
-- script `V1__init_core.sql` đóng vai trò migration `up`, dùng để tạo các bảng lõi
-- script `V1__init_core_down.sql` đóng vai trò migration `down`, dùng để xóa các bảng lõi theo thứ tự ngược nhằm đảm bảo rollback an toàn
+### Phiên bản V2 - Bổ sung kiểm tra đánh giá
 
-### Phiên bản V2 - Bổ sung module bài kiểm tra
+Phiên bản `V2` mở rộng lược đồ sang nhóm nghiệp vụ đánh giá kết quả học tập. Các bảng `quizzes`, `quiz_questions`, `quiz_options`, `quiz_attempts` và `quiz_answers` được thêm vào để lưu cấu trúc bài kiểm tra, nội dung câu hỏi, phương án trả lời và lịch sử làm bài của học viên.
 
-Sau khi đã có phần nội dung học tập, hệ thống được mở rộng thêm chức năng đánh giá kết quả học tập. Vì vậy, phiên bản V2 bổ sung nhóm bảng liên quan đến bài kiểm tra, câu hỏi, phương án trả lời và lịch sử làm bài của học viên.
-
-Trong phiên bản này:
-
-- script `V2__add_quiz_module.sql` dùng để thêm toàn bộ nhóm bảng quiz
-- script `V2__add_quiz_module_down.sql` dùng để xóa các bảng này theo thứ tự phụ thuộc dữ liệu
+Sự xuất hiện của `V2` cho thấy hệ thống không còn chỉ dừng ở mức phân phối nội dung học tập, mà đã bắt đầu quản lý được quá trình kiểm tra và ghi nhận kết quả. Đây cũng là nhóm bảng tạo dữ liệu đầu vào cho các truy vấn phân tích kết quả học tập ở các chương sau.
 
 ### Phiên bản V3 - Bổ sung ghi danh, tiến độ và tài liệu
 
-Ở giai đoạn tiếp theo, cơ sở dữ liệu được mở rộng để quản lý việc học viên đăng ký khóa học, theo dõi tiến độ hoàn thành nội dung học tập và lưu trữ thêm tài liệu học tập. Giai đoạn này cho thấy hệ thống đã chuyển từ mức “cung cấp nội dung” sang mức “quản lý quá trình học tập”.
+Phiên bản `V3` bổ sung các bảng `course_enrollments`, `video_completion` và `documents`. Giai đoạn này đánh dấu sự chuyển dịch từ mô hình “có nội dung để học” sang mô hình “quản lý được quá trình học”. Học viên không chỉ xem khóa học, mà còn có trạng thái ghi danh và tiến độ hoàn thành nội dung.
 
-Trong phiên bản này:
-
-- script `V3__add_enrollment_progress_documents.sql` bổ sung các bảng ghi danh, tiến độ và tài liệu
-- script `V3__add_enrollment_progress_documents_down.sql` dùng để hoàn tác các thay đổi nếu cần quay lui
+Việc thêm bảng `documents` cũng làm cho lược đồ đầy đủ hơn về mặt học liệu, vì ngoài video còn có tài liệu tệp đính kèm gắn với khóa học, chương hoặc video cụ thể.
 
 ### Phiên bản V4 - Bổ sung quản lý lớp học
 
-Ở phiên bản cuối, hệ thống được mở rộng sang mô hình quản lý lớp học. Đây là giai đoạn thể hiện mức độ hoàn thiện cao hơn của hệ thống, vì ngoài việc quản lý khóa học riêng lẻ, cơ sở dữ liệu còn phải hỗ trợ việc tổ chức học viên thành lớp, gắn khóa học với lớp và theo dõi tình trạng tham gia của học viên trong từng lớp.
+Phiên bản `V4` là bước mở rộng sang bài toán tổ chức lớp học, gồm các bảng `classes`, `class_courses`, `class_students` và `class_students_courses_approval`. Đây là lớp nghiệp vụ cao hơn so với quản lý khóa học đơn lẻ, vì hệ thống cần theo dõi việc học viên thuộc lớp nào, lớp được gắn với khóa học nào và trạng thái tham gia của học viên trong từng ngữ cảnh.
 
-Trong phiên bản này:
+Nhờ `V4`, cơ sở dữ liệu hỗ trợ được mô hình dạy học theo lớp thay vì chỉ theo danh mục khóa học mở. Đây cũng là cơ sở để hệ thống mở rộng các chức năng như phê duyệt học viên, quản lý lớp riêng và phân phối khóa học theo nhóm.
 
-- script `V4__add_class_management.sql` dùng để thêm nhóm bảng lớp học
-- script `V4__add_class_management_down.sql` dùng để xóa nhóm bảng lớp học theo thứ tự phụ thuộc
+Mỗi phiên bản migration đều đi kèm script `down` tương ứng. Việc chuẩn bị cả chiều triển khai và chiều hoàn tác giúp lược đồ phù hợp hơn với tư duy quản lý thay đổi trong thực tế, đồng thời làm rõ rằng cơ sở dữ liệu không chỉ được tạo ra một lần mà còn có thể được bảo trì theo vòng đời phát triển.
 
-Như vậy, các ký hiệu `V1` đến `V4` trong báo cáo không phải là tên ngẫu nhiên, mà là cách đánh số các phiên bản phát triển của cơ sở dữ liệu. Mỗi phiên bản phản ánh một bước mở rộng nghiệp vụ của hệ thống. Bên cạnh đó, việc chuẩn bị cả script `up` và `down` cho từng phiên bản còn giúp làm rõ khái niệm triển khai và hoàn tác thay đổi trong quản lý cơ sở dữ liệu.
+## 4.5. Quy trình khởi tạo và nạp dữ liệu mẫu
 
-## 4.5. Quy trình khởi tạo cơ sở dữ liệu
+Trong trường hợp cần khởi tạo nhanh cơ sở dữ liệu hoàn chỉnh, quy trình triển khai có thể thực hiện theo các bước sau:
 
-Trong trường hợp cần khởi tạo nhanh cơ sở dữ liệu hoàn chỉnh, quy trình có thể thực hiện theo các bước sau:
+1. Tạo cơ sở dữ liệu rỗng với bộ mã ký tự `utf8mb4`.
+2. Nạp file `backend/lms.sql` để tạo toàn bộ bảng, khóa và chỉ mục.
+3. Nạp file `docs/sql/seed.sql` để sinh dữ liệu mẫu phục vụ kiểm thử.
+4. Kiểm tra danh sách bảng và một số bản ghi mẫu để xác nhận lược đồ hoạt động đúng.
 
-1. Tạo cơ sở dữ liệu rỗng với tên `lms`.
-2. Chạy file `lms.sql` để tạo toàn bộ các bảng, khóa và ràng buộc.
-3. Kiểm tra lại danh sách bảng đã được tạo để đảm bảo lược đồ hình thành đầy đủ.
-4. Chạy script `seed.sql` để nạp dữ liệu mẫu ban đầu.
-5. Kiểm tra số lượng bản ghi và thử một số truy vấn cơ bản nhằm xác nhận dữ liệu đã liên kết đúng.
+Ví dụ minh họa:
 
-Trong trường hợp muốn trình bày theo tư duy migration, có thể thay bước 2 bằng việc chạy lần lượt các script `V1`, `V2`, `V3`, `V4`. Cách làm này phù hợp hơn khi muốn minh họa quá trình phát triển của cơ sở dữ liệu theo từng giai đoạn.
+```sql
+CREATE DATABASE lms CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+```
+
+```powershell
+mysql -u root -p lms < backend/lms.sql
+mysql -u root -p lms < docs/sql/seed.sql
+```
+
+Nếu cần trình bày quá trình phát triển lược đồ theo tư duy migration, bước nạp `lms.sql` có thể được thay bằng việc chạy lần lượt các script `V1`, `V2`, `V3`, `V4`. Cách này phù hợp khi muốn minh họa rõ cơ sở dữ liệu đã mở rộng theo từng giai đoạn nghiệp vụ thay vì xuất hiện đầy đủ ngay từ đầu.
+
+## 4.6. Kiểm tra kết quả khởi tạo
+
+Sau khi nạp schema và dữ liệu mẫu, cần kiểm tra lại kết quả khởi tạo để bảo đảm cơ sở dữ liệu đã ở trạng thái sẵn sàng sử dụng. Các điểm cần xác nhận gồm:
+
+- danh sách bảng đã được tạo đầy đủ;
+- các quan hệ khóa ngoại hoạt động đúng;
+- dữ liệu mẫu đã được nạp vào các bảng lõi;
+- các truy vấn kiểm tra cơ bản có thể thực thi thành công.
+
+Một số truy vấn kiểm tra tiêu biểu:
+
+```sql
+SHOW TABLES;
+```
+
+```sql
+SELECT COUNT(*) AS total_users FROM users;
+SELECT COUNT(*) AS total_courses FROM courses;
+SELECT COUNT(*) AS total_classes FROM classes;
+SELECT COUNT(*) AS total_quizzes FROM quizzes;
+```
+
+```sql
+SELECT c.title, ch.title AS chapter_title, v.title AS video_title
+FROM courses c
+JOIN chapters ch ON ch.course_id = c.id
+JOIN videos v ON v.chapter_id = ch.id
+ORDER BY c.id, ch.order_index, v.id;
+```
+
+```sql
+SELECT u.full_name, c.title, qa.score
+FROM quiz_attempts qa
+JOIN users u ON u.id = qa.user_id
+JOIN quizzes q ON q.id = qa.quiz_id
+JOIN courses c ON c.id = q.course_id;
+```
+
+Nếu các truy vấn trên trả về kết quả hợp lý, có thể kết luận rằng lược đồ đã được tạo đúng, các quan hệ giữa bảng đã được liên kết đúng hướng và bộ dữ liệu mẫu đủ để phục vụ cho các bước phân tích, tối ưu và vận hành ở các chương tiếp theo.
 
 `[Chèn Hình 4.1. Kết quả tạo schema tại đây]`
 
 `[Chèn Hình 4.2. Kết quả nạp dữ liệu seed tại đây]`
 
-`[Chèn một đoạn SQL minh họa ngắn, ví dụ lệnh CREATE TABLE users hoặc courses, tại đây]`
+`[Chèn Hình 4.3. Kiểm tra danh sách bảng hoặc truy vấn đối chiếu dữ liệu tại đây]`
 
-## 4.6. Nhận xét
+## 4.7. Nhận xét
 
-Nhìn chung, phần khởi tạo cơ sở dữ liệu của hệ thống tương đối rõ ràng và phù hợp để trình bày trong báo cáo môn học. Việc tồn tại đồng thời file `lms.sql` và bộ migration mô phỏng giúp báo cáo vừa bám sát trạng thái hiện có của hệ thống, vừa thể hiện được tư duy phát triển cơ sở dữ liệu theo phiên bản. Tuy nhiên, nếu triển khai ở quy mô thực tế lớn hơn, hệ thống vẫn nên tiếp tục hoàn thiện bộ migration và seed theo hướng chuẩn hóa hơn để phục vụ vận hành lâu dài.
+Phần khởi tạo cơ sở dữ liệu của hệ thống LMS cho thấy lược đồ đã được tổ chức tương đối đầy đủ và có tính triển khai thực tế. File `lms.sql` cung cấp một trạng thái schema hoàn chỉnh, phù hợp cho việc dựng nhanh môi trường làm việc hoặc kiểm thử. Trong khi đó, bộ migration `V1` đến `V4` giúp thể hiện rõ cách cơ sở dữ liệu được mở rộng dần theo nhu cầu nghiệp vụ, từ nội dung học tập cơ bản đến đánh giá, tiến độ và quản lý lớp học.
+
+Điểm mạnh của cách tổ chức này là kết hợp được cả hai góc nhìn: góc nhìn triển khai nhanh với một schema hoàn chỉnh, và góc nhìn phát triển phần mềm với lược đồ tiến hóa theo phiên bản. Nhờ có `seed.sql`, hệ thống cũng có ngay dữ liệu nền để phục vụ kiểm tra liên kết bảng, viết truy vấn nghiệp vụ và đánh giá hiệu năng ở các chương sau.
+
+Tuy vậy, nếu triển khai ở quy mô lớn hơn, hệ thống vẫn nên tiếp tục chuẩn hóa bộ migration, bổ sung công cụ quản lý version chuyên dụng và mở rộng dữ liệu seed theo các kịch bản tải lớn hơn. Trong phạm vi đề tài hiện tại, cấu trúc khởi tạo như trên là phù hợp, đủ rõ về mặt kỹ thuật và đủ chắc để làm nền cho các nội dung tối ưu, sao lưu và replication ở các chương tiếp theo.
