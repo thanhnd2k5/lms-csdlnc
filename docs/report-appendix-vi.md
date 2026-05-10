@@ -968,116 +968,243 @@ DELIMITER ;
 
 ## Phụ lục G. Minh chứng replication và failover
 
-### G.1. Tài liệu và script liên quan
+### G.1. Cấu hình Docker Compose cho primary và replica
 
-| Nội dung | Đường dẫn |
-| --- | --- |
-| Runbook replication/failover | `infra/mysql-replication/README-vi.md` |
-| Kế hoạch triển khai Chương 7 | `docs/advanced/replication-automatic-failover-plan-vi.md` |
-| Khởi tạo replica | `infra/mysql-replication/scripts/init-replica.ps1` |
-| Xem trạng thái replication | `infra/mysql-replication/scripts/show-status.ps1` |
-| Promote replica | `infra/mysql-replication/scripts/promote-replica.ps1` |
-| Rejoin primary cũ | `infra/mysql-replication/scripts/rejoin-old-primary.ps1` |
+Trích file `infra/mysql-replication/docker-compose.yml`:
 
-### G.2. Lệnh kiểm thử replication
+```yaml
+services:
+  mysql-primary:
+    image: mysql:8.0
+    container_name: lms-mysql-primary
+    restart: unless-stopped
+    command:
+      - --server-id=1
+      - --log-bin=mysql-bin
+      - --binlog-format=ROW
+      - --gtid-mode=ON
+      - --enforce-gtid-consistency=ON
+      - --skip-name-resolve=ON
+      - --bind-address=0.0.0.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: lms
+    ports:
+      - "3307:3306"
+
+  mysql-replica:
+    image: mysql:8.0
+    container_name: lms-mysql-replica
+    restart: unless-stopped
+    command:
+      - --server-id=2
+      - --log-bin=mysql-bin
+      - --relay-log=mysql-relay-bin
+      - --gtid-mode=ON
+      - --enforce-gtid-consistency=ON
+      - --skip-name-resolve=ON
+      - --bind-address=0.0.0.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: lms
+    ports:
+      - "3308:3306"
+```
+
+### G.2. Script khởi tạo replica
+
+Nội dung file `infra/mysql-replication/scripts/init-replica.ps1`:
+
+```powershell
+param(
+  [string]$ReplicaContainer = "lms-mysql-replica",
+  [string]$PrimaryHost = "mysql-primary",
+  [string]$ReplicationUser = "repl",
+  [string]$ReplicationPassword = "replpass"
+)
+
+$sql = @"
+STOP REPLICA;
+RESET REPLICA ALL;
+CHANGE REPLICATION SOURCE TO
+  SOURCE_HOST='$PrimaryHost',
+  SOURCE_PORT=3306,
+  SOURCE_USER='$ReplicationUser',
+  SOURCE_PASSWORD='$ReplicationPassword',
+  SOURCE_AUTO_POSITION=1,
+  GET_SOURCE_PUBLIC_KEY=1;
+START REPLICA;
+SET GLOBAL read_only = ON;
+SET GLOBAL super_read_only = ON;
+SHOW REPLICA STATUS\G
+"@
+
+docker exec -i $ReplicaContainer mysql -uroot -proot -e $sql
+```
+
+### G.3. Script xem trạng thái replication
+
+Nội dung file `infra/mysql-replication/scripts/show-status.ps1`:
+
+```powershell
+param(
+  [string]$PrimaryContainer = "lms-mysql-primary",
+  [string]$ReplicaContainer = "lms-mysql-replica"
+)
+
+Write-Output "=== PRIMARY STATUS ==="
+docker exec -i $PrimaryContainer mysql -uroot -proot -e "SHOW MASTER STATUS\G"
+
+Write-Output "=== REPLICA STATUS ==="
+docker exec -i $ReplicaContainer mysql -uroot -proot -e "SHOW REPLICA STATUS\G"
+```
+
+### G.4. Script promote replica
+
+Nội dung file `infra/mysql-replication/scripts/promote-replica.ps1`:
+
+```powershell
+param(
+  [string]$ReplicaContainer = "lms-mysql-replica"
+)
+
+$sql = @"
+STOP REPLICA;
+RESET REPLICA ALL;
+SET GLOBAL read_only = OFF;
+SET GLOBAL super_read_only = OFF;
+"@
+
+docker exec -i $ReplicaContainer mysql -uroot -proot -e $sql
+```
+
+### G.5. Script rejoin primary cũ
+
+Nội dung file `infra/mysql-replication/scripts/rejoin-old-primary.ps1`:
+
+```powershell
+param(
+  [string]$OldPrimaryContainer = "lms-mysql-primary",
+  [string]$NewPrimaryHost = "mysql-replica",
+  [int]$NewPrimaryPort = 3306,
+  [string]$StateFilePath = "D:\lms-csdlnc\backend\tmp\db-role-state.json",
+  [string]$BackendStandbyHost = "127.0.0.1",
+  [int]$BackendStandbyPort = 3307,
+  [string]$ReplicationUser = "repl",
+  [string]$ReplicationPassword = "replpass"
+)
+
+$sql = @"
+STOP REPLICA;
+RESET REPLICA ALL;
+SET GLOBAL read_only = OFF;
+SET GLOBAL super_read_only = OFF;
+CHANGE REPLICATION SOURCE TO
+  SOURCE_HOST='$NewPrimaryHost',
+  SOURCE_PORT=$NewPrimaryPort,
+  SOURCE_USER='$ReplicationUser',
+  SOURCE_PASSWORD='$ReplicationPassword',
+  SOURCE_AUTO_POSITION=1,
+  GET_SOURCE_PUBLIC_KEY=1;
+START REPLICA;
+SET GLOBAL read_only = ON;
+SET GLOBAL super_read_only = ON;
+SHOW REPLICA STATUS\G
+"@
+
+docker exec -i $OldPrimaryContainer mysql -uroot -proot -e $sql
+```
+
+### G.6. Trích đoạn read/write split trong backend
+
+Trích file `backend/src/config/dbRouter.js`:
+
+```javascript
+function getSqlType(sql) {
+  if (!sql || typeof sql !== "string") {
+    return "write";
+  }
+
+  const withoutBlockComments = sql.trim().replace(/\/\*[\s\S]*?\*\//g, "").trim();
+  const firstWord = withoutBlockComments.split(/\s+/)[0]?.toUpperCase() || "";
+
+  if (["SELECT", "SHOW", "DESCRIBE", "EXPLAIN"].includes(firstWord)) {
+    return "read";
+  }
+
+  return "write";
+}
+```
+
+```javascript
+query(sql, values, callback, options = {}) {
+  const normalized = normalizeQueryArgs(sql, values, callback);
+  const target = this.selectPool(normalized.sql, options);
+
+  console.log(`[DB:${target.mode}] ${normalized.sql.trim().split("\n")[0]}`);
+  return target.pool.query(normalized.sql, normalized.values, normalized.callback);
+}
+```
+
+### G.7. Trích đoạn automatic failover
+
+Trích file `backend/src/services/failoverManager.js`:
+
+```javascript
+console.error(
+  `Primary health check failed (${this.failureCount}/${this.failureThreshold}): ${health.error}`,
+);
+
+if (this.failureCount >= this.failureThreshold) {
+  await this.promoteReplica();
+}
+
+const promoteResult = await runAdminSql({
+  host: topology.standby.host,
+  port: topology.standby.port,
+  user: topology.admin.user,
+  password: topology.admin.password,
+  useSsl: topology.admin.useSsl,
+  statements: `
+    STOP REPLICA;
+    RESET REPLICA ALL;
+    SET GLOBAL read_only = OFF;
+    SET GLOBAL super_read_only = OFF;
+  `,
+});
+
+console.log(
+  `Automatic failover completed. New primary: ${nextState.activeWriteHost}:${nextState.activeWritePort}`,
+);
+```
+
+### G.8. Lệnh kiểm thử
 
 ```powershell
 cd D:\lms-csdlnc\infra\mysql-replication
 docker compose up -d
-docker ps
-```
-
-```powershell
-docker exec -it lms-mysql-primary mysql -uroot -proot -e "SHOW VARIABLES LIKE 'server_id'; SHOW VARIABLES LIKE 'log_bin'; SHOW VARIABLES LIKE 'gtid_mode';"
-docker exec -it lms-mysql-replica mysql -uroot -proot -e "SHOW VARIABLES LIKE 'server_id'; SHOW VARIABLES LIKE 'gtid_mode';"
-```
-
-```powershell
 powershell -ExecutionPolicy Bypass -File D:\lms-csdlnc\infra\mysql-replication\scripts\init-replica.ps1
 powershell -ExecutionPolicy Bypass -File D:\lms-csdlnc\infra\mysql-replication\scripts\show-status.ps1
 ```
 
-Kết quả mong đợi khi kiểm tra trạng thái:
-
-```text
-Replica_IO_Running: Yes
-Replica_SQL_Running: Yes
-Seconds_Behind_Source: 0
-```
-
-### G.3. Lệnh kiểm thử đồng bộ dữ liệu
-
 ```powershell
 docker exec -it lms-mysql-primary mysql -uroot -proot lms -e "INSERT INTO courses (title, description, is_public, level) VALUES ('Replication Demo', 'Test dong bo du lieu', 1, 'Beginner');"
-```
-
-```powershell
 docker exec -it lms-mysql-replica mysql -uroot -proot lms -e "SELECT id, title, level, is_public, created_at FROM courses WHERE title = 'Replication Demo';"
-```
-
-```powershell
-docker exec -it lms-mysql-replica mysql -uroot -proot lms -e "INSERT INTO courses (title) VALUES ('Should Fail');"
-```
-
-Kết quả mong đợi:
-
-- bản ghi `Replication Demo` xuất hiện khi đọc từ `lms-mysql-replica`;
-- thao tác ghi trực tiếp vào replica bị từ chối do replica đang ở chế độ `read_only`.
-
-### G.4. Log read/write split
-
-```text
-[DB:read] ...
-[DB:write] ...
-```
-
-### G.5. Lệnh kiểm thử failover
-
-```powershell
-powershell -ExecutionPolicy Bypass -File D:\lms-csdlnc\infra\mysql-replication\scripts\promote-replica.ps1
-```
-
-```powershell
-docker exec -it lms-mysql-replica mysql -uroot -proot lms -e "INSERT INTO courses (title, description, is_public, level) VALUES ('Promoted Replica Demo', 'Replica da duoc promote', 1, 'Advanced');"
+docker exec -it lms-mysql-replica mysql -uroot -proot lms -e "INSERT INTO courses (title) VALUES ('Read Only Check');"
 ```
 
 ```powershell
 docker stop lms-mysql-primary
-```
-
-Dấu hiệu log cần chụp:
-
-```text
-Primary health check failed ...
-Automatic failover completed. New primary: 127.0.0.1:3308
-```
-
-### G.6. Lệnh rejoin primary cũ
-
-```powershell
 docker start lms-mysql-primary
-```
-
-Chạy script rejoin:
-
-```powershell
 powershell -ExecutionPolicy Bypass -File D:\lms-csdlnc\infra\mysql-replication\scripts\rejoin-old-primary.ps1
 ```
 
-Kết quả mong đợi:
-
-- `Replica_IO_Running: Yes`;
-- `Replica_SQL_Running: Yes`;
-- `lms-mysql-primary` trở lại vai trò replica;
-- backend ghi nhận lại standby để sẵn sàng cho vòng failover tiếp theo.
-
-### G.7. Danh sách minh chứng cần chụp
-
-- kết quả `docker ps`;
-- kết quả `SHOW REPLICA STATUS`;
-- kết quả ghi dữ liệu ở primary và đọc lại ở replica;
-- lỗi khi ghi trực tiếp vào replica ở chế độ `read_only`;
-- log `[DB:read]` và `[DB:write]` của backend;
-- log `Automatic failover completed`;
-- kết quả ghi dữ liệu thành công sau khi primary cũ bị dừng;
-- kết quả rejoin primary cũ thành replica.
+| Nội dung đối chiếu | Giá trị/kết quả |
+| --- | --- |
+| Container | `lms-mysql-primary`, `lms-mysql-replica` đang chạy |
+| Trạng thái replication | `Replica_IO_Running: Yes`, `Replica_SQL_Running: Yes` |
+| Đồng bộ dữ liệu | bản ghi `Replication Demo` đọc được từ `lms-mysql-replica` |
+| Chế độ chỉ đọc của replica | thao tác `INSERT` trực tiếp vào replica bị từ chối |
+| Read/write split | log backend có `[DB:read]` và `[DB:write]` |
+| Automatic failover | log có `Automatic failover completed` |
+| Rejoin primary cũ | `lms-mysql-primary` trở lại vai trò replica |
