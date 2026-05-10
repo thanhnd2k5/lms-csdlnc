@@ -146,23 +146,23 @@ Trong báo cáo chính, các thực thể trên sẽ được phân tích theo n
 
 ### 3.3. Quan hệ và ràng buộc giữa các thực thể
 
-Hệ thống có các quan hệ một-nhiều và nhiều-nhiều rõ ràng:
+Quan hệ giữa các thực thể trong hệ thống LMS không chỉ phản ánh cách tổ chức dữ liệu về mặt kỹ thuật mà còn thể hiện trực tiếp cấu trúc nghiệp vụ của bài toán. Từ lược đồ quan hệ có thể thấy các thực thể được liên kết theo hai nhóm chính là quan hệ một-nhiều và quan hệ nhiều-nhiều. Việc phân tách rõ hai nhóm này giúp mô tả chính xác hơn cách dữ liệu được tạo ra, được phụ thuộc lẫn nhau và được sử dụng trong các chức năng cốt lõi của hệ thống.
 
-- `users` - `courses`
-- `courses` - `chapters`
-- `chapters` - `videos`
-- `users` - `courses` qua `course_enrollments`
-- `users` - `videos` qua `video_completion`
-- `classes` - `courses` qua `class_courses`
-- `classes` - `users` qua `class_students`
+Trước hết, hệ thống có nhiều quan hệ một-nhiều mang tính phân cấp rõ ràng. Một người dùng có vai trò giảng viên trong bảng `users` có thể phụ trách nhiều khóa học trong bảng `courses`, được thể hiện thông qua khóa ngoại `teacher_id`. Từ mỗi khóa học, dữ liệu tiếp tục được mở rộng theo chiều nội dung: một khóa học có thể bao gồm nhiều chương trong bảng `chapters`, và mỗi chương có thể chứa nhiều video trong bảng `videos`. Cấu trúc này cho thấy dữ liệu học tập được tổ chức theo mô hình từ tổng quát đến chi tiết, phù hợp với cách triển khai nội dung trong các nền tảng LMS thực tế.
 
-Để đảm bảo tính toàn vẹn dữ liệu, lược đồ sử dụng các cơ chế ràng buộc sau:
+Ngoài nhóm nội dung học tập, mô hình một-nhiều còn xuất hiện rõ trong nhóm đánh giá. Một bài kiểm tra trong bảng `quizzes` có thể bao gồm nhiều câu hỏi trong `quiz_questions`, và mỗi câu hỏi lại có nhiều phương án lựa chọn trong `quiz_options`. Tương tự, một bài kiểm tra cũng có thể phát sinh nhiều lần làm bài trong bảng `quiz_attempts`, còn mỗi lần làm bài có thể gồm nhiều bản ghi trả lời trong `quiz_answers`. Cách tổ chức này cho phép hệ thống theo dõi đồng thời cả cấu trúc của đề kiểm tra lẫn lịch sử làm bài của học viên, từ đó phục vụ các chức năng chấm điểm, thống kê và đánh giá tiến độ học tập.
 
-- khóa chính
-- khóa ngoại
-- unique key
-- enum
-- not null
+Bên cạnh các quan hệ một-nhiều, hệ thống còn có nhiều quan hệ nhiều-nhiều cần được tách ra bằng các bảng trung gian. Quan hệ giữa học viên và khóa học là ví dụ điển hình: một học viên có thể đăng ký nhiều khóa học, đồng thời một khóa học cũng có thể có nhiều học viên tham gia. Quan hệ này được cài đặt qua bảng `course_enrollments`. Theo cách tương tự, quan hệ giữa học viên và video được quản lý qua bảng `video_completion`, cho phép hệ thống lưu trạng thái hoàn thành của từng học viên đối với từng video cụ thể. Đây là cơ sở dữ liệu quan trọng để tính tiến độ học tập và tổng hợp mức độ tham gia của người học.
+
+Trong phạm vi quản lý lớp học, quan hệ nhiều-nhiều còn được mở rộng thêm một tầng nghiệp vụ. Một lớp học trong bảng `classes` có thể gắn với nhiều khóa học khác nhau thông qua bảng `class_courses`, và một khóa học cũng có thể được sử dụng trong nhiều lớp khác nhau. Đồng thời, một lớp có thể có nhiều học viên và một học viên cũng có thể tham gia nhiều lớp, được biểu diễn qua bảng `class_students`. Đặc biệt, bảng `class_students_courses_approval` đóng vai trò mở rộng để theo dõi trạng thái phê duyệt của từng học viên đối với từng khóa học trong một lớp. Sự xuất hiện của bảng này cho thấy mô hình dữ liệu không chỉ phục vụ việc lưu trữ quan hệ cơ bản mà còn hướng đến hỗ trợ các quy trình quản lý linh hoạt và chi tiết hơn.
+
+Về mặt ràng buộc, lược đồ sử dụng đồng thời nhiều cơ chế để đảm bảo tính toàn vẹn dữ liệu. Trước hết, toàn vẹn thực thể được đảm bảo thông qua khóa chính ở tất cả các bảng. Phần lớn các bảng thực thể chính như `users`, `courses`, `chapters`, `videos` hay `quizzes` sử dụng khóa chính đơn kiểu tự tăng để định danh mỗi bản ghi. Trong khi đó, các bảng liên kết như `class_courses`, `class_students` và `class_students_courses_approval` sử dụng khóa chính ghép để xác định duy nhất một quan hệ cụ thể giữa các thực thể tham gia. Việc dùng khóa chính ghép ở các bảng này là hợp lý vì bản thân ý nghĩa nghiệp vụ của bản ghi nằm ở tổ hợp khóa chứ không nằm ở một mã định danh độc lập.
+
+Toàn vẹn tham chiếu được duy trì thông qua hệ thống khóa ngoại giữa các bảng. Các khóa ngoại như `chapters.course_id`, `videos.chapter_id`, `course_enrollments.user_id`, `course_enrollments.course_id`, `class_students.student_id` hay `class_courses.class_id` bảo đảm rằng mọi bản ghi ở bảng con đều phải tham chiếu tới một bản ghi hợp lệ ở bảng cha. Bên cạnh đó, lược đồ còn kết hợp các quy tắc xử lý khi xóa dữ liệu như `ON DELETE CASCADE` và `ON DELETE SET NULL`. Với những quan hệ phụ thuộc chặt, chẳng hạn chương phụ thuộc vào khóa học hoặc câu hỏi phụ thuộc vào bài kiểm tra, việc xóa bản ghi cha sẽ kéo theo việc xóa các bản ghi con để tránh dữ liệu mồ côi. Ngược lại, với các quan hệ mang tính liên kết ngữ cảnh như `courses.teacher_id` hoặc các liên kết từ `quizzes` đến `courses`, `chapters`, `videos`, hệ thống chọn đặt giá trị về `NULL` để vẫn giữ lại bản ghi chính khi cần thiết.
+
+Ngoài khóa chính và khóa ngoại, hệ thống còn sử dụng các ràng buộc miền giá trị như `NOT NULL`, `ENUM` và `UNIQUE`. Các cột quan trọng mang ý nghĩa bắt buộc như tên khóa học, tiêu đề video, vai trò người dùng hay mã lớp học đều được khai báo `NOT NULL` để hạn chế dữ liệu thiếu. Các trường trạng thái và phân loại như `users.role`, `quizzes.quiz_type`, `quiz_attempts.status` hay `classes.status` được biểu diễn bằng `ENUM`, giúp kiểm soát tập giá trị hợp lệ ngay tại mức cơ sở dữ liệu. Đối với các quan hệ không được phép trùng lặp, hệ thống bổ sung thêm ràng buộc duy nhất, điển hình là `UNIQUE(user_id, course_id)` trong `course_enrollments`, `UNIQUE(user_id, video_id)` trong `video_completion` và `UNIQUE(user_id, course_id)` trong `course_reviews`. Những ràng buộc này giúp tránh phát sinh các bản ghi lặp, đồng thời góp phần bảo vệ tính nhất quán của dữ liệu nghiệp vụ.
+
+Nhìn tổng thể, các quan hệ và ràng buộc trong lược đồ được thiết kế theo hướng khá chặt chẽ và phù hợp với đặc trưng của hệ thống LMS. Các thực thể chính được tách riêng, các quan hệ nhiều-nhiều được giải quyết bằng bảng trung gian, còn các quy tắc toàn vẹn được triển khai ngay từ mức lược đồ để giảm nguy cơ sai lệch dữ liệu trong quá trình vận hành. Đây cũng là nền tảng quan trọng để các phần phân tích chuẩn hóa, tối ưu truy vấn và xây dựng từ điển dữ liệu ở các mục sau có thể được trình bày nhất quán.
 
 ### 3.4. Lược đồ logic
 
