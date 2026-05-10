@@ -968,180 +968,78 @@ DELIMITER ;
 
 ## Phụ lục G. Minh chứng replication và failover
 
-Phụ lục này ghi lại các minh chứng kỹ thuật cho nội dung replication và failover đã trình bày ở Chương 7. Mục đích của phụ lục không phải là thay thế phần phân tích trong báo cáo chính, mà là cung cấp lệnh kiểm thử, dấu hiệu log và đường dẫn script để chứng minh mô hình đã được triển khai trong môi trường thực nghiệm.
+### G.1. Tài liệu và script liên quan
 
-Tài liệu và script liên quan:
+| Nội dung | Đường dẫn |
+| --- | --- |
+| Runbook replication/failover | `infra/mysql-replication/README-vi.md` |
+| Kế hoạch triển khai Chương 7 | `docs/advanced/replication-automatic-failover-plan-vi.md` |
+| Khởi tạo replica | `infra/mysql-replication/scripts/init-replica.ps1` |
+| Xem trạng thái replication | `infra/mysql-replication/scripts/show-status.ps1` |
+| Promote replica | `infra/mysql-replication/scripts/promote-replica.ps1` |
+| Rejoin primary cũ | `infra/mysql-replication/scripts/rejoin-old-primary.ps1` |
 
-- `infra/mysql-replication/README-vi.md`
-- `docs/advanced/replication-automatic-failover-plan-vi.md`
-- `infra/mysql-replication/scripts/init-replica.ps1`
-- `infra/mysql-replication/scripts/promote-replica.ps1`
-- `infra/mysql-replication/scripts/rejoin-old-primary.ps1`
-- `infra/mysql-replication/scripts/show-status.ps1`
-
-### G.1. Mô hình kiểm thử
-
-Mô hình replication được triển khai với hai container MySQL:
-
-- `lms-mysql-primary`: node chính, tiếp nhận thao tác ghi.
-- `lms-mysql-replica`: node phụ, nhận dữ liệu đồng bộ từ primary và phục vụ thao tác đọc.
-
-Backend sử dụng cơ chế `read/write split`: các truy vấn ghi được chuyển tới writer hiện tại, còn các truy vấn đọc có thể được chuyển tới replica. Khi primary gặp lỗi, failover manager kiểm tra trạng thái, promote replica thành writer mới và cập nhật lại trạng thái kết nối của backend.
-
-### G.2. Khởi động môi trường replication
-
-Lệnh khởi động môi trường:
+### G.2. Lệnh kiểm thử replication
 
 ```powershell
 cd D:\lms-csdlnc\infra\mysql-replication
 docker compose up -d
-```
-
-Kiểm tra các container đang chạy:
-
-```powershell
 docker ps
 ```
 
-Kết quả cần ghi nhận:
-
-- container `lms-mysql-primary` đang chạy;
-- container `lms-mysql-replica` đang chạy;
-- backend có thể kết nối tới hai node MySQL theo cấu hình replication.
-
-### G.3. Kiểm tra cấu hình primary và replica
-
-Kiểm tra cấu hình trên primary:
-
 ```powershell
 docker exec -it lms-mysql-primary mysql -uroot -proot -e "SHOW VARIABLES LIKE 'server_id'; SHOW VARIABLES LIKE 'log_bin'; SHOW VARIABLES LIKE 'gtid_mode';"
-```
-
-Kết quả mong đợi:
-
-- `server_id = 1`;
-- `log_bin = ON`;
-- `gtid_mode = ON`.
-
-Kiểm tra cấu hình trên replica:
-
-```powershell
 docker exec -it lms-mysql-replica mysql -uroot -proot -e "SHOW VARIABLES LIKE 'server_id'; SHOW VARIABLES LIKE 'gtid_mode';"
 ```
 
-Kết quả mong đợi:
-
-- `server_id = 2`;
-- `gtid_mode = ON`.
-
-### G.4. Khởi tạo replication
-
-Replication được khởi tạo bằng script:
-
 ```powershell
 powershell -ExecutionPolicy Bypass -File D:\lms-csdlnc\infra\mysql-replication\scripts\init-replica.ps1
-```
-
-Script này thực hiện các thao tác chính:
-
-- dừng trạng thái replica cũ nếu có;
-- reset cấu hình replica;
-- cấu hình replica bám theo `mysql-primary`;
-- bật `SOURCE_AUTO_POSITION=1` để dùng GTID;
-- khởi động lại replica;
-- bật `read_only` và `super_read_only` trên replica;
-- in kết quả `SHOW REPLICA STATUS`.
-
-Kiểm tra trạng thái replication:
-
-```powershell
 powershell -ExecutionPolicy Bypass -File D:\lms-csdlnc\infra\mysql-replication\scripts\show-status.ps1
 ```
 
-Kết quả mong đợi:
+Kết quả mong đợi khi kiểm tra trạng thái:
 
-- `Replica_IO_Running: Yes`;
-- `Replica_SQL_Running: Yes`;
-- `Seconds_Behind_Source: 0` hoặc giá trị rất nhỏ.
+```text
+Replica_IO_Running: Yes
+Replica_SQL_Running: Yes
+Seconds_Behind_Source: 0
+```
 
-### G.5. Kiểm thử đồng bộ dữ liệu
-
-Ghi dữ liệu thử nghiệm vào primary:
+### G.3. Lệnh kiểm thử đồng bộ dữ liệu
 
 ```powershell
 docker exec -it lms-mysql-primary mysql -uroot -proot lms -e "INSERT INTO courses (title, description, is_public, level) VALUES ('Replication Demo', 'Test dong bo du lieu', 1, 'Beginner');"
 ```
 
-Đọc dữ liệu tương ứng trên replica:
-
 ```powershell
 docker exec -it lms-mysql-replica mysql -uroot -proot lms -e "SELECT id, title, level, is_public, created_at FROM courses WHERE title = 'Replication Demo';"
 ```
-
-Nếu bản ghi `Replication Demo` xuất hiện trên replica, có thể kết luận quá trình đồng bộ dữ liệu từ primary sang replica hoạt động đúng.
-
-### G.6. Kiểm thử chế độ chỉ đọc của replica
-
-Sau khi khởi tạo replication, replica được đặt ở chế độ chỉ đọc. Có thể kiểm tra bằng thao tác ghi trực tiếp vào replica:
 
 ```powershell
 docker exec -it lms-mysql-replica mysql -uroot -proot lms -e "INSERT INTO courses (title) VALUES ('Should Fail');"
 ```
 
-Kết quả mong đợi là thao tác ghi bị từ chối. Minh chứng này cho thấy replica không tiếp nhận ghi trực tiếp trong trạng thái bình thường, giúp hạn chế nguy cơ lệch dữ liệu giữa hai node.
+Kết quả mong đợi:
 
-### G.7. Kiểm thử read/write split trong backend
+- bản ghi `Replication Demo` xuất hiện khi đọc từ `lms-mysql-replica`;
+- thao tác ghi trực tiếp vào replica bị từ chối do replica đang ở chế độ `read_only`.
 
-Khi backend chạy với cấu hình replication, log truy vấn cần thể hiện rõ hướng điều phối đọc/ghi:
+### G.4. Log read/write split
 
 ```text
 [DB:read] ...
 [DB:write] ...
 ```
 
-Ý nghĩa kiểm chứng:
-
-- log `[DB:read]` cho thấy truy vấn đọc được điều phối qua pool đọc;
-- log `[DB:write]` cho thấy truy vấn ghi được điều phối tới writer hiện tại;
-- sau khi ghi dữ liệu mới, hệ thống vẫn đọc lại được dữ liệu sau khi replication đồng bộ.
-
-### G.8. Kiểm thử promote replica thủ công
-
-Trong trường hợp cần kiểm thử failover thủ công, replica được promote bằng script:
+### G.5. Lệnh kiểm thử failover
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File D:\lms-csdlnc\infra\mysql-replication\scripts\promote-replica.ps1
 ```
 
-Script này thực hiện các thao tác chính:
-
-- dừng replica;
-- reset trạng thái replication;
-- tắt `read_only`;
-- tắt `super_read_only`;
-- cho phép node `lms-mysql-replica` tiếp nhận thao tác ghi.
-
-Sau khi promote, có thể kiểm tra bằng thao tác ghi vào replica:
-
 ```powershell
 docker exec -it lms-mysql-replica mysql -uroot -proot lms -e "INSERT INTO courses (title, description, is_public, level) VALUES ('Promoted Replica Demo', 'Replica da duoc promote', 1, 'Advanced');"
 ```
-
-Nếu ghi thành công, replica đã được nâng lên vai trò writer.
-
-### G.9. Kiểm thử automatic failover
-
-Kịch bản kiểm thử automatic failover:
-
-1. Khởi động `primary`, `replica` và backend.
-2. Bật cấu hình backend dùng MySQL replication.
-3. Xác nhận backend đọc/ghi bình thường.
-4. Dừng container `lms-mysql-primary`.
-5. Theo dõi log của failover manager.
-6. Xác nhận replica được promote thành writer mới.
-7. Gọi lại API ghi để kiểm tra backend vẫn ghi được dữ liệu.
-
-Lệnh dừng primary để tạo sự cố:
 
 ```powershell
 docker stop lms-mysql-primary
@@ -1154,18 +1052,7 @@ Primary health check failed ...
 Automatic failover completed. New primary: 127.0.0.1:3308
 ```
 
-Ý nghĩa kiểm chứng:
-
-- hệ thống phát hiện primary lỗi;
-- replica được promote tự động;
-- backend chuyển hướng ghi sang writer mới;
-- hệ thống tiếp tục ghi dữ liệu mà không cần sửa tay cấu hình kết nối.
-
-### G.10. Rejoin primary cũ sau failover
-
-Sau khi failover hoàn tất, node `lms-mysql-primary` cũ không tự động quay lại làm primary. Để tránh ghi lệch dữ liệu, node này được đưa trở lại cụm với vai trò replica.
-
-Khởi động lại primary cũ:
+### G.6. Lệnh rejoin primary cũ
 
 ```powershell
 docker start lms-mysql-primary
@@ -1177,14 +1064,6 @@ Chạy script rejoin:
 powershell -ExecutionPolicy Bypass -File D:\lms-csdlnc\infra\mysql-replication\scripts\rejoin-old-primary.ps1
 ```
 
-Script này thực hiện các thao tác chính:
-
-- reset trạng thái replication trên node primary cũ;
-- cấu hình node này bám theo primary mới là `mysql-replica`;
-- bật lại `read_only` và `super_read_only`;
-- in kết quả `SHOW REPLICA STATUS`;
-- cập nhật lại thông tin standby trong `backend\tmp\db-role-state.json`.
-
 Kết quả mong đợi:
 
 - `Replica_IO_Running: Yes`;
@@ -1192,9 +1071,7 @@ Kết quả mong đợi:
 - `lms-mysql-primary` trở lại vai trò replica;
 - backend ghi nhận lại standby để sẵn sàng cho vòng failover tiếp theo.
 
-### G.11. Danh sách minh chứng nên chèn vào báo cáo
-
-Các ảnh hoặc log nên chèn vào phần minh chứng:
+### G.7. Danh sách minh chứng cần chụp
 
 - kết quả `docker ps`;
 - kết quả `SHOW REPLICA STATUS`;
