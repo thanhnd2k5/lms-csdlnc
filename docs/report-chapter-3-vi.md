@@ -37,6 +37,14 @@ Trong báo cáo chính, các thực thể trên sẽ được phân tích theo n
 
 Quan hệ giữa các thực thể trong hệ thống LMS không chỉ phản ánh cách tổ chức dữ liệu về mặt kỹ thuật mà còn thể hiện trực tiếp cấu trúc nghiệp vụ của bài toán. Từ lược đồ quan hệ có thể thấy các thực thể được liên kết theo hai nhóm chính là quan hệ một-nhiều và quan hệ nhiều-nhiều. Việc phân tách rõ hai nhóm này giúp mô tả chính xác hơn cách dữ liệu được tạo ra, được phụ thuộc lẫn nhau và được sử dụng trong các chức năng cốt lõi của hệ thống.
 
+Có thể tóm tắt các quan hệ và ràng buộc chính của hệ thống như sau:
+
+- Quan hệ một-nhiều: `users -> courses`, `courses -> chapters`, `chapters -> videos`, `quizzes -> quiz_questions`, `quiz_questions -> quiz_options`, `quizzes -> quiz_attempts`.
+- Quan hệ nhiều-nhiều: `users <-> courses` qua `course_enrollments`, `users <-> videos` qua `video_completion`, `classes <-> courses` qua `class_courses`, `classes <-> users` qua `class_students`.
+- Quan hệ mở rộng theo nghiệp vụ: `class_students_courses_approval` lưu trạng thái phê duyệt học viên theo từng khóa học trong lớp.
+- Ràng buộc toàn vẹn chính: `PRIMARY KEY`, `FOREIGN KEY`, `NOT NULL`, `UNIQUE`, `ENUM`.
+- Quy tắc tham chiếu khi xóa dữ liệu: kết hợp `ON DELETE CASCADE` và `ON DELETE SET NULL` tùy tính chất phụ thuộc giữa các bảng.
+
 Trước hết, hệ thống có nhiều quan hệ một-nhiều mang tính phân cấp rõ ràng. Một người dùng có vai trò giảng viên trong bảng `users` có thể phụ trách nhiều khóa học trong bảng `courses`, được thể hiện thông qua khóa ngoại `teacher_id`. Từ mỗi khóa học, dữ liệu tiếp tục được mở rộng theo chiều nội dung: một khóa học có thể bao gồm nhiều chương trong bảng `chapters`, và mỗi chương có thể chứa nhiều video trong bảng `videos`. Cấu trúc này cho thấy dữ liệu học tập được tổ chức theo mô hình từ tổng quát đến chi tiết, phù hợp với cách triển khai nội dung trong các nền tảng LMS thực tế.
 
 Ngoài nhóm nội dung học tập, mô hình một-nhiều còn xuất hiện rõ trong nhóm đánh giá. Một bài kiểm tra trong bảng `quizzes` có thể bao gồm nhiều câu hỏi trong `quiz_questions`, và mỗi câu hỏi lại có nhiều phương án lựa chọn trong `quiz_options`. Tương tự, một bài kiểm tra cũng có thể phát sinh nhiều lần làm bài trong bảng `quiz_attempts`, còn mỗi lần làm bài có thể gồm nhiều bản ghi trả lời trong `quiz_answers`. Cách tổ chức này cho phép hệ thống theo dõi đồng thời cả cấu trúc của đề kiểm tra lẫn lịch sử làm bài của học viên, từ đó phục vụ các chức năng chấm điểm, thống kê và đánh giá tiến độ học tập.
