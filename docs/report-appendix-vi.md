@@ -4,6 +4,19 @@ Phần phụ lục trình bày trực tiếp các tài liệu kỹ thuật đi k
 
 ## Phụ lục A. Schema SQL hoàn chỉnh
 
+### A.1. Lệnh khởi tạo và nạp dữ liệu
+
+```sql
+CREATE DATABASE lms CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+```
+
+```powershell
+mysql -u root -p lms < backend/lms.sql
+mysql -u root -p lms < docs/sql/seed.sql
+```
+
+### A.2. Nội dung schema
+
 Nội dung file `backend/lms.sql`:
 
 ```sql
@@ -761,108 +774,138 @@ DROP TABLE IF EXISTS course_reviews;
 | `video_completion` | `UNIQUE (user_id, video_id)` |
 | `course_reviews` | `UNIQUE (user_id, course_id)` |
 
-## Phụ lục E. Truy vấn mẫu và EXPLAIN
+## Phụ lục E. Truy vấn benchmark và EXPLAIN
 
-### E.1. Thống kê số học viên đăng ký theo khóa học
+### E.1. Báo cáo kết quả học tập của học viên
 
 ```sql
 SELECT
+  u.id AS student_id,
+  u.full_name,
+  c.id AS course_id,
+  c.title AS course_title,
+  COUNT(DISTINCT qa.id) AS total_attempts,
+  ROUND(AVG(qa.score), 2) AS avg_score,
+  MAX(qa.end_time) AS latest_attempt
+FROM users u
+JOIN course_enrollments ce
+  ON ce.user_id = u.id
+JOIN courses c
+  ON c.id = ce.course_id
+LEFT JOIN quizzes q
+  ON q.course_id = c.id
+ AND q.quiz_type = 'chapter'
+LEFT JOIN quiz_attempts qa
+  ON qa.user_id = u.id
+ AND qa.quiz_id = q.id
+WHERE u.role = 'student'
+  AND c.is_public = 1
+GROUP BY u.id, u.full_name, c.id, c.title
+HAVING COUNT(DISTINCT qa.id) > 0
+ORDER BY avg_score DESC, latest_attempt DESC;
+```
+
+```sql
+EXPLAIN
+SELECT
+  u.id AS student_id,
+  u.full_name,
+  c.id AS course_id,
+  c.title AS course_title,
+  COUNT(DISTINCT qa.id) AS total_attempts,
+  ROUND(AVG(qa.score), 2) AS avg_score,
+  MAX(qa.end_time) AS latest_attempt
+FROM users u
+JOIN course_enrollments ce
+  ON ce.user_id = u.id
+JOIN courses c
+  ON c.id = ce.course_id
+LEFT JOIN quizzes q
+  ON q.course_id = c.id
+ AND q.quiz_type = 'chapter'
+LEFT JOIN quiz_attempts qa
+  ON qa.user_id = u.id
+ AND qa.quiz_id = q.id
+WHERE u.role = 'student'
+  AND c.is_public = 1
+GROUP BY u.id, u.full_name, c.id, c.title
+HAVING COUNT(DISTINCT qa.id) > 0
+ORDER BY avg_score DESC, latest_attempt DESC;
+```
+
+### E.2. Phân rã tiến độ học tập theo chương
+
+```sql
+SELECT
+  u.id AS student_id,
+  u.full_name,
+  c.id AS course_id,
+  c.title AS course_title,
+  ch.id AS chapter_id,
+  ch.title AS chapter_title,
+  ch.order_index,
+  COUNT(v.id) AS total_videos,
+  COUNT(vc.video_id) AS completed_videos
+FROM users u
+JOIN course_enrollments ce
+  ON ce.user_id = u.id
+JOIN courses c
+  ON c.id = ce.course_id
+JOIN chapters ch
+  ON ch.course_id = c.id
+LEFT JOIN videos v
+  ON v.chapter_id = ch.id
+LEFT JOIN video_completion vc
+  ON vc.user_id = u.id
+ AND vc.video_id = v.id
+WHERE u.role = 'student'
+  AND c.is_public = 1
+GROUP BY
+  u.id,
+  u.full_name,
   c.id,
   c.title,
-  COUNT(ce.user_id) AS total_students
-FROM courses c
-LEFT JOIN course_enrollments ce ON c.id = ce.course_id
-GROUP BY c.id, c.title
-ORDER BY total_students DESC;
+  ch.id,
+  ch.title,
+  ch.order_index
+ORDER BY u.id, c.id, ch.order_index;
 ```
 
 ```sql
 EXPLAIN
 SELECT
+  u.id AS student_id,
+  u.full_name,
+  c.id AS course_id,
+  c.title AS course_title,
+  ch.id AS chapter_id,
+  ch.title AS chapter_title,
+  ch.order_index,
+  COUNT(v.id) AS total_videos,
+  COUNT(vc.video_id) AS completed_videos
+FROM users u
+JOIN course_enrollments ce
+  ON ce.user_id = u.id
+JOIN courses c
+  ON c.id = ce.course_id
+JOIN chapters ch
+  ON ch.course_id = c.id
+LEFT JOIN videos v
+  ON v.chapter_id = ch.id
+LEFT JOIN video_completion vc
+  ON vc.user_id = u.id
+ AND vc.video_id = v.id
+WHERE u.role = 'student'
+  AND c.is_public = 1
+GROUP BY
+  u.id,
+  u.full_name,
   c.id,
   c.title,
-  COUNT(ce.user_id) AS total_students
-FROM courses c
-LEFT JOIN course_enrollments ce ON c.id = ce.course_id
-GROUP BY c.id, c.title
-ORDER BY total_students DESC;
-```
-
-### E.2. Theo dõi tiến độ học tập của học viên
-
-```sql
-SELECT
-  u.full_name,
-  c.title AS course_title,
-  COUNT(DISTINCT v.id) AS total_videos,
-  COUNT(DISTINCT vc.video_id) AS completed_videos
-FROM users u
-JOIN course_enrollments ce ON u.id = ce.user_id
-JOIN courses c ON c.id = ce.course_id
-LEFT JOIN videos v ON v.course_id = c.id
-LEFT JOIN video_completion vc
-  ON vc.video_id = v.id
- AND vc.user_id = u.id
-WHERE u.role = 'student'
-GROUP BY u.id, c.id, u.full_name, c.title;
-```
-
-```sql
-EXPLAIN
-SELECT
-  u.full_name,
-  c.title AS course_title,
-  COUNT(DISTINCT v.id) AS total_videos,
-  COUNT(DISTINCT vc.video_id) AS completed_videos
-FROM users u
-JOIN course_enrollments ce ON u.id = ce.user_id
-JOIN courses c ON c.id = ce.course_id
-LEFT JOIN videos v ON v.course_id = c.id
-LEFT JOIN video_completion vc
-  ON vc.video_id = v.id
- AND vc.user_id = u.id
-WHERE u.role = 'student'
-GROUP BY u.id, c.id, u.full_name, c.title;
-```
-
-### E.3. Thống kê số câu hỏi theo quiz
-
-```sql
-SELECT
-  q.id,
-  q.title,
-  COUNT(qq.id) AS total_questions
-FROM quizzes q
-LEFT JOIN quiz_questions qq ON q.id = qq.quiz_id
-GROUP BY q.id, q.title
-ORDER BY q.id;
-```
-
-```sql
-EXPLAIN
-SELECT
-  q.id,
-  q.title,
-  COUNT(qq.id) AS total_questions
-FROM quizzes q
-LEFT JOIN quiz_questions qq ON q.id = qq.quiz_id
-GROUP BY q.id, q.title
-ORDER BY q.id;
-```
-
-### E.4. Tìm lớp học theo mã lớp
-
-```sql
-SELECT *
-FROM classes
-WHERE class_code = 'RE01';
-```
-
-```sql
-EXPLAIN
-SELECT *
-FROM classes
-WHERE class_code = 'RE01';
+  ch.id,
+  ch.title,
+  ch.order_index
+ORDER BY u.id, c.id, ch.order_index;
 ```
 
 ## Phụ lục F. Lệnh sao lưu và phục hồi
@@ -925,15 +968,239 @@ DELIMITER ;
 
 ## Phụ lục G. Minh chứng replication và failover
 
-Tài liệu liên quan đến replication và failover được lưu trong:
+Phụ lục này ghi lại các minh chứng kỹ thuật cho nội dung replication và failover đã trình bày ở Chương 7. Mục đích của phụ lục không phải là thay thế phần phân tích trong báo cáo chính, mà là cung cấp lệnh kiểm thử, dấu hiệu log và đường dẫn script để chứng minh mô hình đã được triển khai trong môi trường thực nghiệm.
+
+Tài liệu và script liên quan:
 
 - `infra/mysql-replication/README-vi.md`
 - `docs/advanced/replication-automatic-failover-plan-vi.md`
+- `infra/mysql-replication/scripts/init-replica.ps1`
+- `infra/mysql-replication/scripts/promote-replica.ps1`
+- `infra/mysql-replication/scripts/rejoin-old-primary.ps1`
+- `infra/mysql-replication/scripts/show-status.ps1`
 
-Các nội dung minh chứng chính:
+### G.1. Mô hình kiểm thử
 
-- cấu hình `primary - replica`;
-- trạng thái `SHOW REPLICA STATUS`;
-- log backend với nhãn `[DB:read]` và `[DB:write]`;
-- log thông báo `Automatic failover completed`;
-- quy trình `manual rejoin` cho primary cũ.
+Mô hình replication được triển khai với hai container MySQL:
+
+- `lms-mysql-primary`: node chính, tiếp nhận thao tác ghi.
+- `lms-mysql-replica`: node phụ, nhận dữ liệu đồng bộ từ primary và phục vụ thao tác đọc.
+
+Backend sử dụng cơ chế `read/write split`: các truy vấn ghi được chuyển tới writer hiện tại, còn các truy vấn đọc có thể được chuyển tới replica. Khi primary gặp lỗi, failover manager kiểm tra trạng thái, promote replica thành writer mới và cập nhật lại trạng thái kết nối của backend.
+
+### G.2. Khởi động môi trường replication
+
+Lệnh khởi động môi trường:
+
+```powershell
+cd D:\lms-csdlnc\infra\mysql-replication
+docker compose up -d
+```
+
+Kiểm tra các container đang chạy:
+
+```powershell
+docker ps
+```
+
+Kết quả cần ghi nhận:
+
+- container `lms-mysql-primary` đang chạy;
+- container `lms-mysql-replica` đang chạy;
+- backend có thể kết nối tới hai node MySQL theo cấu hình replication.
+
+### G.3. Kiểm tra cấu hình primary và replica
+
+Kiểm tra cấu hình trên primary:
+
+```powershell
+docker exec -it lms-mysql-primary mysql -uroot -proot -e "SHOW VARIABLES LIKE 'server_id'; SHOW VARIABLES LIKE 'log_bin'; SHOW VARIABLES LIKE 'gtid_mode';"
+```
+
+Kết quả mong đợi:
+
+- `server_id = 1`;
+- `log_bin = ON`;
+- `gtid_mode = ON`.
+
+Kiểm tra cấu hình trên replica:
+
+```powershell
+docker exec -it lms-mysql-replica mysql -uroot -proot -e "SHOW VARIABLES LIKE 'server_id'; SHOW VARIABLES LIKE 'gtid_mode';"
+```
+
+Kết quả mong đợi:
+
+- `server_id = 2`;
+- `gtid_mode = ON`.
+
+### G.4. Khởi tạo replication
+
+Replication được khởi tạo bằng script:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File D:\lms-csdlnc\infra\mysql-replication\scripts\init-replica.ps1
+```
+
+Script này thực hiện các thao tác chính:
+
+- dừng trạng thái replica cũ nếu có;
+- reset cấu hình replica;
+- cấu hình replica bám theo `mysql-primary`;
+- bật `SOURCE_AUTO_POSITION=1` để dùng GTID;
+- khởi động lại replica;
+- bật `read_only` và `super_read_only` trên replica;
+- in kết quả `SHOW REPLICA STATUS`.
+
+Kiểm tra trạng thái replication:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File D:\lms-csdlnc\infra\mysql-replication\scripts\show-status.ps1
+```
+
+Kết quả mong đợi:
+
+- `Replica_IO_Running: Yes`;
+- `Replica_SQL_Running: Yes`;
+- `Seconds_Behind_Source: 0` hoặc giá trị rất nhỏ.
+
+### G.5. Kiểm thử đồng bộ dữ liệu
+
+Ghi dữ liệu thử nghiệm vào primary:
+
+```powershell
+docker exec -it lms-mysql-primary mysql -uroot -proot lms -e "INSERT INTO courses (title, description, is_public, level) VALUES ('Replication Demo', 'Test dong bo du lieu', 1, 'Beginner');"
+```
+
+Đọc dữ liệu tương ứng trên replica:
+
+```powershell
+docker exec -it lms-mysql-replica mysql -uroot -proot lms -e "SELECT id, title, level, is_public, created_at FROM courses WHERE title = 'Replication Demo';"
+```
+
+Nếu bản ghi `Replication Demo` xuất hiện trên replica, có thể kết luận quá trình đồng bộ dữ liệu từ primary sang replica hoạt động đúng.
+
+### G.6. Kiểm thử chế độ chỉ đọc của replica
+
+Sau khi khởi tạo replication, replica được đặt ở chế độ chỉ đọc. Có thể kiểm tra bằng thao tác ghi trực tiếp vào replica:
+
+```powershell
+docker exec -it lms-mysql-replica mysql -uroot -proot lms -e "INSERT INTO courses (title) VALUES ('Should Fail');"
+```
+
+Kết quả mong đợi là thao tác ghi bị từ chối. Minh chứng này cho thấy replica không tiếp nhận ghi trực tiếp trong trạng thái bình thường, giúp hạn chế nguy cơ lệch dữ liệu giữa hai node.
+
+### G.7. Kiểm thử read/write split trong backend
+
+Khi backend chạy với cấu hình replication, log truy vấn cần thể hiện rõ hướng điều phối đọc/ghi:
+
+```text
+[DB:read] ...
+[DB:write] ...
+```
+
+Ý nghĩa kiểm chứng:
+
+- log `[DB:read]` cho thấy truy vấn đọc được điều phối qua pool đọc;
+- log `[DB:write]` cho thấy truy vấn ghi được điều phối tới writer hiện tại;
+- sau khi ghi dữ liệu mới, hệ thống vẫn đọc lại được dữ liệu sau khi replication đồng bộ.
+
+### G.8. Kiểm thử promote replica thủ công
+
+Trong trường hợp cần kiểm thử failover thủ công, replica được promote bằng script:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File D:\lms-csdlnc\infra\mysql-replication\scripts\promote-replica.ps1
+```
+
+Script này thực hiện các thao tác chính:
+
+- dừng replica;
+- reset trạng thái replication;
+- tắt `read_only`;
+- tắt `super_read_only`;
+- cho phép node `lms-mysql-replica` tiếp nhận thao tác ghi.
+
+Sau khi promote, có thể kiểm tra bằng thao tác ghi vào replica:
+
+```powershell
+docker exec -it lms-mysql-replica mysql -uroot -proot lms -e "INSERT INTO courses (title, description, is_public, level) VALUES ('Promoted Replica Demo', 'Replica da duoc promote', 1, 'Advanced');"
+```
+
+Nếu ghi thành công, replica đã được nâng lên vai trò writer.
+
+### G.9. Kiểm thử automatic failover
+
+Kịch bản kiểm thử automatic failover:
+
+1. Khởi động `primary`, `replica` và backend.
+2. Bật cấu hình backend dùng MySQL replication.
+3. Xác nhận backend đọc/ghi bình thường.
+4. Dừng container `lms-mysql-primary`.
+5. Theo dõi log của failover manager.
+6. Xác nhận replica được promote thành writer mới.
+7. Gọi lại API ghi để kiểm tra backend vẫn ghi được dữ liệu.
+
+Lệnh dừng primary để tạo sự cố:
+
+```powershell
+docker stop lms-mysql-primary
+```
+
+Dấu hiệu log cần chụp:
+
+```text
+Primary health check failed ...
+Automatic failover completed. New primary: 127.0.0.1:3308
+```
+
+Ý nghĩa kiểm chứng:
+
+- hệ thống phát hiện primary lỗi;
+- replica được promote tự động;
+- backend chuyển hướng ghi sang writer mới;
+- hệ thống tiếp tục ghi dữ liệu mà không cần sửa tay cấu hình kết nối.
+
+### G.10. Rejoin primary cũ sau failover
+
+Sau khi failover hoàn tất, node `lms-mysql-primary` cũ không tự động quay lại làm primary. Để tránh ghi lệch dữ liệu, node này được đưa trở lại cụm với vai trò replica.
+
+Khởi động lại primary cũ:
+
+```powershell
+docker start lms-mysql-primary
+```
+
+Chạy script rejoin:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File D:\lms-csdlnc\infra\mysql-replication\scripts\rejoin-old-primary.ps1
+```
+
+Script này thực hiện các thao tác chính:
+
+- reset trạng thái replication trên node primary cũ;
+- cấu hình node này bám theo primary mới là `mysql-replica`;
+- bật lại `read_only` và `super_read_only`;
+- in kết quả `SHOW REPLICA STATUS`;
+- cập nhật lại thông tin standby trong `backend\tmp\db-role-state.json`.
+
+Kết quả mong đợi:
+
+- `Replica_IO_Running: Yes`;
+- `Replica_SQL_Running: Yes`;
+- `lms-mysql-primary` trở lại vai trò replica;
+- backend ghi nhận lại standby để sẵn sàng cho vòng failover tiếp theo.
+
+### G.11. Danh sách minh chứng nên chèn vào báo cáo
+
+Các ảnh hoặc log nên chèn vào phần minh chứng:
+
+- kết quả `docker ps`;
+- kết quả `SHOW REPLICA STATUS`;
+- kết quả ghi dữ liệu ở primary và đọc lại ở replica;
+- lỗi khi ghi trực tiếp vào replica ở chế độ `read_only`;
+- log `[DB:read]` và `[DB:write]` của backend;
+- log `Automatic failover completed`;
+- kết quả ghi dữ liệu thành công sau khi primary cũ bị dừng;
+- kết quả rejoin primary cũ thành replica.
