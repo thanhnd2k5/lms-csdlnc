@@ -1,5 +1,6 @@
 import React from 'react';
 import { Modal, Form, Input, message } from 'antd';
+import { FolderAddOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -35,22 +36,31 @@ const AddChapter = ({ visible, onCancel, onSuccess, courseId }) => {
       open={visible}
       onCancel={onCancel}
       onOk={() => form.submit()}
+      className="premium-modal"
+      okText="Xác nhận"
+      cancelText="Hủy"
+      style={{ top: 100 }} // Trả về vị trí cân đối hơn
+      width={480}
     >
       <Form
         form={form}
         layout="vertical"
         onFinish={handleSubmit}
+        id="premium-course-form"
       >
         <Form.Item
           name="title"
           label="Tên chương"
           rules={[{ required: true, message: 'Vui lòng nhập tên chương!' }]}
         >
-          <Input />
+          <Input 
+            prefix={<FolderAddOutlined />} 
+            placeholder="Ví dụ: Chương 1: Kiến thức nền tảng" 
+          />
         </Form.Item>
       </Form>
     </Modal>
   );
 };
 
-export default AddChapter; 
+export default AddChapter;

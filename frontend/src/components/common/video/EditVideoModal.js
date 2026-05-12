@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Modal, Form, Input, message } from 'antd';
+import { EditOutlined, LinkOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
 const EditVideoModal = ({ 
@@ -7,7 +8,7 @@ const EditVideoModal = ({
   onCancel, 
   onSuccess, 
   videoData,
-  role = 'teacher' // 'admin' or 'teacher'
+  role = 'teacher'
 }) => {
   const [form] = Form.useForm();
 
@@ -23,7 +24,6 @@ const EditVideoModal = ({
   const handleSubmit = async (values) => {
     try {
       const token = localStorage.getItem('token');
-
       await axios.put(`${process.env.REACT_APP_API_URL}/videos/${videoData.id}`, values, {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -31,32 +31,40 @@ const EditVideoModal = ({
         }
       });
       
-      message.success('Cập nhật video thành công');
+      message.success('Cập nhật bài học thành công');
       onSuccess();
     } catch (error) {
-      console.error('Error updating video:', error);
-      message.error(error.response?.data?.message || 'Có lỗi xảy ra khi cập nhật video');
+      message.error(error.response?.data?.message || 'Có lỗi xảy ra khi cập nhật bài học');
     }
   };
 
   return (
     <Modal
-      title="Chỉnh sửa video"
+      title="Chỉnh sửa bài học"
       open={visible}
       onCancel={onCancel}
       onOk={() => form.submit()}
+      className="premium-modal"
+      okText="Cập nhật"
+      cancelText="Hủy"
+      style={{ top: 40 }}
+      width={600}
     >
       <Form
         form={form}
         layout="vertical"
         onFinish={handleSubmit}
+        id="premium-course-form"
       >
         <Form.Item
           name="title"
-          label="Tên video"
-          rules={[{ required: true, message: 'Vui lòng nhập tên video!' }]}
+          label="Tên bài học"
+          rules={[{ required: true, message: 'Vui lòng nhập tên bài học!' }]}
         >
-          <Input />
+          <Input 
+            prefix={<EditOutlined />} 
+            placeholder="Nhập tên bài học" 
+          />
         </Form.Item>
 
         <Form.Item
@@ -67,11 +75,14 @@ const EditVideoModal = ({
             { type: 'url', message: 'Vui lòng nhập URL hợp lệ!' }
           ]}
         >
-          <Input />
+          <Input 
+            prefix={<LinkOutlined />} 
+            placeholder="https://..." 
+          />
         </Form.Item>
       </Form>
     </Modal>
   );
 };
 
-export default EditVideoModal; 
+export default EditVideoModal;

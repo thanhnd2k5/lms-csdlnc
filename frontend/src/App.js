@@ -13,12 +13,10 @@ import PrivateRouteTeacher from "./components/auth/PrivateRouteTeacher";
 import AdminPage from "./components/admin/admin_page";
 import AdminRoute from "./components/auth/AdminRoute";
 import VideoManagement from "./components/admin/courses/manage_video/video_management";
-import CreateQuiz from "./components/admin/quizzes/create_quiz";
 import QuestionManagement from "./components/admin/quizzes/questions/question_management";
 import TeacherPage from "./components/teacher/teacher_page";
 import TeacherVideoManagement from "./components/teacher/courses/video_management";
 import TeacherDocumentManagement from "./components/teacher/courses/manage_document/document_management";
-import CreateQuizTeacher from "./components/teacher/quizzes/create_quiz";
 import { useEffect } from "react";
 import CheckEmail from "./components/auth/CheckEmail";
 import EmailVerification from "./components/auth/EmailVerification";
@@ -133,22 +131,6 @@ function App() {
               </AdminRoute>
             }
           />
-          <Route 
-            path="/admin/quizzes/create" 
-            element={
-              <AdminRoute>
-                <CreateQuiz />
-              </AdminRoute>
-            } 
-          />
-          <Route 
-            path="/admin/quizzes/edit/:id" 
-            element={
-              <AdminRoute>
-                <CreateQuiz />
-              </AdminRoute>
-            } 
-          />
           <Route
             path="/admin/quizzes/:quizId/questions"
             element={
@@ -188,22 +170,6 @@ function App() {
             element={
               <PrivateRouteTeacher>
                 <TeacherDocumentManagement />
-              </PrivateRouteTeacher>
-            }
-          />
-          <Route
-            path="/teacher/quizzes/create"
-            element={
-              <PrivateRouteTeacher>
-                <CreateQuizTeacher />
-              </PrivateRouteTeacher>
-            }
-          />
-          <Route
-            path="/teacher/quizzes/edit/:id"
-            element={
-              <PrivateRouteTeacher>
-                <CreateQuizTeacher />
               </PrivateRouteTeacher>
             }
           />

@@ -1,7 +1,8 @@
 .modern-sidebar {
   background: white !important;
   border-right: 1px solid rgba(226, 232, 240, 0.8) !important;
-  height: calc(100vh - 72px) !important; /* height minus navbar height */
+  height: calc(100vh - 72px) !important;
+  /* height minus navbar height */
   position: sticky !important;
   top: 72px;
   z-index: 100;
@@ -20,27 +21,41 @@
   background: transparent !important;
 }
 
+/* Target the inner title content specifically to override Ant Design defaults */
+.dashboard-menu .ant-menu-item .ant-menu-title-content {
+  color: #1e293b !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+}
+
 .menu-item-premium {
   height: 48px !important;
   line-height: 48px !important;
   margin-bottom: 8px !important;
   border-radius: 12px !important;
-  color: #64748b !important;
-  font-weight: 500 !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.menu-item-premium:hover .ant-menu-title-content {
+  color: #2563eb !important;
 }
 
 .menu-item-premium:hover {
   background-color: #f1f5f9 !important;
-  color: #0f172a !important;
 }
 
 .menu-item-premium.ant-menu-item-selected {
-  background-color: #eff6ff !important;
-  color: #2563eb !important;
+  background-color: #ebf5ff !important;
   box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.1), 0 2px 4px -1px rgba(37, 99, 235, 0.06) !important;
 }
+
+.menu-item-premium.ant-menu-item-selected .ant-menu-title-content {
+  color: #2563eb !important;
+}
+
 
 .menu-item-premium.ant-menu-item-selected .menu-icon {
   color: #2563eb !important;
@@ -48,7 +63,9 @@
 }
 
 .menu-icon {
-  font-size: 18px !important;
+  font-size: 19px !important;
+  /* Slightly larger icon */
+  color: inherit !important;
   transition: transform 0.3s ease !important;
 }
 

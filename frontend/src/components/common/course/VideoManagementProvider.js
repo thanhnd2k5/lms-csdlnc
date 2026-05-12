@@ -33,7 +33,7 @@ const VideoManagementProvider = ({
       setChapters(chaptersResponse.data);
       setVideos(videosResponse.data);
     } catch (error) {
-      message.error('Lỗi khi tải dữ liệu khóa học');
+      message.error(error.response?.data?.message || 'Lỗi khi tải dữ liệu khóa học');
     } finally {
       setLoading(false);
     }
@@ -55,7 +55,7 @@ const VideoManagementProvider = ({
           message.success('Xóa video thành công');
           fetchCourseData();
         } catch (error) {
-          message.error('Lỗi khi xóa video');
+          message.error(error.response?.data?.message || error.response?.data?.error || 'Lỗi khi xóa video');
         }
       }
     });
@@ -77,7 +77,7 @@ const VideoManagementProvider = ({
           message.success('Xóa chương thành công');
           fetchCourseData();
         } catch (error) {
-          message.error('Lỗi khi xóa chương');
+          message.error(error.response?.data?.message || error.response?.data?.error || 'Lỗi khi xóa chương');
         }
       }
     });
@@ -105,7 +105,8 @@ const VideoManagementProvider = ({
       return true;
     } catch (error) {
       console.error('Error assigning quiz:', error);
-      message.error('Lỗi khi gán quiz');
+      const errorMsg = error.response?.data?.error || error.response?.data?.message || 'Lỗi khi gán quiz';
+      message.error(errorMsg);
       return false;
     }
   };
@@ -131,7 +132,8 @@ const VideoManagementProvider = ({
       return true;
     } catch (error) {
       console.error('Error unassigning quiz:', error);
-      message.error('Lỗi khi hủy gán quiz');
+      const errorMsg = error.response?.data?.error || error.response?.data?.message || 'Lỗi khi hủy gán quiz';
+      message.error(errorMsg);
       return false;
     }
   };

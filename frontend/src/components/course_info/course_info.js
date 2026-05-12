@@ -240,9 +240,9 @@ const CourseInfo = () => {
                 <div className="content-overview">
                   <span>{courseDetails.chapters?.length || 0} chương</span>
                   <Divider type="vertical" />
-                  <span>{courseDetails.total_videos || 0} bài giảng</span>
+                  <span>{courseDetails.video_count ?? courseDetails.total_videos ?? 0} bài giảng</span>
                   <Divider type="vertical" />
-                  <span>{courseDetails.total_documents || 0} tài liệu</span>
+                  <span>{courseDetails.document_count ?? courseDetails.total_documents ?? 0} tài liệu</span>
                 </div>
 
                 <Collapse
@@ -386,8 +386,8 @@ const CourseInfo = () => {
                     <List
                       split={false}
                       dataSource={[
-                        { icon: <PlayCircleOutlined />, text: `${courseDetails.total_videos || 0} bài giảng video` },
-                        { icon: <FilePdfOutlined />, text: `${courseDetails.total_documents || 0} tài liệu tải xuống` },
+                        { icon: <PlayCircleOutlined />, text: `${courseDetails.video_count ?? courseDetails.total_videos ?? 0} bài giảng video` },
+                        { icon: <FilePdfOutlined />, text: `${courseDetails.document_count ?? courseDetails.total_documents ?? 0} tài liệu tải xuống` },
                         { icon: <ClockCircleOutlined />, text: 'Truy cập trọn đời' },
                         { icon: <ThunderboltOutlined />, text: 'Học trên mọi thiết bị' },
                         { icon: <StarOutlined />, text: 'Cấp chứng nhận hoàn thành' }

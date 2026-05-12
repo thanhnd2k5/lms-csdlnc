@@ -5,9 +5,9 @@ const lms = {
         return new Promise((resolve, reject) => {
             const query = `
                 SELECT c.*, u.full_name as teacher_name,
-                       (SELECT COUNT(*) 
-                        FROM course_enrollments 
-                        WHERE course_id = c.id) as student_count
+                       (SELECT COUNT(*) FROM course_enrollments WHERE course_id = c.id) as student_count,
+                       (SELECT COUNT(*) FROM videos WHERE course_id = c.id) as video_count,
+                       (SELECT COUNT(*) FROM documents WHERE course_id = c.id) as document_count
                 FROM courses c
                 LEFT JOIN users u ON c.teacher_id = u.id
                 ORDER BY c.created_at DESC
@@ -26,9 +26,9 @@ const lms = {
         return new Promise((resolve, reject) => {
             let query = `
                 SELECT c.*, u.full_name as teacher_name,
-                       (SELECT COUNT(*) 
-                        FROM course_enrollments 
-                        WHERE course_id = c.id) as student_count
+                       (SELECT COUNT(*) FROM course_enrollments WHERE course_id = c.id) as student_count,
+                       (SELECT COUNT(*) FROM videos WHERE course_id = c.id) as video_count,
+                       (SELECT COUNT(*) FROM documents WHERE course_id = c.id) as document_count
                 FROM courses c
                 LEFT JOIN users u ON c.teacher_id = u.id
                 WHERE c.is_public = 1
@@ -95,7 +95,9 @@ const lms = {
     getVideosByCourseId: (courseId) => {
         return new Promise((resolve, reject) => {
             db.query(
-                `SELECT v.*, c.title as chapter_title 
+                `SELECT v.*, c.title as chapter_title,
+                       (SELECT COUNT(*) FROM documents WHERE video_id = v.id) as document_count,
+                       (SELECT COUNT(*) FROM quizzes WHERE video_id = v.id) as quiz_count
                 FROM videos v 
                 LEFT JOIN chapters c ON v.chapter_id = c.id 
                 WHERE v.course_id = ? 
@@ -131,7 +133,9 @@ const lms = {
     getVideoById: (videoId) => {
         return new Promise((resolve, reject) => {
             db.query(
-                `SELECT v.*, c.title as chapter_title 
+                `SELECT v.*, c.title as chapter_title,
+                       (SELECT COUNT(*) FROM documents WHERE video_id = v.id) as document_count,
+                       (SELECT COUNT(*) FROM quizzes WHERE video_id = v.id) as quiz_count
                 FROM videos v 
                 LEFT JOIN chapters c ON v.chapter_id = c.id 
                 WHERE v.id = ?`,
@@ -191,7 +195,10 @@ const lms = {
     getCourseById: (courseId) => {
         return new Promise((resolve, reject) => {
             const query = `
-                SELECT c.*, u.full_name as teacher_name 
+                SELECT c.*, u.full_name as teacher_name,
+                       (SELECT COUNT(*) FROM course_enrollments WHERE course_id = c.id) as student_count,
+                       (SELECT COUNT(*) FROM videos WHERE course_id = c.id) as video_count,
+                       (SELECT COUNT(*) FROM documents WHERE course_id = c.id) as document_count
                 FROM courses c
                 LEFT JOIN users u ON c.teacher_id = u.id
                 WHERE c.id = ?
@@ -410,9 +417,9 @@ const lms = {
         return new Promise((resolve, reject) => {
             const query = `
                 SELECT c.*, u.full_name as teacher_name,
-                       (SELECT COUNT(*) 
-                        FROM course_enrollments 
-                        WHERE course_id = c.id) as student_count
+                       (SELECT COUNT(*) FROM course_enrollments WHERE course_id = c.id) as student_count,
+                       (SELECT COUNT(*) FROM videos WHERE course_id = c.id) as video_count,
+                       (SELECT COUNT(*) FROM documents WHERE course_id = c.id) as document_count
                 FROM courses c
                 LEFT JOIN users u ON c.teacher_id = u.id
                 WHERE c.teacher_id = ?

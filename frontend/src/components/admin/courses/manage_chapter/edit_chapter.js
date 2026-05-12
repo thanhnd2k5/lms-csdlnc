@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Modal, Form, Input, message } from 'antd';
+import { EditOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
 const EditChapter = ({ visible, onCancel, onSuccess, chapterData }) => {
@@ -25,11 +26,7 @@ const EditChapter = ({ visible, onCancel, onSuccess, chapterData }) => {
       message.success('Cập nhật chương thành công');
       onSuccess();
     } catch (error) {
-      console.error('Error updating chapter:', error);
-      const errorMessage = error.response?.data?.message || 
-                          error.message ||
-                          'Có lỗi xảy ra khi cập nhật chương';
-      message.error(errorMessage);
+      message.error(error.response?.data?.message || 'Có lỗi xảy ra khi cập nhật chương');
     }
   };
 
@@ -39,22 +36,31 @@ const EditChapter = ({ visible, onCancel, onSuccess, chapterData }) => {
       open={visible}
       onCancel={onCancel}
       onOk={() => form.submit()}
+      className="premium-modal"
+      okText="Cập nhật"
+      cancelText="Hủy"
+      style={{ top: 40 }}
+      width={500}
     >
       <Form
         form={form}
         layout="vertical"
         onFinish={handleSubmit}
+        id="premium-course-form"
       >
         <Form.Item
           name="title"
           label="Tên chương"
           rules={[{ required: true, message: 'Vui lòng nhập tên chương!' }]}
         >
-          <Input />
+          <Input 
+            prefix={<EditOutlined />} 
+            placeholder="Nhập tên chương" 
+          />
         </Form.Item>
       </Form>
     </Modal>
   );
 };
 
-export default EditChapter; 
+export default EditChapter;

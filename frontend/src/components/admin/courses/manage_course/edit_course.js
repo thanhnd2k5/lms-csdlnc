@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Input, Upload, message, Switch, Select, Button, Space, Divider } from 'antd';
-import { LoadingOutlined, PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
+import { Modal, Form, Input, Upload, message, Switch, Select, Button, Space, Divider, Row, Col } from 'antd';
+import { LoadingOutlined, PlusOutlined, MinusCircleOutlined, InfoCircleOutlined, RocketOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { getAssetUrl } from '../../../../utils/urlUtils';
 
@@ -88,9 +88,10 @@ const EditCourse = ({ visible, onCancel, onSuccess, courseData }) => {
   };
 
   const uploadButton = (
-    <div>
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Tải lên</div>
+    <div className="upload-placeholder">
+      {loading ? <LoadingOutlined className="upload-icon" /> : <PlusOutlined className="upload-icon" />}
+      <span>Nhấp để tải ảnh lên</span>
+      <p style={{ fontSize: '12px', marginTop: '4px', color: '#94a3b8' }}>Kích thước gợi ý: 1280x720</p>
     </div>
   );
 
@@ -100,134 +101,162 @@ const EditCourse = ({ visible, onCancel, onSuccess, courseData }) => {
       open={visible}
       onCancel={onCancel}
       onOk={() => form.submit()}
-      okText="Cập nhật"
+      width={800}
+      style={{ top: 40 }}
+      className="premium-modal"
+      okText="Cập nhật khóa học"
       cancelText="Hủy"
     >
       <Form 
         form={form} 
         layout="vertical"
         onFinish={handleSubmit}
+        className="modern-form"
       >
-        <Form.Item
-          name="title"
-          label="Tên khóa học"
-          rules={[{ required: true, message: 'Vui lòng nhập tên khóa học!' }]}
-        >
-          <Input />
-        </Form.Item>
+        <Row gutter={32}>
+          <Col span={15}>
+            <Form.Item
+              name="title"
+              label="Tên khóa học"
+              rules={[{ required: true, message: 'Vui lòng nhập tên khóa học!' }]}
+            >
+              <Input placeholder="Nhập tên khóa học" />
+            </Form.Item>
 
-        <Form.Item
-          name="description"
-          label="Mô tả"
-          rules={[
-            { required: true, message: 'Vui lòng nhập mô tả khóa học!' },
-            { max: 100, message: 'Mô tả không được vượt quá 100 ký tự!' }
-          ]}
-        >
-          <Input.TextArea 
-            maxLength={100}
-            showCount
-            placeholder="Nhập mô tả khóa học"
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Ảnh thumbnail"
-          extra="Hỗ trợ JPG, PNG, GIF (< 5MB)"
-          rules={[{ required: true, message: 'Vui lòng tải lên ảnh thumbnail!' }]}
-        >
-          <Upload
-            name="thumbnail"
-            listType="picture-card"
-            showUploadList={false}
-            customRequest={handleUpload}
-            beforeUpload={beforeUpload}
-          >
-            {imageUrl ? (
-              <img 
-                src={getAssetUrl(imageUrl)} 
-                alt="thumbnail" 
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+            <Form.Item
+              name="description"
+              label="Mô tả ngắn"
+              rules={[
+                { required: true, message: 'Vui lòng nhập mô tả khóa học!' },
+                { max: 100, message: 'Mô tả không được vượt quá 100 ký tự!' }
+              ]}
+            >
+              <Input.TextArea 
+                maxLength={100}
+                showCount
+                rows={4}
+                placeholder="Nhập mô tả ngắn gọn..."
               />
-            ) : uploadButton}
-          </Upload>
-        </Form.Item>
+            </Form.Item>
 
-        <Form.Item
-          name="is_public"
-          label="Trạng thái công khai"
-          valuePropName="checked"
-        >
-          <Switch 
-            checkedChildren="Công khai" 
-            unCheckedChildren="Riêng tư"
-          />
-        </Form.Item>
-
-        <Divider orientation="left">Thông tin bổ sung</Divider>
-
-        <Form.Item
-          name="level"
-          label="Trình độ"
-          initialValue="All Levels"
-        >
-          <Select>
-            <Select.Option value="Beginner">Beginner (Cơ bản)</Select.Option>
-            <Select.Option value="Intermediate">Intermediate (Trung cấp)</Select.Option>
-            <Select.Option value="Advanced">Advanced (Nâng cao)</Select.Option>
-            <Select.Option value="All Levels">All Levels (Mọi trình độ)</Select.Option>
-          </Select>
-        </Form.Item>
-
-        <Form.Item label="Bạn sẽ học được gì? (Highlights)">
-          <Form.List name="highlights">
-            {(fields, { add, remove }) => (
-              <>
-                {fields.map((field) => (
-                  <Space key={field.key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
-                    <Form.Item
-                      {...field}
-                      rules={[{ required: true, message: 'Vui lòng nhập nội dung!' }]}
-                    >
-                      <Input placeholder="Ví dụ: Nắm vững kiến thức React..." style={{ width: 400 }} />
-                    </Form.Item>
-                    <MinusCircleOutlined onClick={() => remove(field.name)} />
-                  </Space>
-                ))}
-                <Form.Item>
-                  <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                    Thêm điểm nổi bật
-                  </Button>
+            <Row gutter={16}>
+              <Col span={14}>
+                <Form.Item
+                  name="level"
+                  label="Trình độ"
+                  initialValue="All Levels"
+                >
+                  <Select placeholder="Chọn trình độ">
+                    <Select.Option value="Beginner">Cơ bản (Beginner)</Select.Option>
+                    <Select.Option value="Intermediate">Trung cấp (Intermediate)</Select.Option>
+                    <Select.Option value="Advanced">Nâng cao (Advanced)</Select.Option>
+                    <Select.Option value="All Levels">Mọi trình độ (All Levels)</Select.Option>
+                  </Select>
                 </Form.Item>
-              </>
-            )}
-          </Form.List>
-        </Form.Item>
-
-        <Form.Item label="Yêu cầu khóa học (Requirements)">
-          <Form.List name="requirements">
-            {(fields, { add, remove }) => (
-              <>
-                {fields.map((field) => (
-                  <Space key={field.key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
-                    <Form.Item
-                      {...field}
-                      rules={[{ required: true, message: 'Vui lòng nhập nội dung!' }]}
-                    >
-                      <Input placeholder="Ví dụ: Đã có kiến thức HTML/CSS..." style={{ width: 400 }} />
-                    </Form.Item>
-                    <MinusCircleOutlined onClick={() => remove(field.name)} />
-                  </Space>
-                ))}
-                <Form.Item>
-                  <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                    Thêm yêu cầu
-                  </Button>
+              </Col>
+              <Col span={10}>
+                <Form.Item
+                  name="is_public"
+                  label="Trạng thái"
+                  valuePropName="checked"
+                >
+                  <Switch 
+                    checkedChildren="Công khai" 
+                    unCheckedChildren="Riêng tư"
+                    style={{ marginTop: '4px' }}
+                  />
                 </Form.Item>
-              </>
-            )}
-          </Form.List>
-        </Form.Item>
+              </Col>
+            </Row>
+          </Col>
+
+          <Col span={9}>
+            <Form.Item
+              label="Ảnh đại diện"
+              required
+              extra={<div style={{ fontSize: '11px', marginTop: '4px' }}>Hỗ trợ JPG, PNG (Tỷ lệ 16:9, dưới 5MB)</div>}
+            >
+              <Upload
+                name="thumbnail"
+                showUploadList={false}
+                customRequest={handleUpload}
+                beforeUpload={beforeUpload}
+              >
+                <div className="premium-upload-container">
+                  {imageUrl ? (
+                    <img 
+                      src={getAssetUrl(imageUrl)} 
+                      alt="thumbnail" 
+                      className="thumbnail-preview"
+                    />
+                  ) : uploadButton}
+                </div>
+              </Upload>
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Divider orientation="left" className="form-section-divider">
+          <Space><RocketOutlined /> Thông tin chi tiết</Space>
+        </Divider>
+
+        <Row gutter={24}>
+          <Col span={12}>
+            <Form.Item label="Điểm nổi bật (Highlights)">
+              <Form.List name="highlights">
+                {(fields, { add, remove }) => (
+                  <>
+                    {fields.map((field) => (
+                      <div key={field.key} className="dynamic-form-item">
+                        <Space style={{ display: 'flex' }} align="baseline">
+                          <Form.Item
+                            {...field}
+                            rules={[{ required: true, message: 'Vui lòng nhập nội dung!' }]}
+                            noStyle
+                          >
+                            <Input placeholder="Bạn sẽ học được gì?" style={{ width: 280 }} />
+                          </Form.Item>
+                          <MinusCircleOutlined onClick={() => remove(field.name)} style={{ color: '#ef4444' }} />
+                        </Space>
+                      </div>
+                    ))}
+                    <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />} style={{ borderRadius: '8px' }}>
+                      Thêm điểm nổi bật
+                    </Button>
+                  </>
+                )}
+              </Form.List>
+            </Form.Item>
+          </Col>
+
+          <Col span={12}>
+            <Form.Item label="Yêu cầu (Requirements)">
+              <Form.List name="requirements">
+                {(fields, { add, remove }) => (
+                  <>
+                    {fields.map((field) => (
+                      <div key={field.key} className="dynamic-form-item">
+                        <Space style={{ display: 'flex' }} align="baseline">
+                          <Form.Item
+                            {...field}
+                            rules={[{ required: true, message: 'Vui lòng nhập nội dung!' }]}
+                            noStyle
+                          >
+                            <Input placeholder="Yêu cầu cần có?" style={{ width: 280 }} />
+                          </Form.Item>
+                          <MinusCircleOutlined onClick={() => remove(field.name)} style={{ color: '#ef4444' }} />
+                        </Space>
+                      </div>
+                    ))}
+                    <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />} style={{ borderRadius: '8px' }}>
+                      Thêm yêu cầu
+                    </Button>
+                  </>
+                )}
+              </Form.List>
+            </Form.Item>
+          </Col>
+        </Row>
       </Form>
     </Modal>
   );

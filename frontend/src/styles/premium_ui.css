@@ -1,0 +1,150 @@
+/* 
+  PREMIUM UI DESIGN SYSTEM 
+  Shared across all modules (Admin, Teacher, User)
+*/
+
+/* Premium Modal Styles */
+.premium-modal .ant-modal-content {
+  border-radius: 20px !important;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+}
+
+.premium-modal .ant-modal-header {
+  padding: 16px 32px !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  margin-bottom: 0 !important;
+}
+
+.premium-modal .ant-modal-title {
+  font-size: 1.15rem !important;
+  font-weight: 700 !important;
+  color: #1e293b !important;
+}
+
+.premium-modal .ant-modal-body {
+  padding: 12px 32px 8px 32px !important;
+}
+
+.premium-modal .ant-modal-footer {
+  padding: 16px 32px !important;
+  border-top: 1px solid #f1f5f9 !important;
+  margin-top: 0 !important;
+}
+
+/* Modern Form Elements - Aggressive Overrides */
+.modern-form .ant-form-item {
+  margin-bottom: 20px !important;
+}
+
+.modern-form .ant-form-item-label > label {
+  font-weight: 600 !important;
+  color: #475569 !important;
+}
+
+/* Premium Form Elements - Absolute Priority */
+#premium-quiz-form .ant-input,
+#premium-quiz-form .ant-input-affix-wrapper,
+#premium-quiz-form .ant-input-number,
+#premium-quiz-form .ant-select-selector,
+#premium-course-form .ant-input,
+#premium-course-form .ant-input-affix-wrapper,
+#premium-course-form .ant-input-number,
+#premium-course-form .ant-select-selector {
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  background-color: #ffffff !important;
+  padding: 4px 12px !important;
+  box-shadow: none !important;
+  transition: all 0.2s ease !important;
+  overflow: hidden !important;
+}
+
+/* Remove ALL internal borders and dividers */
+#premium-quiz-form .ant-input-affix-wrapper .ant-input,
+#premium-quiz-form .ant-input-number .ant-input-number-input,
+#premium-quiz-form .ant-input-number-input-wrap,
+#premium-course-form .ant-input-affix-wrapper .ant-input,
+#premium-course-form .ant-input-number .ant-input-number-input,
+#premium-course-form .ant-input-number-input-wrap {
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  height: 34px !important;
+  box-shadow: none !important;
+}
+
+/* Seamless Prefix Style (No dividers) */
+#premium-quiz-form .ant-input-prefix,
+#premium-quiz-form .ant-input-number-prefix,
+#premium-course-form .ant-input-prefix,
+#premium-course-form .ant-input-number-prefix {
+  margin-right: 12px !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  color: #94a3b8 !important;
+}
+
+/* Hide any potential vertical lines (pseudo-elements) */
+#premium-quiz-form .ant-input-prefix::after,
+#premium-quiz-form .ant-input-number-prefix::after,
+#premium-quiz-form .ant-input-prefix::before,
+#premium-quiz-form .ant-input-number-prefix::before,
+#premium-course-form .ant-input-prefix::after,
+#premium-course-form .ant-input-number-prefix::after,
+#premium-course-form .ant-input-prefix::before,
+#premium-course-form .ant-input-number-prefix::before {
+  display: none !important;
+}
+
+/* Interaction States */
+#premium-quiz-form .ant-input-affix-wrapper:hover,
+#premium-quiz-form .ant-input-number:hover,
+#premium-quiz-form .ant-input:hover,
+#premium-quiz-form .ant-select-selector:hover,
+#premium-course-form .ant-input-affix-wrapper:hover,
+#premium-course-form .ant-input-number:hover,
+#premium-course-form .ant-input:hover,
+#premium-course-form .ant-select-selector:hover {
+  border-color: #3b82f6 !important;
+}
+
+#premium-quiz-form .ant-input-affix-wrapper-focused,
+#premium-quiz-form .ant-input-number-focused,
+#premium-quiz-form .ant-input:focus,
+#premium-quiz-form .ant-select-focused .ant-select-selector,
+#premium-course-form .ant-input-affix-wrapper-focused,
+#premium-course-form .ant-input-number-focused,
+#premium-course-form .ant-input:focus,
+#premium-course-form .ant-select-focused .ant-select-selector {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+/* Final Cleanup */
+#premium-quiz-form .ant-input-number-handler-wrap,
+#premium-course-form .ant-input-number-handler-wrap {
+  display: none !important;
+}
+
+#premium-quiz-form .ant-form-item:last-child,
+#premium-course-form .ant-form-item:last-child {
+  margin-bottom: 8px !important;
+}
+
+/* Shared Buttons Alignment */
+.btn-content-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  height: 100% !important;
+  width: 100% !important;
+  line-height: 1 !important;
+}
+
+.btn-content-wrapper .anticon {
+  font-size: 18px !important;
+  display: flex !important;
+}

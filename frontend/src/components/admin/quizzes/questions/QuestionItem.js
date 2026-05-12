@@ -47,7 +47,7 @@ const QuestionItem = ({ form, name, remove, restField }) => {
         <Input type="hidden" />
       </Form.Item>
 
-      <div style={{ backgroundColor: '#fafafa', padding: 16, borderRadius: 8 }}>
+      <div className="options-container">
         <Form.List name={[name, 'options']}>
           {(fields, { add, remove: removeOption }) => (
             <>
@@ -57,6 +57,8 @@ const QuestionItem = ({ form, name, remove, restField }) => {
                 return allows_multiple_correct ? (
                   <MultipleAnswerOption
                     key={fieldKey}
+                    form={form}
+                    name={name}
                     optionField={fieldProps}
                     index={index}
                     removeOption={removeOption}
@@ -78,10 +80,13 @@ const QuestionItem = ({ form, name, remove, restField }) => {
                 type="dashed"
                 onClick={() => add()}
                 block
-                icon={<PlusOutlined />}
+                className="btn-add-lesson"
                 style={{ marginTop: 16 }}
               >
-                Thêm đáp án
+                <div className="btn-content-wrapper">
+                  <PlusOutlined />
+                  <span>Thêm đáp án</span>
+                </div>
               </Button>
             </>
           )}

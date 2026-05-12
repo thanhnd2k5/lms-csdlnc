@@ -57,14 +57,6 @@ const QuizManagement = () => {
     }
   };
 
-  const handleAdd = () => {
-    navigate('/teacher/quizzes/create');
-  };
-
-  const handleEdit = (quiz) => {
-    navigate(`/teacher/quizzes/edit/${quiz.id}`, { state: { quizData: quiz } });
-  };
-
   const handleQuestionClick = (quiz) => {
     navigate(`/teacher/quizzes/${quiz.id}/questions`, { state: { quizData: quiz } });
   };
@@ -75,8 +67,7 @@ const QuizManagement = () => {
       courses={courses}
       loading={loading}
       onDelete={handleDelete}
-      onAdd={handleAdd}
-      onEdit={handleEdit}
+      onRefresh={fetchQuizzes}
       onQuestionClick={handleQuestionClick}
       role="teacher"
     />

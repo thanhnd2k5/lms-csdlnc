@@ -32,7 +32,7 @@ const quizController = {
             const quizId = req.params.quizId;
             const userId = req.user.id;
             const { answers } = req.body;
-            
+
             if (!answers || Object.keys(answers).length === 0) {
                 return res.status(400).json({ message: 'No answers provided' });
             }
@@ -54,9 +54,9 @@ const quizController = {
             res.json(quizResult);
         } catch (error) {
             console.error('Error submitting quiz:', error);
-            res.status(500).json({ 
+            res.status(500).json({
                 message: 'Internal server error',
-                error: error.message 
+                error: error.message
             });
         }
     },
@@ -65,10 +65,10 @@ const quizController = {
         try {
             const userId = req.user.id;
             const quizId = req.params.quizId;
-            
+
             // Lấy kết quả quiz
             const result = await quiz.getQuizResult(userId, quizId);
-            
+
             if (!result) {
                 return res.json(null);
             }
@@ -82,31 +82,31 @@ const quizController = {
 
     createQuiz: async (req, res) => {
         try {
-          const teacherId = req.user.id;
-          const { title, duration_minutes, passing_score } = req.body;
-    
-          const result = await quiz.createQuiz({
-            title,
-            duration_minutes,
-            passing_score,
-            teacher_id: teacherId
-          });
-    
-          res.status(201).json({ 
-            message: 'Tạo quiz thành công',
-            quizId: result.insertId 
-          });
+            const teacherId = req.user.id;
+            const { title, duration_minutes, passing_score } = req.body;
+
+            const result = await quiz.createQuiz({
+                title,
+                duration_minutes,
+                passing_score,
+                teacher_id: teacherId
+            });
+
+            res.status(201).json({
+                message: 'Tạo quiz thành công',
+                quizId: result.insertId
+            });
         } catch (error) {
-          console.error('Error creating quiz:', error);
-          res.status(500).json({ message: 'Internal server error' });
+            console.error('Error creating quiz:', error);
+            res.status(500).json({ message: 'Internal server error' });
         }
-      },
+    },
 
     deleteQuiz: async (req, res) => {
         try {
             const quizId = req.params.quizId;
             await quiz.deleteQuiz(quizId);
-            
+
             res.json({ message: 'Quiz deleted successfully' });
         } catch (error) {
             console.error('Error deleting quiz:', error);
@@ -134,8 +134,8 @@ const quizController = {
             const { video_id, chapter_id } = req.body;
 
             if (!video_id && !chapter_id) {
-                return res.status(400).json({ 
-                    message: 'Phải chỉ định video hoặc chương để gán quiz' 
+                return res.status(400).json({
+                    message: 'Phải chỉ định video hoặc chương để gán quiz'
                 });
             }
 
@@ -143,14 +143,14 @@ const quizController = {
             res.json({ message: 'Quiz assigned successfully' });
         } catch (error) {
             console.error('Error assigning quiz:', error);
-            if (error.message.includes('không tìm thấy') || 
+            if (error.message.includes('không tìm thấy') ||
                 error.message.includes('không tồn tại') ||
                 error.message.includes('không phù hợp')) {
                 res.status(400).json({ message: error.message });
             } else {
-                res.status(500).json({ 
+                res.status(500).json({
                     message: 'Có lỗi xảy ra khi gán quiz',
-                    error: error.message 
+                    error: error.message
                 });
             }
         }
@@ -211,7 +211,7 @@ const quizController = {
         try {
             const quizId = req.params.quizId;
             const quizData = await quiz.getQuizById(quizId);
-            
+
             if (!quizData) {
                 return res.status(404).json({ message: 'Quiz không tồn tại' });
             }
@@ -227,7 +227,7 @@ const quizController = {
         try {
             const userId = req.user.id;
             const quizId = req.params.quizId;
-            
+
             await quiz.resetQuizAttempt(userId, quizId);
             res.json({ message: 'Quiz attempt reset successfully' });
         } catch (error) {

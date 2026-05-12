@@ -1,13 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Space, message, Typography, Modal, Radio, Divider } from 'antd';
-import { PlusOutlined, RobotOutlined } from '@ant-design/icons';
+import { Form, Button, Space, message, Typography, Modal, Radio, Divider, Row, Col } from 'antd';
+import { 
+  PlusOutlined, 
+  RobotOutlined, 
+  SaveOutlined, 
+  ArrowLeftOutlined,
+  BulbOutlined
+} from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import QuestionItem from './QuestionItem';
 import AIGeneratorModal from '../../../common/quiz/AIGeneratorModal';
+import EditQuizModal from '../../../common/quiz/EditQuizModal';
+import { SettingOutlined } from '@ant-design/icons';
 import '../../admin_page.css';
+import '../../../common/quiz/QuizManagement.css'; // Reuse common quiz styles
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 const QuestionManagement = () => {
   const { quizId } = useParams();
@@ -20,6 +29,7 @@ const QuestionManagement = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [questionType, setQuestionType] = useState('single');
   const [aiModalOpen, setAiModalOpen] = useState(false);
+  const [isEditQuizVisible, setIsEditQuizVisible] = useState(false);
   const role = localStorage.getItem('role');
 
   useEffect(() => {
@@ -139,23 +149,67 @@ const QuestionManagement = () => {
   };
 
   return (
-    <>
-      <div className="page-header" style={{ padding: 0, margin: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <Title level={2}>Quản lý câu hỏi - {quiz?.title}</Title>
+    <div className="quiz-management-container questions-editor-page">
+      {/* Sticky Header */}
+      <div className="questions-page-header">
+        <div className="header-nav">
+          <Button 
+            type="text" 
+            icon={<ArrowLeftOutlined />} 
+            onClick={() => navigate(role === 'admin' ? '/admin/quiz' : '/teacher/quiz')}
+            className="back-btn"
+          >
+            Quay lại danh sách
+          </Button>
+        </div>
+        <div className="header-main">
+          <div className="header-info">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <Title level={2} style={{ margin: 0, color: '#1e293b' }}>
+                Thiết lập câu hỏi
+              </Title>
+              <Button 
+                type="text" 
+                icon={<SettingOutlined style={{ fontSize: '18px', color: '#64748b' }} />} 
+                className="btn-action-round"
+                onClick={() => setIsEditQuizVisible(true)}
+              />
+            </div>
+            <Text type="secondary">
+              Quiz: <span style={{ color: '#2563eb', fontWeight: 600 }}>{quiz?.title}</span> • {questions.length} câu hỏi hiện có
+            </Text>
+          </div>
+          <div className="header-actions">
+            <Button 
+              type="primary" 
+              onClick={() => form.submit()} 
+              loading={submitting}
+              className="btn-add-course"
+              size="large"
+            >
+              <div className="btn-content-wrapper">
+                <SaveOutlined />
+                <span>Lưu toàn bộ thay đổi</span>
+              </div>
+            </Button>
+          </div>
+        </div>
       </div>
 
-      <div className="form-container" style={{ maxWidth: 800, margin: '20px auto', background: 'white', padding: '24px', borderRadius: '8px' }}>
+      <div className="questions-content-wrapper">
         <Form
           form={form}
           onFinish={handleUpdateQuestions}
           layout="vertical"
           disabled={loading}
           initialValues={{ questions: questions }}
+          className="questions-form"
         >
-            <Form.List name="questions">
-              {(fields, { add, remove }) => (
-                <>
-                  {fields.map((field, index) => (
+          <Form.List name="questions">
+            {(fields, { add, remove }) => (
+              <div className="questions-list">
+                {fields.length > 0 ? (
+                  fields.map((field, index) => (
                     <QuestionItem
                       key={field.key}
                       form={form}
@@ -164,49 +218,52 @@ const QuestionManagement = () => {
                       restField={field}
                       index={index}
                     />
-                  ))}
+                  ))
+                ) : (
+                  <div className="empty-questions-state">
+                    <BulbOutlined style={{ fontSize: '48px', color: '#cbd5e1', marginBottom: '16px' }} />
+                    <h3>Chưa có câu hỏi nào</h3>
+                    <p>Hãy bắt đầu bằng cách thêm câu hỏi thủ công hoặc sử dụng AI để tạo tự động.</p>
+                  </div>
+                )}
+                
+                <div className="add-questions-controls">
+                  <Divider>
+                    <span style={{ color: '#94a3b8', fontSize: '0.875rem', fontWeight: 500 }}>THÊM NỘI DUNG MỚI</span>
+                  </Divider>
                   
-                  <Divider />
-                  
-                  <Space style={{ display: 'flex', justifyContent: 'center', marginBottom: 24 }}>
-                    <Button
+                  <Row gutter={16} justify="center">
+                    <Col>
+                      <Button
                         type="dashed"
                         onClick={showQuestionTypeModal}
-                        icon={<PlusOutlined />}
                         size="large"
-                    >
-                        Thêm câu hỏi thủ công
-                    </Button>
-                    
-                    <Button
+                        className="control-btn-manual"
+                      >
+                        <div className="btn-content-wrapper">
+                          <PlusOutlined />
+                          <span>Thêm câu hỏi thủ công</span>
+                        </div>
+                      </Button>
+                    </Col>
+                    <Col>
+                      <Button
                         type="primary"
                         onClick={() => setAiModalOpen(true)}
-                        icon={<RobotOutlined />}
                         size="large"
-                        style={{ 
-                            background: 'linear-gradient(135deg, #1890ff 0%, #722ed1 100%)',
-                            border: 'none'
-                        }}
-                    >
-                        Tạo câu hỏi bằng AI (Gemini)
-                    </Button>
-                  </Space>
-                </>
-              )}
-            </Form.List>
-
-            <Divider />
-
-            <Form.Item style={{ textAlign: 'center' }}>
-              <Space size="middle">
-                <Button type="primary" htmlType="submit" loading={submitting} size="large" style={{ minWidth: 150 }}>
-                  Lưu thay đổi
-                </Button>
-                <Button onClick={() => navigate(role === 'admin' ? '/admin/quiz' : '/teacher/quiz')} size="large">
-                  Quay lại
-                </Button>
-              </Space>
-            </Form.Item>
+                        className="control-btn-ai"
+                      >
+                        <div className="btn-content-wrapper">
+                          <RobotOutlined />
+                          <span>Tạo nhanh bằng AI (Gemini)</span>
+                        </div>
+                      </Button>
+                    </Col>
+                  </Row>
+                </div>
+              </div>
+            )}
+          </Form.List>
         </Form>
       </div>
 
@@ -234,7 +291,17 @@ const QuestionManagement = () => {
         onCancel={() => setAiModalOpen(false)} 
         onSuccess={handleAIQuestionsReceived}
       />
-    </>
+
+      <EditQuizModal
+        visible={isEditQuizVisible}
+        onCancel={() => setIsEditQuizVisible(false)}
+        onSuccess={() => {
+          setIsEditQuizVisible(false);
+          fetchQuizData();
+        }}
+        quizData={quiz}
+      />
+    </div>
   );
 };
 
