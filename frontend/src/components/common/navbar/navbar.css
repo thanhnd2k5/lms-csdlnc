@@ -111,6 +111,8 @@
   font-weight: 500;
   border-radius: 8px;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .nav-link-item:hover {
@@ -502,6 +504,9 @@
 
 /* Login Button */
 .login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 8px 24px;
   border-radius: 12px;
   background: #2563eb;
@@ -510,6 +515,8 @@
   font-weight: 600;
   font-size: 0.9rem;
   transition: all 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .login-btn:hover {

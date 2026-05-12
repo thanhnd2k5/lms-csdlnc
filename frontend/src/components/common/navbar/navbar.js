@@ -1,14 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { message, Badge } from 'antd';
 import axios from 'axios';
 import './navbar.css';
 import { 
   UserOutlined, 
-  BookOutlined, 
   LogoutOutlined, 
   CaretDownOutlined,
-  BellOutlined,
   SettingOutlined,
   MenuOutlined,
   DashboardOutlined
@@ -34,18 +31,7 @@ const Navbar = () => {
   // Admin/Teacher features will be inside their specific dashboards using Sidebar
   const menuItems = sidebarConfig.student;
 
-  useEffect(() => {
-    if (token) {
-      fetchUserData();
-    }
-  }, [token]);
-
-  useEffect(() => {
-    window.addEventListener('userUpdate', fetchUserData);
-    return () => window.removeEventListener('userUpdate', fetchUserData);
-  }, [token]);
-
-  const fetchUserData = async () => {
+  const fetchUserData = React.useCallback(async () => {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/users/profile`,
@@ -55,7 +41,18 @@ const Navbar = () => {
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    if (token) {
+      fetchUserData();
+    }
+  }, [token, fetchUserData]);
+
+  useEffect(() => {
+    window.addEventListener('userUpdate', fetchUserData);
+    return () => window.removeEventListener('userUpdate', fetchUserData);
+  }, [token, fetchUserData]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -203,9 +200,7 @@ const Navbar = () => {
               )}
             </div>
           ) : (
-            <Link to="/login" className="login-btn">
-              Đăng nhập
-            </Link>
+            <Link to="/login" className="login-btn">Đăng nhập</Link>
           )}
 
           {/* Mobile Menu Toggle */}

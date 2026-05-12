@@ -199,8 +199,26 @@
   height: 480px;
 }
 
-.floating-card {
+.floating-wrapper {
   position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.floating-wrapper.w1 {
+  top: 0;
+  right: 40px;
+  z-index: 5;
+}
+
+.floating-wrapper.w2 {
+  bottom: 0;
+  left: -20px;
+  z-index: 6; /* Luôn nằm trên w1 */
+}
+
+.floating-card {
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(12px);
   border-radius: 28px;
@@ -213,21 +231,90 @@
 
 .floating-card:hover {
   transform: scale(1.05) rotate(1deg);
-  z-index: 10;
 }
 
 .floating-card.c1 {
   width: 300px;
   height: 220px;
-  top: 0;
-  right: 0;
 }
 
 .floating-card.c2 {
   width: 440px;
   height: 330px;
-  bottom: 0;
-  left: -20px;
+}
+
+.card-shadow {
+  width: 80%;
+  height: 20px;
+  background: radial-gradient(ellipse at center, rgba(67, 97, 238, 0.4) 0%, transparent 75%);
+  filter: blur(12px);
+  margin-top: 20px;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.floating-wrapper.w1 .card-shadow {
+  background: radial-gradient(ellipse at center, rgba(114, 9, 183, 0.5) 0%, transparent 75%);
+}
+
+.floating-wrapper.w2 .card-shadow {
+  background: radial-gradient(ellipse at center, rgba(67, 97, 238, 0.5) 0%, transparent 75%);
+}
+
+/* Removed light beam styles */
+
+.premium-border {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 
+    0 40px 100px rgba(0, 0, 0, 0.5),
+    inset 0 0 20px rgba(255, 255, 255, 0.05) !important;
+}
+
+.premium-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: 28px;
+  background: linear-gradient(
+    135deg, 
+    rgba(255, 255, 255, 0.4), 
+    transparent 40%, 
+    transparent 60%, 
+    rgba(255, 255, 255, 0.2)
+  );
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.card-glass-shine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transform: skewX(-25deg);
+  transition: 0.75s;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.floating-card:hover .card-glass-shine {
+  left: 150%;
 }
 
 .floating-img {
