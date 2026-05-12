@@ -75,19 +75,27 @@ Về mặt logic, hệ thống được chia thành các cụm dữ liệu:
 
 `[Chèn Hình 3.1. Sơ đồ ERD tổng thể của hệ thống tại đây]`
 
+Sơ đồ ERD tổng thể cho thấy bức tranh liên kết dữ liệu của toàn hệ thống. Trong đó, nhóm người dùng là điểm xuất phát của nhiều nghiệp vụ như giảng dạy, ghi danh, làm bài kiểm tra và đánh giá khóa học. Các nhóm khóa học, nội dung học tập, bài kiểm tra, tiến độ và lớp học được tách thành các cụm riêng nhưng vẫn liên kết bằng khóa ngoại, giúp dữ liệu vừa dễ mở rộng vừa bảo đảm toàn vẹn tham chiếu.
+
 Từ sơ đồ tổng thể, có thể tiếp tục phân tích sâu hơn các nhóm dữ liệu có vai trò trọng tâm trong hệ thống. Để thuận tiện cho việc theo dõi, báo cáo tách riêng ba nhóm dữ liệu chính gồm nhóm đánh giá và bài kiểm tra, nhóm lớp học và ghi danh, và nhóm nội dung học tập.
 
 Hình 3.2 làm rõ mối quan hệ giữa bài kiểm tra, câu hỏi, đáp án và lịch sử làm bài của học viên.
 
 `[Chèn Hình 3.2. Sơ đồ ERD nhóm đánh giá và bài kiểm tra tại đây]`
 
+Hình này làm rõ cấu trúc dữ liệu cho chức năng kiểm tra đánh giá. Một bài kiểm tra có nhiều câu hỏi, mỗi câu hỏi có nhiều phương án trả lời, còn kết quả làm bài của học viên được lưu thông qua các bảng lịch sử làm bài và câu trả lời chi tiết. Cách tách bảng như vậy giúp hệ thống lưu được cả cấu trúc đề, đáp án đúng và quá trình làm bài của từng học viên.
+
 Hình 3.3 thể hiện nhóm dữ liệu phục vụ quản lý lớp học, ghi danh và theo dõi tiến độ học tập của học viên.
 
 `[Chèn Hình 3.3. Sơ đồ ERD nhóm lớp học, ghi danh và tiến độ học tập tại đây]`
 
+Nhóm ERD này thể hiện cách hệ thống tổ chức học viên theo lớp, gắn lớp với khóa học và theo dõi trạng thái tham gia học tập. Các bảng trung gian như `class_courses`, `class_students` và `course_enrollments` giúp biểu diễn quan hệ nhiều-nhiều một cách rõ ràng. Nhờ đó, hệ thống có thể quản lý đồng thời lớp học, khóa học được phân cho lớp và tiến độ của từng học viên.
+
 Hình 3.4 mô tả cấu trúc dữ liệu của nhóm nội dung học tập, gồm khóa học, chương học, video và tài liệu.
 
 `[Chèn Hình 3.4. Sơ đồ ERD nhóm nội dung học tập tại đây]`
+
+Sơ đồ nhóm nội dung học tập mô tả cấu trúc phân cấp từ khóa học đến chương, video và tài liệu. Mỗi khóa học có thể gồm nhiều chương, mỗi chương có nhiều video, còn tài liệu có thể được dùng để bổ sung học liệu cho quá trình học. Cấu trúc này phù hợp với nghiệp vụ LMS vì nội dung được tổ chức theo thứ tự học tập rõ ràng và dễ truy vấn.
 
 Cách trình bày này giúp người đọc vừa có cái nhìn tổng quan về toàn bộ hệ thống, vừa theo dõi được chi tiết của từng nhóm dữ liệu quan trọng mà không bị rối bởi một sơ đồ quá lớn.
 

@@ -58,9 +58,13 @@ Truy vấn thứ nhất là báo cáo kết quả học tập của học viên 
 
 Trong cấu hình `before`, truy vấn kết quả học tập có `query cost` khoảng `188960.87`. Biểu đồ cho thấy optimizer phải xử lý lượng dòng lớn hơn ở các bước nối bảng, đặc biệt ở nhóm bảng liên quan đến khóa học, bài kiểm tra và lịch sử làm bài. Việc xuất hiện `tmp table` và `filesort` cũng cho thấy truy vấn có chi phí xử lý bổ sung do có `GROUP BY` và `ORDER BY`.
 
+Minh chứng EXPLAIN này cho thấy khi thiếu các chỉ mục phù hợp, optimizer phải xử lý nhiều dòng hơn và chi phí ước lượng tăng rất cao. Đây là cơ sở để so sánh với cấu hình sau tối ưu, thay vì chỉ nhận xét cảm tính về hiệu năng.
+
 ![Hình 5.2. EXPLAIN truy vấn kết quả học tập sau khi dùng các chỉ mục tối ưu](images/chapter-5/explain_1_index.png)
 
 Trong cấu hình `after`, `query cost` giảm xuống khoảng `1053.75`. Optimizer sử dụng các thao tác `Non-Unique Key Lookup` trên những chỉ mục phù hợp, ví dụ `idx_course_public` để lọc khóa học công khai và các chỉ mục phục vụ nối bảng với ghi danh, quiz và bài làm. Mặc dù truy vấn vẫn cần `tmp table` và `filesort` do yêu cầu tổng hợp và sắp xếp kết quả, chi phí tổng thể đã giảm rất mạnh so với cấu hình before.
+
+Sự chênh lệch `query cost` giữa before và after cho thấy các chỉ mục đã giúp hệ quản trị chọn kế hoạch truy vấn hiệu quả hơn. Dù vẫn còn thao tác phục vụ `GROUP BY` hoặc `ORDER BY`, chi phí tổng thể giảm mạnh chứng minh việc thiết kế index có tác dụng thực tế.
 
 Truy vấn thứ hai là phân rã tiến độ học tập của học viên theo từng chương. Truy vấn này kết hợp các bảng `users`, `course_enrollments`, `courses`, `chapters`, `videos` và `video_completion` để thống kê số video trong từng chương và số video học viên đã hoàn thành. Đây là truy vấn đại diện cho chức năng theo dõi tiến độ học tập trong LMS.
 
@@ -68,9 +72,13 @@ Truy vấn thứ hai là phân rã tiến độ học tập của học viên th
 
 Trong cấu hình `before`, truy vấn tiến độ học tập có `query cost` khoảng `78311.31`. Biểu đồ cho thấy vẫn còn bước `Full Table Scan` trên bảng `courses` và chi phí nối tăng cao khi truy vấn mở rộng sang các bảng chương, video và trạng thái hoàn thành. Điều này phản ánh đặc điểm của các truy vấn tiến độ: dữ liệu thường phân tán qua nhiều bảng và dễ trở nên tốn kém nếu thiếu chỉ mục phù hợp.
 
+Hình EXPLAIN của truy vấn tiến độ học tập cho thấy truy vấn nhiều bảng có thể trở nên tốn kém khi dữ liệu phân tán qua khóa học, chương, video và trạng thái hoàn thành. Kết quả before đóng vai trò đường cơ sở để đánh giá tác động của các chỉ mục trên nhóm bảng nội dung học tập.
+
 ![Hình 5.4. EXPLAIN truy vấn tiến độ học tập sau khi dùng các chỉ mục tối ưu](images/chapter-5/explain_2_index.png)
 
 Trong cấu hình `after`, `query cost` giảm xuống khoảng `1298.75`. Optimizer tận dụng `idx_course_public` để lọc khóa học công khai, `idx_chapter_order` để lấy chương theo khóa học và thứ tự, `idx_video_chapter` để lấy video theo chương, cùng với `unique_completion` để kiểm tra trạng thái hoàn thành video của từng học viên. Nhờ đó, truy vấn giảm đáng kể chi phí so với cấu hình before.
+
+Ở cấu hình after, các chỉ mục trên khóa học, chương, video và trạng thái hoàn thành giúp giảm đáng kể chi phí nối bảng. Minh chứng này cho thấy index không chỉ hỗ trợ tìm kiếm đơn lẻ mà còn cải thiện các truy vấn báo cáo tiến độ có nhiều quan hệ.
 
 Bảng tổng hợp kết quả:
 

@@ -55,11 +55,19 @@ Bên cạnh bản full backup, hệ thống cần bật `binary log` để lưu 
 
 `[Chèn Hình 6.1. Lệnh backup và file backup tại đây]`
 
+Hình này chứng minh hệ thống đã thực hiện được bước sao lưu toàn phần bằng `mysqldump`. File backup được tạo ra đóng vai trò là mốc dữ liệu nền, dùng để khôi phục lại toàn bộ schema và dữ liệu tại thời điểm sao lưu.
+
 Kết quả cho thấy hệ thống đã tạo được file sao lưu toàn phần của cơ sở dữ liệu tại thời điểm thực hiện backup. File này đóng vai trò là mốc phục hồi nền trong quy trình sao lưu.
 
 `[Chèn Hình 6.2. Cấu hình hoặc danh sách file binary log tại đây]`
 
+Minh chứng binary log cho thấy MySQL đang ghi nhận các thay đổi phát sinh sau thời điểm full backup. Đây là điều kiện cần để phục hồi dữ liệu gần thời điểm xảy ra sự cố hơn, thay vì chỉ quay lại đúng trạng thái tại lúc tạo file backup.
+
 Kết quả kiểm tra cho thấy `binary log` đã được bật và MySQL đang duy trì các file log tương ứng trong quá trình vận hành hệ thống.
+
+`[Chèn Hình 6.3. Binary log ghi nhận thay đổi sau thao tác cập nhật dữ liệu tại đây]`
+
+Sau thao tác cập nhật dữ liệu, binary log có thay đổi, chứng tỏ hệ quản trị đã ghi lại các thao tác phát sinh. Minh chứng này giúp giải thích vì sao chiến lược full backup kết hợp binary log có khả năng hỗ trợ phục hồi theo mốc thời gian.
 
 ## 6.4. Phục hồi dữ liệu
 
@@ -88,15 +96,21 @@ Sau khi restore, cần kiểm tra lại:
 
 Việc kiểm tra restore là bước quan trọng vì một bản sao lưu chỉ thực sự có giá trị khi có thể khôi phục thành công. Do đó, chiến lược sao lưu không chỉ dừng ở bước tạo file backup mà còn phải bao gồm kiểm tra khả năng phục hồi định kỳ, cũng như khả năng tái áp dụng các thay đổi mới hơn từ binary log khi cần.
 
-`[Chèn Hình 6.3. Khôi phục dữ liệu từ full backup tại đây]`
+`[Chèn Hình 6.4. Khôi phục dữ liệu từ full backup tại đây]`
+
+Bước khôi phục từ full backup cho thấy file sao lưu có thể được nạp lại vào một cơ sở dữ liệu phục hồi riêng. Đây là bước kiểm tra quan trọng vì một bản backup chỉ có giá trị khi có thể restore thành công trong tình huống cần phục hồi.
 
 Kết quả restore cho thấy file sao lưu có thể được sử dụng để tái tạo lại cơ sở dữ liệu trên một môi trường phục hồi riêng.
 
-`[Chèn Hình 6.4. Kiểm tra dữ liệu sau khi restore full backup tại đây]`
+`[Chèn Hình 6.5. Kiểm tra dữ liệu sau khi restore full backup tại đây]`
+
+Kết quả kiểm tra sau restore xác nhận dữ liệu trong `lms_restore` đã được tái tạo từ bản full backup. Ở giai đoạn này, dữ liệu phản ánh trạng thái tại thời điểm sao lưu, làm nền để tiếp tục áp dụng các thay đổi phát sinh từ binary log.
 
 Dữ liệu trong `lms_restore` sau khi nạp `full backup` vẫn phản ánh trạng thái tại thời điểm sao lưu, tức là chưa bao gồm thay đổi phát sinh sau mốc backup.
 
-`[Chèn Hình 6.5. Áp dụng binary log và kiểm tra dữ liệu sau phục hồi tại đây]`
+`[Chèn Hình 6.6. Áp dụng binary log và kiểm tra dữ liệu sau phục hồi tại đây]`
+
+Sau khi áp dụng binary log, cơ sở dữ liệu phục hồi được cập nhật thêm các thay đổi sau mốc backup. Minh chứng này làm rõ khả năng phục hồi dữ liệu theo tiến trình gần hơn với thời điểm sự cố, qua đó tăng độ tin cậy của chiến lược backup/restore.
 
 Sau khi áp dụng `binary log`, dữ liệu trong `lms_restore` đã được đưa tiến gần hơn tới thời điểm xảy ra sự cố, qua đó minh họa khả năng phục hồi dữ liệu theo mốc thời gian mong muốn.
 
