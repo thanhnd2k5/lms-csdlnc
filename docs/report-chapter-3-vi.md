@@ -61,6 +61,23 @@ Ngoài khóa chính và khóa ngoại, hệ thống còn sử dụng các ràng 
 
 Nhìn tổng thể, các quan hệ và ràng buộc trong lược đồ được thiết kế theo hướng khá chặt chẽ và phù hợp với đặc trưng của hệ thống LMS. Các thực thể chính được tách riêng, các quan hệ nhiều-nhiều được giải quyết bằng bảng trung gian, còn các quy tắc toàn vẹn được triển khai ngay từ mức lược đồ để giảm nguy cơ sai lệch dữ liệu trong quá trình vận hành. Đây cũng là nền tảng quan trọng để các phần phân tích chuẩn hóa, tối ưu truy vấn và xây dựng từ điển dữ liệu ở các mục sau có thể được trình bày nhất quán.
 
+Bảng dưới đây tóm tắt các quan hệ chính giữa các thực thể để làm rõ hơn ý nghĩa của sơ đồ ERD ở phần tiếp theo:
+
+| Quan hệ | Kiểu quan hệ | Ý nghĩa nghiệp vụ |
+| --- | --- | --- |
+| `users` - `courses` | Một-nhiều | Một giảng viên có thể phụ trách nhiều khóa học, mỗi khóa học gắn với một giảng viên phụ trách. |
+| `courses` - `chapters` | Một-nhiều | Một khóa học gồm nhiều chương học, giúp nội dung được chia theo cấu trúc học tập rõ ràng. |
+| `chapters` - `videos` | Một-nhiều | Một chương có thể chứa nhiều video bài giảng, phục vụ việc tổ chức nội dung theo từng bài học. |
+| `courses` - `documents` | Một-nhiều hoặc liên kết tùy ngữ cảnh | Tài liệu học tập có thể được gắn với khóa học, chương hoặc video để bổ sung học liệu cho người học. |
+| `quizzes` - `quiz_questions` | Một-nhiều | Một bài kiểm tra gồm nhiều câu hỏi. |
+| `quiz_questions` - `quiz_options` | Một-nhiều | Mỗi câu hỏi có nhiều phương án lựa chọn, trong đó có thể đánh dấu đáp án đúng. |
+| `users` - `courses` qua `course_enrollments` | Nhiều-nhiều | Một học viên có thể đăng ký nhiều khóa học và một khóa học có thể có nhiều học viên tham gia. |
+| `users` - `videos` qua `video_completion` | Nhiều-nhiều | Hệ thống theo dõi trạng thái hoàn thành từng video của từng học viên. |
+| `classes` - `courses` qua `class_courses` | Nhiều-nhiều | Một lớp có thể được gán nhiều khóa học và một khóa học có thể được dùng cho nhiều lớp. |
+| `classes` - `users` qua `class_students` | Nhiều-nhiều | Một lớp có nhiều học viên và một học viên có thể tham gia nhiều lớp. |
+| `users` - `quizzes` qua `quiz_attempts` | Một-nhiều theo lượt làm bài | Một học viên có thể thực hiện nhiều lượt làm bài, mỗi lượt ghi nhận điểm số và trạng thái làm bài. |
+| `users` - `courses` qua `course_reviews` | Nhiều-nhiều có ràng buộc duy nhất | Học viên có thể đánh giá khóa học, nhưng mỗi học viên chỉ được đánh giá một khóa học một lần. |
+
 ## 3.4. Lược đồ logic
 
 Về mặt logic, hệ thống được chia thành các cụm dữ liệu:
