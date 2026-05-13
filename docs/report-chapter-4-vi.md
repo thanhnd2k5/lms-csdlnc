@@ -34,7 +34,7 @@ Lược đồ này thể hiện rõ đặc điểm của một hệ thống LMS 
 
 Bên cạnh đó, schema cũng bổ sung các ràng buộc và chỉ mục phục vụ trực tiếp cho vận hành. Một số ví dụ tiêu biểu gồm `username UNIQUE`, `email UNIQUE`, `class_code UNIQUE`, `UNIQUE (user_id, course_id)` trong `course_enrollments`, `UNIQUE (user_id, video_id)` trong `video_completion`, cùng các chỉ mục như `idx_user_role`, `idx_course_public`, `idx_chapter_order`, `idx_video_chapter`, `idx_quiz_type`, `idx_attempt_user_quiz` và `idx_course_rating`. Những thành phần này vừa giúp bảo đảm toàn vẹn dữ liệu, vừa tạo nền tảng cho tối ưu truy vấn ở Chương 5.
 
-Chi tiết các lệnh `CREATE TABLE`, khai báo khóa ngoại, ràng buộc duy nhất và chỉ mục được trình bày ở phần phụ lục để bảo đảm mạch nội dung chính của chương tập trung vào cấu trúc triển khai và ý nghĩa của lược đồ thay vì sa vào chi tiết cú pháp.
+Các bảng, thuộc tính chính, ràng buộc và một số lệnh `CREATE TABLE` tiêu biểu được trình bày ở phần phụ lục để bảo đảm mạch nội dung chính của chương tập trung vào cấu trúc triển khai và ý nghĩa của lược đồ thay vì sa vào toàn bộ chi tiết cú pháp.
 
 ## 4.4. Quá trình mở rộng lược đồ dữ liệu qua các phiên bản migration
 
@@ -86,7 +86,7 @@ Sau khi chuẩn bị đầy đủ các script cần thiết, quá trình khởi 
 
 Trong trường hợp muốn trình bày theo hướng phát triển qua nhiều phiên bản, bước nạp lược đồ tổng thể có thể được thay bằng việc áp dụng tuần tự các migration từ `V1` đến `V4`. Cách thực hiện này giúp thể hiện rõ quá trình cơ sở dữ liệu được bổ sung theo từng nhóm nghiệp vụ, từ phần lõi của hệ thống đến kiểm tra đánh giá, tiến độ học tập, quản lý lớp học và phản hồi khóa học.
 
-Các lệnh triển khai cụ thể được trình bày tại phần phụ lục để nội dung chính của chương tập trung vào quy trình và ý nghĩa của từng bước khởi tạo.
+Các lệnh triển khai tiêu biểu được trình bày tại phần phụ lục để nội dung chính của chương tập trung vào quy trình và ý nghĩa của từng bước khởi tạo.
 
 ## 4.6. Kiểm tra kết quả khởi tạo
 

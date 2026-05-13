@@ -1,6 +1,6 @@
 # Phụ lục
 
-Phần phụ lục trình bày các tài liệu kỹ thuật cần thiết để đối chiếu với nội dung chính của báo cáo. Do báo cáo được in, phụ lục được viết theo hướng tự chứa: có đủ bảng tóm tắt, trích đoạn SQL và lệnh kiểm thử tiêu biểu để hiểu cách triển khai, nhưng không in toàn bộ dữ liệu mẫu, toàn bộ migration `down` hoặc raw binary log vì các phần này dài và ít giá trị đọc.
+Phần phụ lục trình bày các tài liệu kỹ thuật dùng để đối chiếu với nội dung chính của báo cáo, bao gồm tóm tắt schema, dữ liệu mẫu đại diện, các migration tiêu biểu, truy vấn benchmark, lệnh sao lưu - phục hồi và minh chứng replication/failover. Các nội dung được chọn lọc nhằm làm rõ cách triển khai cơ sở dữ liệu mà vẫn giữ cho báo cáo tập trung vào phân tích và đánh giá kỹ thuật.
 
 ## Phụ lục A. Schema SQL hoàn chỉnh
 
