@@ -119,7 +119,7 @@ const AddCourse = ({ visible, onCancel, onSuccess }) => {
                 { max: 100, message: 'Mô tả không được vượt quá 100 ký tự!' }
               ]}
             >
-              <Input.TextArea 
+              <Input.TextArea
                 maxLength={100}
                 showCount
                 rows={4}
@@ -149,9 +149,9 @@ const AddCourse = ({ visible, onCancel, onSuccess }) => {
                   valuePropName="checked"
                   initialValue={false}
                 >
-                  <Switch 
-                    checkedChildren="Công khai" 
-                    unCheckedChildren="Riêng tư" 
+                  <Switch
+                    checkedChildren="Công khai"
+                    unCheckedChildren="Riêng tư"
                     style={{ marginTop: '4px' }}
                   />
                 </Form.Item>
@@ -173,9 +173,9 @@ const AddCourse = ({ visible, onCancel, onSuccess }) => {
               >
                 <div className="premium-upload-container">
                   {imageUrl ? (
-                    <img 
-                      src={getAssetUrl(imageUrl)} 
-                      alt="thumbnail" 
+                    <img
+                      src={getAssetUrl(imageUrl)}
+                      alt="thumbnail"
                       className="thumbnail-preview"
                     />
                   ) : uploadButton}

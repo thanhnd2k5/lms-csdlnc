@@ -1,29 +1,29 @@
 import React from 'react';
 import { Button, Tooltip, Space, Tag } from 'antd';
-import { 
-  PlayCircleOutlined, 
-  EditOutlined, 
-  DeleteOutlined, 
-  FileTextOutlined, 
+import {
+  PlayCircleOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  FileTextOutlined,
   QuestionCircleOutlined,
   ClockCircleOutlined,
   CheckCircleOutlined,
   EyeOutlined
 } from '@ant-design/icons';
 
-const LessonItem = ({ 
-  video, 
-  onEdit, 
-  onDelete, 
-  onManageDocuments, 
-  onAssignQuiz 
+const LessonItem = ({
+  video,
+  onEdit,
+  onDelete,
+  onManageDocuments,
+  onAssignQuiz
 }) => {
   return (
     <div className="lesson-item">
       <div className="lesson-icon">
         <PlayCircleOutlined />
       </div>
-      
+
       <div className="lesson-info">
         <div className="lesson-name">{video.title}</div>
         <div className="lesson-meta">
@@ -40,33 +40,33 @@ const LessonItem = ({
       <div className="lesson-actions">
         <Space size={8}>
           <Tooltip title="Chỉnh sửa nội dung">
-            <Button 
+            <Button
               className="btn-action-round primary"
-              icon={<EditOutlined />} 
+              icon={<EditOutlined />}
               onClick={() => onEdit(video)}
             />
           </Tooltip>
-          
+
           <Tooltip title="Quản lý tài liệu">
-            <Button 
+            <Button
               className="btn-action-round"
-              icon={<FileTextOutlined />} 
+              icon={<FileTextOutlined />}
               onClick={() => onManageDocuments(video)}
             />
           </Tooltip>
 
           <Tooltip title="Giao bài tập (Quiz)">
-            <Button 
+            <Button
               className="btn-action-round"
-              icon={<QuestionCircleOutlined />} 
+              icon={<QuestionCircleOutlined />}
               onClick={() => onAssignQuiz(video)}
             />
           </Tooltip>
 
           <Tooltip title="Xóa bài học">
-            <Button 
+            <Button
               className="btn-action-round danger"
-              icon={<DeleteOutlined />} 
+              icon={<DeleteOutlined />}
               onClick={() => onDelete(video.id)}
             />
           </Tooltip>

@@ -38,7 +38,7 @@ const EditCourse = ({ visible, onCancel, onSuccess, courseData }) => {
           'Authorization': `Bearer ${token}`
         }
       });
-      
+
       message.success('Cập nhật khóa học thành công');
       onSuccess();
     } catch (error) {
@@ -107,8 +107,8 @@ const EditCourse = ({ visible, onCancel, onSuccess, courseData }) => {
       okText="Cập nhật khóa học"
       cancelText="Hủy"
     >
-      <Form 
-        form={form} 
+      <Form
+        form={form}
         layout="vertical"
         onFinish={handleSubmit}
         className="modern-form"
@@ -131,7 +131,7 @@ const EditCourse = ({ visible, onCancel, onSuccess, courseData }) => {
                 { max: 100, message: 'Mô tả không được vượt quá 100 ký tự!' }
               ]}
             >
-              <Input.TextArea 
+              <Input.TextArea
                 maxLength={100}
                 showCount
                 rows={4}
@@ -160,8 +160,8 @@ const EditCourse = ({ visible, onCancel, onSuccess, courseData }) => {
                   label="Trạng thái"
                   valuePropName="checked"
                 >
-                  <Switch 
-                    checkedChildren="Công khai" 
+                  <Switch
+                    checkedChildren="Công khai"
                     unCheckedChildren="Riêng tư"
                     style={{ marginTop: '4px' }}
                   />
@@ -184,9 +184,9 @@ const EditCourse = ({ visible, onCancel, onSuccess, courseData }) => {
               >
                 <div className="premium-upload-container">
                   {imageUrl ? (
-                    <img 
-                      src={getAssetUrl(imageUrl)} 
-                      alt="thumbnail" 
+                    <img
+                      src={getAssetUrl(imageUrl)}
+                      alt="thumbnail"
                       className="thumbnail-preview"
                     />
                   ) : uploadButton}

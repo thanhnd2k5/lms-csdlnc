@@ -1,11 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Card, Statistic, Row, Col, Progress, Input, Button, Space, Tag } from 'antd';
-import { SearchOutlined, UserOutlined, BookOutlined, FieldTimeOutlined } from '@ant-design/icons';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Table, Progress, Input, Avatar, Typography, Row, Col, Tag, Space, Empty, Tooltip } from 'antd';
+import { 
+  SearchOutlined, 
+  UserOutlined, 
+  BookOutlined, 
+  CheckCircleOutlined, 
+  TeamOutlined,
+  LineChartOutlined
+} from '@ant-design/icons';
 import axios from 'axios';
+import { getAssetUrl } from '../../../utils/urlUtils';
 import './TeacherEnrollmentDetails.css';
 
+const { Title, Text } = Typography;
+
 const TeacherEnrollmentDetails = () => {
-  const [enrollmentData, setEnrollmentData] = useState([]);
+  const [rawData, setRawData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
   const token = localStorage.getItem('token');
@@ -16,27 +26,12 @@ const TeacherEnrollmentDetails = () => {
 
   const fetchEnrollmentDetails = async () => {
     try {
+      setLoading(true);
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/courseEnroll/teacher/student-enrollment-details`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      
-      // Chuyển đổi dữ liệu từ API thành dạng phẳng để hiển thị trong bảng
-      const flattenedData = response.data.flatMap(course => 
-        course.students.map(student => ({
-          course_id: course.id,
-          course_title: course.title || 'Chưa có tên',
-          student_id: student.id,
-          student_name: student.name || 'Chưa có tên',
-          student_email: student.email || 'Chưa có email',
-          enrolled_date: student.enrolled_at,
-          progress: student.progress || 0,
-          completed_videos: student.completed_videos,
-          total_videos: student.total_videos
-        }))
-      );
-      
-      setEnrollmentData(flattenedData);
+      setRawData(response.data);
     } catch (error) {
       console.error('Error fetching enrollment details:', error);
     } finally {
@@ -44,117 +39,210 @@ const TeacherEnrollmentDetails = () => {
     }
   };
 
-  // Hàm tính toán tiến độ học tập
-  const calculateProgress = (totalVideos, watchedVideos) => {
-    if (!totalVideos) return 0;
-    return Math.round((watchedVideos / totalVideos) * 100);
-  };
+  const tableData = useMemo(() => {
+    const flattened = rawData.flatMap(course => 
+      course.students.map(student => ({
+        key: `${course.id}-${student.id}`,
+        course_id: course.id,
+        course_title: course.title,
+        course_thumb: course.thumbnail,
+        student_id: student.id,
+        student_name: student.name,
+        student_email: student.email,
+        student_avatar: student.avatar,
+        enrolled_at: student.enrolled_at,
+        progress: student.progress || 0,
+        completed_videos: student.completed_videos,
+        total_videos: student.total_videos
+      }))
+    );
+
+    if (!searchText) return flattened;
+    const lowerSearch = searchText.toLowerCase();
+    return flattened.filter(item => 
+      item.student_name?.toLowerCase().includes(lowerSearch) ||
+      item.student_email?.toLowerCase().includes(lowerSearch) ||
+      item.course_title?.toLowerCase().includes(lowerSearch)
+    );
+  }, [rawData, searchText]);
+
+  const stats = useMemo(() => {
+    const totalStudents = tableData.length;
+    const totalCourses = rawData.length;
+    const avgProgress = totalStudents > 0 
+      ? tableData.reduce((acc, curr) => acc + curr.progress, 0) / totalStudents 
+      : 0;
+    const completedStudents = tableData.filter(item => item.progress === 100).length;
+
+    return { totalStudents, totalCourses, avgProgress, completedStudents };
+  }, [tableData, rawData]);
 
   const columns = [
     {
-      title: 'Khóa học',
-      dataIndex: 'course_title',
-      key: 'course_title',
-      filterable: true,
-    },
-    {
       title: 'Học viên',
-      dataIndex: 'student_name',
-      key: 'student_name',
-      filterable: true,
+      key: 'student',
+      width: '25%',
+      render: (_, record) => (
+        <div className="student-cell">
+          <Avatar 
+            src={getAssetUrl(record.student_avatar)} 
+            icon={<UserOutlined />} 
+            size={40}
+            style={{ border: '1px solid #f1f5f9' }}
+          />
+          <div className="student-info">
+            <span className="student-name">{record.student_name}</span>
+            <span className="student-email">{record.student_email}</span>
+          </div>
+        </div>
+      )
     },
     {
-      title: 'Email',
-      dataIndex: 'student_email',
-      key: 'student_email',
+      title: 'Khóa học',
+      key: 'course',
+      width: '30%',
+      render: (_, record) => (
+        <Space size="middle">
+          <img 
+            src={getAssetUrl(record.course_thumb)} 
+            className="course-thumbnail-mini" 
+            alt={record.course_title}
+            onError={(e) => e.target.src = 'https://via.placeholder.com/100x60?text=No+Image'}
+          />
+          <div className="course-title-cell">
+            <span className="course-main-title">{record.course_title}</span>
+            <span className="course-id-sub">ID: #{record.course_id}</span>
+          </div>
+        </Space>
+      )
     },
     {
       title: 'Ngày đăng ký',
-      dataIndex: 'enrolled_date',
-      key: 'enrolled_date',
-      render: (date) => new Date(date).toLocaleDateString('vi-VN'),
+      dataIndex: 'enrolled_at',
+      key: 'enrolled_at',
+      render: (date) => (
+        <Text type="secondary" style={{ fontSize: '13px' }}>
+          {new Date(date).toLocaleDateString('vi-VN')}
+        </Text>
+      )
     },
     {
-      title: 'Tiến độ',
-      dataIndex: 'progress',
+      title: 'Tiến độ học tập',
       key: 'progress',
-      render: (progress) => (
-        <Progress 
-          percent={Math.round(progress)} 
-          size="small" 
-          status={progress === 100 ? "success" : "active"}
-        />
-      ),
+      width: '20%',
+      sorter: (a, b) => a.progress - b.progress,
+      render: (_, record) => (
+        <div className="progress-container-premium">
+          <Progress 
+            percent={Math.round(record.progress)} 
+            size="small" 
+            strokeColor={record.progress === 100 ? '#10b981' : '#2563eb'}
+          />
+          <span style={{ fontSize: '11px', color: '#94a3b8' }}>
+            Đã xem {record.completed_videos}/{record.total_videos} bài giảng
+          </span>
+        </div>
+      )
     },
+    {
+      title: 'Trạng thái',
+      key: 'status',
+      align: 'right',
+      render: (_, record) => (
+        record.progress === 100 ? (
+          <Tag color="green" style={{ borderRadius: '6px', fontWeight: 600 }}>HOÀN THÀNH</Tag>
+        ) : (
+          <Tag color="blue" style={{ borderRadius: '6px', fontWeight: 600 }}>ĐANG HỌC</Tag>
+        )
+      )
+    }
   ];
 
-  const filteredData = enrollmentData.filter(item => {
-    const searchLower = searchText.toLowerCase();
-    console.log(item);
-    return (
-      (item.course_title || '').toLowerCase().includes(searchLower) ||
-      (item.student_name || '').toLowerCase().includes(searchLower) ||
-      (item.student_email || '').toLowerCase().includes(searchLower)
-    );
-  });
-
-  // Tính toán thống kê
-  const uniqueCourses = new Set(enrollmentData.map(item => item.course_id));
-  const completedCourses = enrollmentData.filter(item => item.progress === 100);
-
   return (
-    <div className="enrollment-details-container">
-      <Card className="stats-section">
-        <Row gutter={24}>
-          <Col span={8}>
-            <Statistic 
-              title="Tổng số học viên"
-              value={enrollmentData.length}
-              prefix={<UserOutlined />}
-            />
-          </Col>
-          <Col span={8}>
-            <Statistic 
-              title="Số khóa học"
-              value={uniqueCourses.size}
-              prefix={<BookOutlined />}
-            />
-          </Col>
-          <Col span={8}>
-            <Statistic 
-              title="Hoàn thành khóa học"
-              value={completedCourses.length}
-              suffix={`/${enrollmentData.length}`}
-              prefix={<FieldTimeOutlined />}
-            />
+    <div className="course-management-container">
+      <div className="course-dashboard-header">
+        <Row justify="space-between" align="bottom">
+          <Col>
+            <h1>Quản lý học viên</h1>
+            <p>Theo dõi tiến độ và hỗ trợ học viên trong hành trình chinh phục tri thức</p>
           </Col>
         </Row>
-      </Card>
+      </div>
 
-      <Card className="table-section">
-        <div className="table-header">
+      <div className="course-stats-grid">
+        <div className="course-stat-card">
+          <div className="stat-icon-wrapper blue">
+            <TeamOutlined />
+          </div>
+          <div className="stat-info">
+            <h3>Tổng học viên</h3>
+            <div className="stat-value">{stats.totalStudents}</div>
+          </div>
+        </div>
+        <div className="course-stat-card">
+          <div className="stat-icon-wrapper purple">
+            <BookOutlined />
+          </div>
+          <div className="stat-info">
+            <h3>Khóa học</h3>
+            <div className="stat-value">{stats.totalCourses}</div>
+          </div>
+        </div>
+        <div className="course-stat-card">
+          <div className="stat-icon-wrapper orange">
+            <LineChartOutlined />
+          </div>
+          <div className="stat-info">
+            <h3>Tiến độ TB</h3>
+            <div className="stat-value">{Math.round(stats.avgProgress)}%</div>
+          </div>
+        </div>
+        <div className="course-stat-card">
+          <div className="stat-icon-wrapper green">
+            <CheckCircleOutlined />
+          </div>
+          <div className="stat-info">
+            <h3>Đã hoàn thành</h3>
+            <div className="stat-value">{stats.completedStudents}</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="course-filter-section">
+        <div className="search-wrapper">
           <Input
-            placeholder="Tìm kiếm theo tên khóa học, học viên..."
-            prefix={<SearchOutlined />}
+            placeholder="Tìm kiếm học viên, khóa học hoặc email..."
+            prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
             value={searchText}
             onChange={e => setSearchText(e.target.value)}
-            className="search-input"
+            style={{ borderRadius: '10px', height: '42px' }}
+            allowClear
           />
         </div>
-        
+        <div className="toolbar-actions">
+          <Text type="secondary">Đang hiển thị <strong>{tableData.length}</strong> học viên</Text>
+        </div>
+      </div>
+
+      <div className="premium-table-container">
         <Table
           columns={columns}
-          dataSource={filteredData}
+          dataSource={tableData}
           loading={loading}
-          rowKey={(record) => `${record.course_id}-${record.student_id}`}
+          rowKey="key"
+          className="enrollment-table"
           pagination={{
             pageSize: 10,
-            showTotal: (total) => `Tổng số ${total} bản ghi`,
+            showTotal: (total) => `Tổng số ${total} học viên`,
+            style: { padding: '16px 24px' }
+          }}
+          locale={{
+            emptyText: <Empty description="Không tìm thấy dữ liệu học viên" />
           }}
         />
-      </Card>
+      </div>
     </div>
   );
 };
 
-export default TeacherEnrollmentDetails; 
+export default TeacherEnrollmentDetails;

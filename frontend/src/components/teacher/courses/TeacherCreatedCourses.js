@@ -44,9 +44,9 @@ const TeacherCreatedCourses = () => {
   if (loading) {
     return (
       <div className="loading-container">
-        <Spin 
-          indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} 
-          tip="Đang chuẩn bị danh sách khóa học của bạn..." 
+        <Spin
+          indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />}
+          tip="Đang chuẩn bị danh sách khóa học của bạn..."
         />
       </div>
     );
@@ -61,11 +61,11 @@ const TeacherCreatedCourses = () => {
           <span>Tạo khóa học mới</span>
         </button>
       </div>
-      
+
       {courses.length === 0 ? (
         <div className="empty-state">
           <div className="empty-illustration">
-             <BookOpen size={64} strokeWidth={1.5} />
+            <BookOpen size={64} strokeWidth={1.5} />
           </div>
           <h2 className="empty-title">Bạn chưa tạo khóa học nào</h2>
           <p className="empty-desc">

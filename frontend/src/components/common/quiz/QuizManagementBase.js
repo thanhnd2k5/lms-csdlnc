@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Table, Button, Space, Modal, Tag, Input, Select, Badge, Tooltip, Dropdown, Menu } from 'antd';
+import { Table, Button, Space, Modal, Tag, Input, Select, Tooltip, Row, Col, Typography, Empty } from 'antd';
 import { 
   EditOutlined, 
   DeleteOutlined, 
@@ -11,7 +11,7 @@ import {
   ClockCircleOutlined,
   ProjectOutlined,
   FilterOutlined,
-  MoreOutlined
+  UnorderedListOutlined
 } from '@ant-design/icons';
 import './QuizManagement.css';
 import AddQuizModal from './AddQuizModal';
@@ -19,13 +19,14 @@ import EditQuizModal from './EditQuizModal';
 
 const { confirm } = Modal;
 const { Option } = Select;
+const { Text } = Typography;
 
 const QuizManagementBase = ({
   quizzes,
   courses,
   loading,
   onDelete,
-  onRefresh, // Thay đổi prop để làm mới dữ liệu
+  onRefresh,
   onQuestionClick,
   role
 }) => {
@@ -49,6 +50,7 @@ const QuizManagementBase = ({
     const matchesCourse = courseFilter === 'all' || q.course_id === courseFilter;
     return matchesSearch && matchesCourse;
   });
+
   const handleDelete = (quizId) => {
     confirm({
       title: 'Bạn có chắc chắn muốn xóa quiz này?',
@@ -67,6 +69,7 @@ const QuizManagementBase = ({
     {
       title: 'Thông tin Quiz',
       key: 'quiz_info',
+      width: '30%',
       render: (_, record) => (
         <div className="quiz-title-cell">
           <span className="quiz-main-title">{record.title}</span>
@@ -75,7 +78,7 @@ const QuizManagementBase = ({
       ),
     },
     {
-      title: 'Khóa học',
+      title: 'Khóa học liên quan',
       key: 'course',
       render: (_, record) => {
         let courseId = record.course_id;
@@ -85,9 +88,9 @@ const QuizManagementBase = ({
         }
         const course = courses.find(c => c.id === courseId);
         return course ? (
-          <Tag color="blue" className="assigned-tag">{course.title}</Tag>
+          <Tag color="blue" style={{ borderRadius: '6px', fontWeight: 600 }}>{course.title}</Tag>
         ) : (
-          <Tag color="default" className="assigned-tag">Chưa gán</Tag>
+          <Tag color="default" style={{ borderRadius: '6px' }}>CHƯA GÁN</Tag>
         );
       }
     },
@@ -97,47 +100,47 @@ const QuizManagementBase = ({
       render: (_, record) => {
         if (record.video_id) {
           return (
-            <Space direction="vertical" size={0}>
-              <Tag color="cyan" className="assigned-tag">Video</Tag>
-              <span style={{ fontSize: '12px', color: '#64748b' }}>{record.video_title || 'ID: ' + record.video_id}</span>
-            </Space>
+            <div className="align-center-flex">
+              <Tag color="cyan" style={{ borderRadius: '6px' }}>VIDEO</Tag>
+              <Text type="secondary" style={{ fontSize: '12px' }} ellipsis>{record.video_title || 'ID: ' + record.video_id}</Text>
+            </div>
           );
         } else if (record.chapter_id) {
           return (
-            <Space direction="vertical" size={0}>
-              <Tag color="purple" className="assigned-tag">Chương</Tag>
-              <span style={{ fontSize: '12px', color: '#64748b' }}>{record.chapter_title || 'ID: ' + record.chapter_id}</span>
-            </Space>
+            <div className="align-center-flex">
+              <Tag color="purple" style={{ borderRadius: '6px' }}>CHƯƠNG</Tag>
+              <Text type="secondary" style={{ fontSize: '12px' }} ellipsis>{record.chapter_title || 'ID: ' + record.chapter_id}</Text>
+            </div>
           );
         }
-        return <Tag className="assigned-tag">Tự do</Tag>;
+        return <Tag style={{ borderRadius: '6px' }}>TỰ DO</Tag>;
       }
     },
     {
-      title: 'Câu hỏi',
-      dataIndex: 'question_count',
-      key: 'question_count',
+      title: 'Cấu trúc',
+      key: 'structure',
       align: 'center',
-      render: (count, record) => (
-        <div className="question-count-badge" onClick={() => onQuestionClick(record)}>
-          <FileTextOutlined />
-          <span>{count || 0}</span>
-        </div>
+      render: (_, record) => (
+        <Tooltip title="Xem chi tiết câu hỏi">
+          <Button 
+            type="text" 
+            className="align-center-flex"
+            icon={<FileTextOutlined style={{ color: '#6366f1' }} />} 
+            onClick={() => onQuestionClick(record)}
+            style={{ fontWeight: 600 }}
+          >
+            {record.question_count || 0} câu
+          </Button>
+        </Tooltip>
       )
     },
     {
       title: 'Cài đặt',
       key: 'settings',
       render: (_, record) => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#64748b' }}>
-            <ClockCircleOutlined style={{ fontSize: '12px' }} />
-            <span>{record.duration_minutes || record.duration || 0} phút</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#64748b' }}>
-            <CheckCircleOutlined style={{ fontSize: '12px' }} />
-            <span>Đạt: {record.passing_score}%</span>
-          </div>
+        <div className="quiz-settings-cell">
+          <span className="align-center-flex"><ClockCircleOutlined /> {record.duration_minutes || record.duration || 0} phút</span>
+          <span className="align-center-flex"><CheckCircleOutlined /> Đạt: {record.passing_score}%</span>
         </div>
       )
     },
@@ -145,170 +148,145 @@ const QuizManagementBase = ({
       title: 'Thao tác',
       key: 'action',
       align: 'right',
-      width: 200,
-      render: (_, record) => {
-        const menuItems = [
-          {
-            key: 'edit',
-            label: 'Chỉnh sửa thông tin',
-            icon: <EditOutlined />,
-            onClick: () => {
-              setSelectedQuiz(record);
-              setIsEditModalOpen(true);
-            },
-          },
-          {
-            key: 'delete',
-            label: 'Xóa Quiz',
-            icon: <DeleteOutlined />,
-            danger: true,
-            onClick: () => handleDelete(record.id),
-          },
-        ];
-
-        return (
-          <div className="modern-action-group">
-            <Tooltip title="Cấu trúc câu hỏi">
-              <Button 
-                type="primary" 
-                shape="circle"
-                icon={<FileTextOutlined />}
-                onClick={() => onQuestionClick(record)}
-                className="btn-action-primary"
-              />
-            </Tooltip>
-            
-            <Tooltip title="Chỉnh sửa">
-              <Button 
-                shape="circle"
-                icon={<EditOutlined />}
-                onClick={() => {
-                  setSelectedQuiz(record);
-                  setIsEditModalOpen(true);
-                }}
-                className="btn-action-secondary"
-              />
-            </Tooltip>
-
-            <Tooltip title="Xóa Quiz">
-              <Button 
-                shape="circle"
-                danger
-                icon={<DeleteOutlined />}
-                onClick={() => handleDelete(record.id)}
-                className="btn-action-danger"
-              />
-            </Tooltip>
-          </div>
-        );
-      },
+      render: (_, record) => (
+        <div className="course-action-group">
+          <Tooltip title="Quản lý câu hỏi">
+            <Button 
+              type="primary" 
+              shape="circle"
+              icon={<UnorderedListOutlined />}
+              onClick={() => onQuestionClick(record)}
+              className="btn-action-primary"
+            />
+          </Tooltip>
+          <Tooltip title="Chỉnh sửa">
+            <Button 
+              shape="circle"
+              icon={<EditOutlined />}
+              onClick={() => {
+                setSelectedQuiz(record);
+                setIsEditModalOpen(true);
+              }}
+              className="btn-action-secondary"
+            />
+          </Tooltip>
+          <Tooltip title="Xóa Quiz">
+            <Button 
+              shape="circle"
+              danger
+              icon={<DeleteOutlined />}
+              onClick={() => handleDelete(record.id)}
+              className="btn-action-danger"
+            />
+          </Tooltip>
+        </div>
+      ),
     },
   ];
 
   return (
-    <div className="quiz-management-container">
-      {/* Dashboard Header */}
-      <div className="quiz-dashboard-header">
-        <div className="quiz-header-top">
-          <div className="quiz-header-title">
-            <h2>Quản lý Quiz</h2>
-            <p>Tạo và quản lý các bài kiểm tra đánh giá năng lực học viên</p>
-          </div>
-          <div className="quiz-header-actions">
-            <Button
-              type="primary"
-              size="large"
-              icon={<PlusOutlined />}
+    <div className="course-management-container">
+      <div className="course-dashboard-header">
+        <Row justify="space-between" align="bottom">
+          <Col>
+            <h1>Quản lý Quiz</h1>
+            <p>Xây dựng hệ thống câu hỏi đánh giá năng lực học viên</p>
+          </Col>
+          <Col>
+            <Button 
+              type="primary" 
               onClick={() => setIsAddModalOpen(true)}
-              style={{ borderRadius: '10px', height: '44px', fontWeight: 600 }}
+              className="btn-add-course"
+              size="large"
             >
-              Tạo Quiz Mới
+              <div className="btn-content-wrapper">
+                <PlusOutlined />
+                <span>Tạo Quiz mới</span>
+              </div>
             </Button>
+          </Col>
+        </Row>
+      </div>
+
+      <div className="course-stats-grid">
+        <div className="course-stat-card">
+          <div className="stat-icon-wrapper blue">
+            <FileTextOutlined />
+          </div>
+          <div className="stat-info">
+            <h3>Tổng số Quiz</h3>
+            <div className="stat-value">{stats.total}</div>
           </div>
         </div>
-
-        {/* Stats Overview */}
-        <div className="quiz-stats-grid">
-          <div className="quiz-stat-card">
-            <div className="stat-icon-wrapper blue">
-              <FileTextOutlined />
-            </div>
-            <div className="stat-info">
-              <h3>Tổng số Quiz</h3>
-              <div className="stat-value">{stats.total}</div>
-            </div>
+        <div className="course-stat-card">
+          <div className="stat-icon-wrapper purple">
+            <ProjectOutlined />
           </div>
-          <div className="quiz-stat-card">
-            <div className="stat-icon-wrapper purple">
-              <ProjectOutlined />
-            </div>
-            <div className="stat-info">
-              <h3>Đã gán</h3>
-              <div className="stat-value">{stats.assigned}</div>
-            </div>
-          </div>
-          <div className="quiz-stat-card">
-            <div className="stat-icon-wrapper green">
-              <CheckCircleOutlined />
-            </div>
-            <div className="stat-info">
-              <h3>Tổng câu hỏi</h3>
-              <div className="stat-value">{stats.totalQuestions}</div>
-            </div>
-          </div>
-          <div className="quiz-stat-card">
-            <div className="stat-icon-wrapper orange">
-              <ClockCircleOutlined />
-            </div>
-            <div className="stat-info">
-              <h3>Thời gian TB</h3>
-              <div className="stat-value">{stats.avgDuration} phút</div>
-            </div>
+          <div className="stat-info">
+            <h3>Đã gán</h3>
+            <div className="stat-value">{stats.assigned}</div>
           </div>
         </div>
-
-        {/* Filter Bar */}
-        <div className="quiz-filter-bar">
-          <div className="filter-left">
-            <Input
-              placeholder="Tìm kiếm theo tiêu đề..."
-              prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
-              value={searchText}
-              onChange={e => setSearchText(e.target.value)}
-              style={{ width: 300, borderRadius: '10px' }}
-            />
-            <Select
-              defaultValue="all"
-              style={{ width: 220 }}
-              onChange={setCourseFilter}
-              suffixIcon={<FilterOutlined />}
-            >
-              <Option value="all">Tất cả khóa học</Option>
-              {courses.map(course => (
-                <Option key={course.id} value={course.id}>{course.title}</Option>
-              ))}
-            </Select>
+        <div className="course-stat-card">
+          <div className="stat-icon-wrapper green">
+            <CheckCircleOutlined />
           </div>
-          <div className="filter-right">
-            <span style={{ color: '#64748b', fontSize: '0.9rem' }}>
-              Hiển thị <b>{filteredQuizzes.length}</b> kết quả
-            </span>
+          <div className="stat-info">
+            <h3>Tổng câu hỏi</h3>
+            <div className="stat-value">{stats.totalQuestions}</div>
+          </div>
+        </div>
+        <div className="course-stat-card">
+          <div className="stat-icon-wrapper orange">
+            <ClockCircleOutlined />
+          </div>
+          <div className="stat-info">
+            <h3>Thời gian TB</h3>
+            <div className="stat-value">{stats.avgDuration} phút</div>
           </div>
         </div>
       </div>
 
-      {/* Table Section */}
+      <div className="course-filter-section">
+        <div className="search-wrapper">
+          <Input
+            placeholder="Tìm kiếm theo tên quiz..."
+            prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
+            value={searchText}
+            onChange={e => setSearchText(e.target.value)}
+            style={{ borderRadius: '10px', height: '42px' }}
+            allowClear
+          />
+        </div>
+        <Space size="middle">
+          <span style={{ color: '#64748b', fontWeight: 500 }}>Khóa học:</span>
+          <Select 
+            defaultValue="all" 
+            style={{ width: 220 }} 
+            onChange={setCourseFilter}
+            className="premium-select"
+          >
+            <Option value="all">Tất cả khóa học</Option>
+            {courses.map(course => (
+              <Option key={course.id} value={course.id}>{course.title}</Option>
+            ))}
+          </Select>
+        </Space>
+      </div>
+
       <div className="premium-table-container">
         <Table
           columns={columns}
           dataSource={filteredQuizzes}
           loading={loading}
           rowKey="id"
-          className="premium-table"
           pagination={{
             pageSize: 10,
             showTotal: (total) => `Tổng số ${total} mục`,
-            position: ['bottomRight']
+            style: { padding: '16px 24px' }
+          }}
+          locale={{
+            emptyText: <Empty description="Không tìm thấy Quiz nào" />
           }}
         />
       </div>
@@ -335,4 +313,4 @@ const QuizManagementBase = ({
   );
 };
 
-export default QuizManagementBase; 
+export default QuizManagementBase;

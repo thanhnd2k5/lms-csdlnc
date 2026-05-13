@@ -68,7 +68,7 @@ export const sidebarConfig = {
     },
     {
       name: 'Khóa học của tôi',
-      path: '/teacher/my-courses',
+      path: '/enrolled-courses',
       icon: <AppstoreOutlined />
     },
     {

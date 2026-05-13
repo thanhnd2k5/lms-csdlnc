@@ -152,46 +152,48 @@ const QuestionManagement = () => {
     <div className="quiz-management-container questions-editor-page">
       {/* Sticky Header */}
       <div className="questions-page-header">
-        <div className="header-nav">
-          <Button 
-            type="text" 
-            icon={<ArrowLeftOutlined />} 
-            onClick={() => navigate(role === 'admin' ? '/admin/quiz' : '/teacher/quiz')}
-            className="back-btn"
-          >
-            Quay lại danh sách
-          </Button>
-        </div>
-        <div className="header-main">
-          <div className="header-info">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <Title level={2} style={{ margin: 0, color: '#1e293b' }}>
-                Thiết lập câu hỏi
-              </Title>
-              <Button 
-                type="text" 
-                icon={<SettingOutlined style={{ fontSize: '18px', color: '#64748b' }} />} 
-                className="btn-action-round"
-                onClick={() => setIsEditQuizVisible(true)}
-              />
-            </div>
-            <Text type="secondary">
-              Quiz: <span style={{ color: '#2563eb', fontWeight: 600 }}>{quiz?.title}</span> • {questions.length} câu hỏi hiện có
-            </Text>
-          </div>
-          <div className="header-actions">
+        <div className="header-content-wrapper">
+          <div className="header-nav">
             <Button 
-              type="primary" 
-              onClick={() => form.submit()} 
-              loading={submitting}
-              className="btn-add-course"
-              size="large"
+              type="text" 
+              icon={<ArrowLeftOutlined />} 
+              onClick={() => navigate(role === 'admin' ? '/admin/quiz' : '/teacher/quiz')}
+              className="back-btn"
             >
-              <div className="btn-content-wrapper">
-                <SaveOutlined />
-                <span>Lưu toàn bộ thay đổi</span>
-              </div>
+              Quay lại danh sách
             </Button>
+          </div>
+          <div className="header-main">
+            <div className="header-info">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <Title level={2} style={{ margin: 0, color: '#1e293b' }}>
+                  Thiết lập câu hỏi
+                </Title>
+                <Button 
+                  type="text" 
+                  icon={<SettingOutlined style={{ fontSize: '18px', color: '#64748b' }} />} 
+                  className="btn-action-round"
+                  onClick={() => setIsEditQuizVisible(true)}
+                />
+              </div>
+              <Text type="secondary">
+                Quiz: <span style={{ color: '#2563eb', fontWeight: 600 }}>{quiz?.title}</span> • {questions.length} câu hỏi hiện có
+              </Text>
+            </div>
+            <div className="header-actions">
+              <Button 
+                type="primary" 
+                onClick={() => form.submit()} 
+                loading={submitting}
+                className="btn-add-course"
+                size="large"
+              >
+                <div className="btn-content-wrapper">
+                  <SaveOutlined />
+                  <span>Lưu toàn bộ thay đổi</span>
+                </div>
+              </Button>
+            </div>
           </div>
         </div>
       </div>

@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Input, InputNumber, Switch, message, Select, Upload } from 'antd';
+import { Modal, Form, Input, InputNumber, Switch, message, Select, Upload, Divider, Row, Col } from 'antd';
 import axios from 'axios';
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { 
+    LoadingOutlined, 
+    PlusOutlined, 
+    BookOutlined, 
+    TeamOutlined, 
+    LockOutlined,
+    FileTextOutlined,
+    SettingOutlined,
+    PictureOutlined
+} from '@ant-design/icons';
 import { getAssetUrl } from '../../../utils/urlUtils';
 
 const { Option } = Select;
@@ -43,7 +52,7 @@ const EditClass = ({ visible, onCancel, onSuccess, classData }) => {
     };
 
     const handleUpload = async (options) => {
-        const { onSuccess, onError, file } = options;
+        const { onSuccess: uploadSuccess, onError, file } = options;
         const token = localStorage.getItem('token');
         const formData = new FormData();
         formData.append('thumbnail', file);
@@ -61,7 +70,7 @@ const EditClass = ({ visible, onCancel, onSuccess, classData }) => {
                 }
             );
             setImageUrl(response.data.url);
-            onSuccess('Ok');
+            uploadSuccess('Ok');
             message.success('Tải ảnh lên thành công!');
         } catch (err) {
             onError({ err });
@@ -103,13 +112,6 @@ const EditClass = ({ visible, onCancel, onSuccess, classData }) => {
         }
     };
 
-    const uploadButton = (
-        <div>
-            {uploadLoading ? <LoadingOutlined /> : <PlusOutlined />}
-            <div style={{ marginTop: 8 }}>Tải lên</div>
-        </div>
-    );
-
     return (
         <Modal
             title="Chỉnh sửa lớp học"
@@ -119,12 +121,15 @@ const EditClass = ({ visible, onCancel, onSuccess, classData }) => {
             confirmLoading={loading}
             okText="Cập nhật"
             cancelText="Hủy"
+            className="premium-modal"
             width={600}
+            style={{ top: 40 }}
         >
             <Form
                 form={form}
                 layout="vertical"
                 onFinish={handleSubmit}
+                id="premium-course-form"
             >
                 <Form.Item
                     name="name"
@@ -134,91 +139,103 @@ const EditClass = ({ visible, onCancel, onSuccess, classData }) => {
                         { max: 255, message: 'Tên lớp học không được quá 255 ký tự' }
                     ]}
                 >
-                    <Input placeholder="Nhập tên lớp học" />
+                    <Input prefix={<BookOutlined />} placeholder="Nhập tên lớp học" />
                 </Form.Item>
 
                 <Form.Item
                     name="description"
-                    label="Mô tả"
+                    label="Mô tả lớp học"
                 >
                     <Input.TextArea 
+                        prefix={<FileTextOutlined />}
                         placeholder="Nhập mô tả về lớp học" 
-                        rows={4}
+                        rows={3}
                     />
                 </Form.Item>
 
-                <Form.Item
-                    name="max_students"
-                    label="Số học viên tối đa"
-                    rules={[
-                        { required: true, message: 'Vui lòng nhập số học viên tối đa' }
-                    ]}
-                >
-                    <InputNumber
-                        min={1}
-                        max={1000}
-                        style={{ width: '100%' }}
-                    />
-                </Form.Item>
+                <Row gutter={16}>
+                    <Col span={12}>
+                        <Form.Item
+                            name="max_students"
+                            label="Học viên tối đa"
+                            rules={[{ required: true, message: 'Vui lòng nhập số học viên' }]}
+                        >
+                            <InputNumber
+                                prefix={<TeamOutlined />}
+                                min={1}
+                                max={1000}
+                                style={{ width: '100%' }}
+                            />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                            name="status"
+                            label="Trạng thái"
+                            rules={[{ required: true, message: 'Vui lòng chọn trạng thái' }]}
+                        >
+                            <Select prefix={<SettingOutlined />}>
+                                <Option value="active">Đang hoạt động</Option>
+                                <Option value="inactive">Tạm khóa</Option>
+                            </Select>
+                        </Form.Item>
+                    </Col>
+                </Row>
 
-                <Form.Item
-                    name="status"
-                    label="Trạng thái"
-                    rules={[
-                        { required: true, message: 'Vui lòng chọn trạng thái lớp học' }
-                    ]}
-                >
-                    <Select>
-                        <Option value="active">Đang hoạt động</Option>
-                        <Option value="inactive">Tạm khóa</Option>
-                    </Select>
-                </Form.Item>
+                <Divider style={{ margin: '12px 0 20px 0' }} />
 
-                <Form.Item
-                    label="Yêu cầu mật khẩu để tham gia"
-                >
-                    <Switch
-                        checked={requiresPassword}
-                        onChange={(checked) => {
-                            setRequiresPassword(checked);
-                            if (!checked) {
-                                form.setFieldValue('password', undefined);
-                            }
-                        }}
-                    />
-                </Form.Item>
+                <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '12px', marginBottom: '24px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: requiresPassword ? '16px' : 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <LockOutlined style={{ color: '#64748b' }} />
+                            <span style={{ fontWeight: 600, color: '#475569' }}>Yêu cầu mật khẩu để tham gia</span>
+                        </div>
+                        <Switch
+                            checked={requiresPassword}
+                            onChange={(checked) => {
+                                setRequiresPassword(checked);
+                                if (!checked) {
+                                    form.setFieldValue('password', undefined);
+                                }
+                            }}
+                        />
+                    </div>
 
-                {requiresPassword && (
-                    <Form.Item
-                        name="password"
-                        label="Mật khẩu lớp học"
-                        rules={[
-                            { required: true, message: 'Vui lòng nhập mật khẩu cho lớp học' },
-                            { min: 6, message: 'Mật khẩu phải có ít nhất 6 ký tự' }
-                        ]}
-                    >
-                        <Input.Password placeholder="Nhập mật khẩu cho lớp học" />
-                    </Form.Item>
-                )}
+                    {requiresPassword && (
+                        <Form.Item
+                            name="password"
+                            style={{ marginBottom: 0 }}
+                            rules={[
+                                { required: true, message: 'Vui lòng nhập mật khẩu' },
+                                { min: 6, message: 'Mật khẩu phải có ít nhất 6 ký tự' }
+                            ]}
+                        >
+                            <Input.Password prefix={<LockOutlined />} placeholder="Nhập mật khẩu cho lớp học" />
+                        </Form.Item>
+                    )}
+                </div>
 
-                <Form.Item
-                    label="Ảnh đại diện"
-                    extra="Hỗ trợ JPG, PNG, GIF (< 5MB)"
-                >
+                <Form.Item label="Ảnh đại diện lớp học">
                     <Upload
                         name="thumbnail"
                         listType="picture-card"
                         showUploadList={false}
                         customRequest={handleUpload}
                         beforeUpload={beforeUpload}
+                        className="premium-upload-area"
                     >
                         {imageUrl ? (
                             <img 
                                 src={getAssetUrl(imageUrl)}
                                 alt="thumbnail" 
-                                style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} 
                             />
-                        ) : uploadButton}
+                        ) : (
+                            <div style={{ textAlign: 'center' }}>
+                                {uploadLoading ? <LoadingOutlined style={{ fontSize: '24px', color: '#3b82f6' }} /> : <PictureOutlined style={{ fontSize: '24px', color: '#94a3b8' }} />}
+                                <div style={{ marginTop: 8, fontWeight: 500, color: '#64748b' }}>Tải ảnh lên</div>
+                            </div>
+                        )}
                     </Upload>
                 </Form.Item>
             </Form>

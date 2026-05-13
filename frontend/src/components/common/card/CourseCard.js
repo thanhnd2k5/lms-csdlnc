@@ -76,7 +76,7 @@ const CourseCard = ({
             e.target.src = 'https://placehold.co/600x400/f1f5f9/475569?text=LMS+Course';
           }}
         />
-        
+
         {isEnrolled && (
           <div className="enrolled-badge is-enrolled">
             <Check size={14} />
@@ -88,13 +88,13 @@ const CourseCard = ({
       {/* Content Section */}
       <div className="course-card-content">
         <h3 className="course-card-title">{course.title}</h3>
-        
+
         <div className="course-card-meta">
           <div className="meta-item">
             <User size={16} />
             <span className="teacher-name">{course.teacher_name || 'Giảng viên ẩn danh'}</span>
           </div>
-          
+
           <div className="meta-item">
             <Users size={16} />
             <span className="students-count">{course.total_students ?? course.student_count ?? 0} học viên</span>
@@ -105,4 +105,4 @@ const CourseCard = ({
   );
 };
 
-export default CourseCard;
+export default CourseCard;

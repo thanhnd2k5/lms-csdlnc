@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Table, Button, message, Modal, Typography, Row, Col, Tag, Select, Tooltip, Space, Input } from 'antd';
-import { 
-  PlusOutlined, 
-  SearchOutlined, 
-  BookOutlined, 
-  TeamOutlined, 
+import {
+  PlusOutlined,
+  SearchOutlined,
+  BookOutlined,
+  TeamOutlined,
   PlayCircleOutlined,
   FileTextOutlined,
   MoreOutlined,
@@ -113,9 +113,9 @@ const CourseManagement = () => {
   const filteredCourses = useMemo(() => {
     return courses.filter(c => {
       const matchesSearch = c.title.toLowerCase().includes(searchText.toLowerCase());
-      const matchesStatus = statusFilter === 'all' || 
-                           (statusFilter === 'public' && c.is_public) || 
-                           (statusFilter === 'private' && !c.is_public);
+      const matchesStatus = statusFilter === 'all' ||
+        (statusFilter === 'public' && c.is_public) ||
+        (statusFilter === 'private' && !c.is_public);
       return matchesSearch && matchesStatus;
     });
   }, [courses, searchText, statusFilter]);
@@ -126,9 +126,9 @@ const CourseManagement = () => {
       key: 'course_info',
       render: (_, record) => (
         <Space size="middle">
-          <img 
-            src={getAssetUrl(record.thumbnail)} 
-            className="course-thumbnail-mini" 
+          <img
+            src={getAssetUrl(record.thumbnail)}
+            className="course-thumbnail-mini"
             alt={record.title}
             onError={(e) => e.target.src = 'https://via.placeholder.com/100x60?text=No+Image'}
           />
@@ -158,10 +158,10 @@ const CourseManagement = () => {
       align: 'center',
       render: (count, record) => (
         <Tooltip title="Xem danh sách học viên">
-          <Button 
-            type="text" 
+          <Button
+            type="text"
             className="align-center-flex"
-            icon={<TeamOutlined style={{ color: '#6366f1' }} />} 
+            icon={<TeamOutlined style={{ color: '#6366f1' }} />}
             onClick={() => handleViewStudents(record.id)}
             style={{ fontWeight: 600 }}
           >
@@ -191,7 +191,7 @@ const CourseManagement = () => {
       render: (_, record) => (
         <div className="course-action-group">
           <Tooltip title="Chia sẻ khóa học">
-            <Button 
+            <Button
               shape="circle"
               icon={<ShareAltOutlined />}
               onClick={() => handleShare(record.id)}
@@ -199,7 +199,7 @@ const CourseManagement = () => {
             />
           </Tooltip>
           <Tooltip title="Xem trước (Giao diện học viên)">
-            <Button 
+            <Button
               shape="circle"
               icon={<EyeOutlined />}
               onClick={() => navigate(`/course-info/${record.id}`)}
@@ -207,7 +207,7 @@ const CourseManagement = () => {
             />
           </Tooltip>
           <Tooltip title="Quản lý bài học & nội dung">
-            <Button 
+            <Button
               type="primary"
               shape="circle"
               icon={<UnorderedListOutlined />}
@@ -216,7 +216,7 @@ const CourseManagement = () => {
             />
           </Tooltip>
           <Tooltip title="Chỉnh sửa thông tin">
-            <Button 
+            <Button
               shape="circle"
               icon={<EditOutlined />}
               onClick={() => handleEdit(record)}
@@ -224,7 +224,7 @@ const CourseManagement = () => {
             />
           </Tooltip>
           <Tooltip title="Xóa khóa học">
-            <Button 
+            <Button
               shape="circle"
               danger
               icon={<DeleteOutlined />}
@@ -246,8 +246,8 @@ const CourseManagement = () => {
             <p>Xây dựng và phát triển nội dung giảng dạy của bạn</p>
           </Col>
           <Col>
-            <Button 
-              type="primary" 
+            <Button
+              type="primary"
               onClick={() => setIsModalVisible(true)}
               className="btn-add-course"
               size="large"
@@ -303,9 +303,9 @@ const CourseManagement = () => {
         </div>
         <Space size="middle">
           <span style={{ color: '#64748b', fontWeight: 500 }}>Bộ lọc:</span>
-          <Select 
-            defaultValue="all" 
-            style={{ width: 150 }} 
+          <Select
+            defaultValue="all"
+            style={{ width: 150 }}
             onChange={value => setStatusFilter(value)}
             className="premium-select"
           >
@@ -317,11 +317,11 @@ const CourseManagement = () => {
       </div>
 
       <div className="premium-table-container">
-        <Table 
-          columns={columns} 
-          dataSource={filteredCourses} 
-          loading={loading} 
-          rowKey="id" 
+        <Table
+          columns={columns}
+          dataSource={filteredCourses}
+          loading={loading}
+          rowKey="id"
           pagination={{
             pageSize: 10,
             showTotal: (total) => `Tổng số ${total} khóa học`,

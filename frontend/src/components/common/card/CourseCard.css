@@ -76,7 +76,8 @@
   color: #1a1a2e;
   margin-bottom: 12px;
   line-height: 1.4;
-  height: 3.2em; /* Ensure 2 lines max height */
+  height: 3.2em;
+  /* Ensure 2 lines max height */
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;

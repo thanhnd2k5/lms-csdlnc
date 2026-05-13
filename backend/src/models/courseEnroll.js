@@ -32,7 +32,21 @@ const getTeacherStats = (teacherId) => {
             SELECT 
                 c.id as course_id,
                 c.title as course_title,
-                COUNT(DISTINCT ce.user_id) as student_count
+                COUNT(DISTINCT ce.user_id) as student_count,
+                COALESCE(
+                    AVG(
+                        CASE 
+                            WHEN (SELECT COUNT(*) FROM videos v2 WHERE v2.course_id = c.id) > 0 
+                            THEN (
+                                SELECT COUNT(DISTINCT vc.video_id) 
+                                FROM video_completion vc 
+                                JOIN videos v ON vc.video_id = v.id 
+                                WHERE v.course_id = c.id AND vc.user_id = ce.user_id AND vc.is_completed = 1
+                            ) * 100.0 / (SELECT COUNT(*) FROM videos v3 WHERE v3.course_id = c.id)
+                            ELSE 0 
+                        END
+                    ), 0
+                ) as avg_progress
             FROM courses c
             LEFT JOIN course_enrollments ce ON c.id = ce.course_id
             WHERE c.teacher_id = ?

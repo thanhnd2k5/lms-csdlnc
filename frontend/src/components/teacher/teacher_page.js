@@ -4,6 +4,9 @@ import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import CourseManagement from './courses/course_management';
 import TeacherDashboard from './dashboard/dashboard';
 import QuizManagement from './quizzes/quiz_management';
+import TeacherEnrollmentDetails from './enrollment_details/TeacherEnrollmentDetails';
+import ClassManagement from './classes/ClassManagement';
+import ClassCourseManagement from './classes/classCourseManagement';
 import './teacher_page.css';
 
 const TeacherPage = () => {
@@ -50,19 +53,24 @@ const TeacherPage = () => {
   };
 
   return (
-    <Routes>
-      <Route path="/" element={<TeacherDashboard courses={courses} />} />
-      <Route path="/courses" element={
-        <CourseManagement 
-          courses={courses} 
-          loading={loading} 
-          onCourseAdded={fetchCourses}
-        />
-      } />
-      <Route path="/quiz" element={<QuizManagement />} />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <div className="teacher-page-wrapper">
+      <Routes>
+        <Route path="/" element={<TeacherDashboard courses={courses} />} />
+        <Route path="/courses" element={
+          <CourseManagement 
+            courses={courses} 
+            loading={loading} 
+            onCourseAdded={fetchCourses}
+          />
+        } />
+        <Route path="/quiz" element={<QuizManagement />} />
+        <Route path="/enrollment" element={<TeacherEnrollmentDetails />} />
+        <Route path="/classes" element={<ClassManagement />} />
+        <Route path="/classes/:classId/courses" element={<ClassCourseManagement />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </div>
   );
 };
 
-export default TeacherPage; 
+export default TeacherPage;

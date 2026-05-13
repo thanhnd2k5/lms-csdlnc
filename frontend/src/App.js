@@ -158,14 +158,6 @@ function App() {
             }
           />
           <Route
-            path="/teacher/my-courses"
-            element={
-              <PrivateRouteTeacher>
-                <TeacherCreatedCourses />
-              </PrivateRouteTeacher>
-            }
-          />
-          <Route
             path="/teacher/courses/:courseId/documents"
             element={
               <PrivateRouteTeacher>
