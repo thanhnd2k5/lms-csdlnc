@@ -80,6 +80,7 @@ const QuizManagementBase = ({
     {
       title: 'Khóa học liên quan',
       key: 'course',
+      width: '18%',
       render: (_, record) => {
         let courseId = record.course_id;
         if (!courseId) {
@@ -88,7 +89,24 @@ const QuizManagementBase = ({
         }
         const course = courses.find(c => c.id === courseId);
         return course ? (
-          <Tag color="blue" style={{ borderRadius: '6px', fontWeight: 600 }}>{course.title}</Tag>
+          <Tooltip title={course.title}>
+            <Tag color="blue" style={{ 
+              borderRadius: '6px', 
+              fontWeight: 600, 
+              maxWidth: '100%',
+              display: 'inline-flex',
+              alignItems: 'center'
+            }}>
+              <span style={{ 
+                maxWidth: '140px', 
+                overflow: 'hidden', 
+                textOverflow: 'ellipsis', 
+                whiteSpace: 'nowrap' 
+              }}>
+                {course.title}
+              </span>
+            </Tag>
+          </Tooltip>
         ) : (
           <Tag color="default" style={{ borderRadius: '6px' }}>CHƯA GÁN</Tag>
         );
@@ -97,19 +115,28 @@ const QuizManagementBase = ({
     {
       title: 'Vị trí gán',
       key: 'assigned_to',
+      width: '20%',
       render: (_, record) => {
         if (record.video_id) {
           return (
-            <div className="align-center-flex">
+            <div className="align-center-flex" style={{ maxWidth: '100%' }}>
               <Tag color="cyan" style={{ borderRadius: '6px' }}>VIDEO</Tag>
-              <Text type="secondary" style={{ fontSize: '12px' }} ellipsis>{record.video_title || 'ID: ' + record.video_id}</Text>
+              <Tooltip title={record.video_title}>
+                <Text type="secondary" style={{ fontSize: '12px', maxWidth: '120px' }} ellipsis>
+                  {record.video_title || 'ID: ' + record.video_id}
+                </Text>
+              </Tooltip>
             </div>
           );
         } else if (record.chapter_id) {
           return (
-            <div className="align-center-flex">
+            <div className="align-center-flex" style={{ maxWidth: '100%' }}>
               <Tag color="purple" style={{ borderRadius: '6px' }}>CHƯƠNG</Tag>
-              <Text type="secondary" style={{ fontSize: '12px' }} ellipsis>{record.chapter_title || 'ID: ' + record.chapter_id}</Text>
+              <Tooltip title={record.chapter_title}>
+                <Text type="secondary" style={{ fontSize: '12px', maxWidth: '120px' }} ellipsis>
+                  {record.chapter_title || 'ID: ' + record.chapter_id}
+                </Text>
+              </Tooltip>
             </div>
           );
         }

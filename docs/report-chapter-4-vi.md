@@ -24,11 +24,11 @@ Lược đồ chính của hệ thống được xây dựng dưới dạng mộ
 
 | Nhóm dữ liệu | Các bảng tiêu biểu | Mục đích |
 | --- | --- | --- |
-| Người dùng và phân quyền | `users` | Quản lý tài khoản, vai trò `admin`, `teacher`, `student` và thông tin hồ sơ cơ bản. |
-| Nội dung khóa học | `courses`, `chapters`, `videos`, `documents` | Mô tả khóa học, cấu trúc chương, video bài giảng và tài liệu đính kèm. |
+| Người dùng và phân quyền | `users` | Quản lý tài khoản, vai trò `admin`, `teacher`, `student`, thông tin hồ sơ và tiểu sử giảng viên. |
+| Nội dung khóa học | `courses`, `chapters`, `videos`, `documents` | Mô tả khóa học, mức độ khóa học, yêu cầu đầu vào, mục tiêu học tập, cấu trúc chương, video bài giảng và tài liệu đính kèm. |
 | Kiểm tra đánh giá | `quizzes`, `quiz_questions`, `quiz_options`, `quiz_attempts`, `quiz_answers` | Lưu cấu trúc bài kiểm tra, câu hỏi, phương án trả lời và lịch sử làm bài. |
 | Tiến độ học tập | `course_enrollments`, `video_completion` | Theo dõi việc ghi danh khóa học và trạng thái hoàn thành video của học viên. |
-| Quản lý lớp học | `classes`, `class_courses`, `class_students`, `class_students_courses_approval`, `course_reviews` | Tổ chức lớp học, gán khóa học cho lớp, quản lý thành viên và đánh giá khóa học. |
+| Quản lý lớp học và phản hồi | `classes`, `class_courses`, `class_students`, `class_students_courses_approval`, `course_reviews` | Tổ chức lớp học, gán khóa học cho lớp, quản lý thành viên và ghi nhận đánh giá khóa học. |
 
 Lược đồ này thể hiện rõ đặc điểm của một hệ thống LMS có cả phần học nội dung, đánh giá kết quả và quản lý lớp học. Các quan hệ phụ thuộc chính đều được ràng buộc bằng khóa ngoại, ví dụ: `courses.teacher_id` tham chiếu `users.id`, `chapters.course_id` tham chiếu `courses.id`, `videos.chapter_id` tham chiếu `chapters.id`, `quiz_attempts.quiz_id` tham chiếu `quizzes.id` và `class_students.student_id` tham chiếu `users.id`.
 
@@ -42,14 +42,14 @@ Bên cạnh script lược đồ tổng thể, đề tài sử dụng bộ migra
 
 | Phiên bản | Nội dung mở rộng chính |
 | --- | --- |
-| `V1` | Khởi tạo dữ liệu lõi của hệ thống, gồm người dùng, khóa học, chương học và video. |
+| `V1` | Khởi tạo dữ liệu lõi của hệ thống, gồm người dùng, hồ sơ giảng viên, khóa học, chương học và video. |
 | `V2` | Bổ sung nhóm chức năng kiểm tra, đánh giá kết quả học tập của học viên. |
 | `V3` | Bổ sung ghi danh khóa học, theo dõi tiến độ học tập và tài liệu học tập. |
-| `V4` | Bổ sung mô hình quản lý lớp học và cơ chế phê duyệt học viên theo khóa học. |
+| `V4` | Bổ sung mô hình quản lý lớp học, cơ chế phê duyệt học viên và phản hồi khóa học. |
 
 ### Phiên bản V1 - Khởi tạo lõi hệ thống
 
-Phiên bản `V1` đại diện cho giai đoạn hệ thống mới hình thành, khi nghiệp vụ tập trung vào việc quản lý người dùng, khóa học và nội dung học tập cơ bản. Bốn bảng trọng tâm ở giai đoạn này là `users`, `courses`, `chapters` và `videos`. Đây là mức tối thiểu để một hệ thống LMS có thể lưu được tài khoản, cấu trúc khóa học và video bài giảng.
+Phiên bản `V1` đại diện cho giai đoạn hệ thống mới hình thành, khi nghiệp vụ tập trung vào việc quản lý người dùng, khóa học và nội dung học tập cơ bản. Bốn bảng trọng tâm ở giai đoạn này là `users`, `courses`, `chapters` và `videos`. Bảng `users` không chỉ lưu tài khoản và vai trò mà còn có thể lưu tiểu sử giảng viên; bảng `courses` lưu thêm các thông tin mô tả như mức độ khóa học, yêu cầu đầu vào và mục tiêu học tập. Đây là mức tối thiểu để một hệ thống LMS có thể lưu được tài khoản, cấu trúc khóa học và video bài giảng.
 
 Điểm quan trọng của `V1` là đã thiết lập sẵn các quan hệ nền tảng giữa giáo viên với khóa học, giữa khóa học với chương và giữa chương với video. Nhờ đó, các phiên bản sau chỉ cần mở rộng theo chiều ngang mà không phải thay đổi lại toàn bộ mô hình lõi.
 
@@ -67,9 +67,9 @@ Việc thêm bảng `documents` cũng làm cho lược đồ đầy đủ hơn v
 
 ### Phiên bản V4 - Bổ sung quản lý lớp học
 
-Phiên bản `V4` là bước mở rộng sang bài toán tổ chức lớp học, gồm các bảng `classes`, `class_courses`, `class_students` và `class_students_courses_approval`. Đây là lớp nghiệp vụ cao hơn so với quản lý khóa học đơn lẻ, vì hệ thống cần theo dõi việc học viên thuộc lớp nào, lớp được gắn với khóa học nào và trạng thái tham gia của học viên trong từng ngữ cảnh.
+Phiên bản `V4` là bước mở rộng sang bài toán tổ chức lớp học và phản hồi khóa học, gồm các bảng `classes`, `class_courses`, `class_students`, `class_students_courses_approval` và `course_reviews`. Đây là lớp nghiệp vụ cao hơn so với quản lý khóa học đơn lẻ, vì hệ thống cần theo dõi việc học viên thuộc lớp nào, lớp được gắn với khóa học nào, trạng thái tham gia của học viên trong từng ngữ cảnh và đánh giá của học viên sau quá trình học.
 
-Nhờ `V4`, cơ sở dữ liệu hỗ trợ được mô hình dạy học theo lớp thay vì chỉ theo danh mục khóa học mở. Đây cũng là cơ sở để hệ thống mở rộng các chức năng như phê duyệt học viên, quản lý lớp riêng và phân phối khóa học theo nhóm.
+Nhờ `V4`, cơ sở dữ liệu hỗ trợ được mô hình dạy học theo lớp thay vì chỉ theo danh mục khóa học mở. Đây cũng là cơ sở để hệ thống mở rộng các chức năng như phê duyệt học viên, quản lý lớp riêng, phân phối khóa học theo nhóm và thống kê phản hồi thông qua điểm đánh giá khóa học.
 
 Mỗi phiên bản migration đều đi kèm script `down` tương ứng. Việc chuẩn bị cả chiều triển khai và chiều hoàn tác giúp lược đồ phù hợp hơn với tư duy quản lý thay đổi trong thực tế, đồng thời làm rõ rằng cơ sở dữ liệu không chỉ được tạo ra một lần mà còn có thể được bảo trì theo vòng đời phát triển.
 
@@ -84,7 +84,7 @@ Sau khi chuẩn bị đầy đủ các script cần thiết, quá trình khởi 
 | 3 | Nạp script dữ liệu mẫu. | Hệ thống có dữ liệu ban đầu để kiểm thử và minh họa nghiệp vụ. |
 | 4 | Kiểm tra lại danh sách bảng, số lượng bản ghi và một số quan hệ dữ liệu tiêu biểu. | Cơ sở dữ liệu ở trạng thái có thể sử dụng cho các phần phân tích tiếp theo. |
 
-Trong trường hợp muốn trình bày theo hướng phát triển qua nhiều phiên bản, bước nạp lược đồ tổng thể có thể được thay bằng việc áp dụng tuần tự các migration từ `V1` đến `V4`. Cách thực hiện này giúp thể hiện rõ quá trình cơ sở dữ liệu được bổ sung theo từng nhóm nghiệp vụ, từ phần lõi của hệ thống đến kiểm tra đánh giá, tiến độ học tập và quản lý lớp học.
+Trong trường hợp muốn trình bày theo hướng phát triển qua nhiều phiên bản, bước nạp lược đồ tổng thể có thể được thay bằng việc áp dụng tuần tự các migration từ `V1` đến `V4`. Cách thực hiện này giúp thể hiện rõ quá trình cơ sở dữ liệu được bổ sung theo từng nhóm nghiệp vụ, từ phần lõi của hệ thống đến kiểm tra đánh giá, tiến độ học tập, quản lý lớp học và phản hồi khóa học.
 
 Các lệnh triển khai cụ thể được trình bày tại phần phụ lục để nội dung chính của chương tập trung vào quy trình và ý nghĩa của từng bước khởi tạo.
 

@@ -25,14 +25,14 @@ const storage = multer.diskStorage({
 // Kiểm tra loại file
 const fileFilter = (req, file, cb) => {
     const allowedTypes = [
-        'application/pdf', 
+        'application/pdf',
         'application/msword',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         'image/jpeg',
         'image/png',
         'image/jpg'
     ];
-    
+
     if (allowedTypes.includes(file.mimetype)) {
         cb(null, true);
     } else {
@@ -40,7 +40,7 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
-const upload = multer({ 
+const upload = multer({
     storage: storage,
     fileFilter: fileFilter,
     limits: {
@@ -56,7 +56,7 @@ const documentController = {
             }
 
             const { courseId, chapterId, videoId, title } = req.body;
-            
+
             if (!courseId) {
                 if (req.file && req.file.path) await fileHelper.deleteFile(req.file.path);
                 return res.status(400).json({ message: 'Course ID is required' });

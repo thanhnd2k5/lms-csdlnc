@@ -6,7 +6,7 @@ const db = require('../config/database');
 const upload = multer({
     storage: multer.memoryStorage(),
     limits: {
-        fileSize: 10 * 1024 * 1024 // Giới hạn 10MB cho tài liệu AI
+        fileSize: 30 * 1024 * 1024 // Giới hạn 30MB cho tài liệu AI
     }
 });
 
