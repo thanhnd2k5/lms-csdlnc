@@ -17,18 +17,7 @@ mysql -u root -p lms < backend/lms.sql
 mysql -u root -p lms < docs/sql/seed.sql
 ```
 
-### A.2. Nhóm bảng chính trong schema
-
-| Nhóm dữ liệu | Bảng tiêu biểu | Vai trò |
-| --- | --- | --- |
-| Người dùng và phân quyền | `users` | Lưu tài khoản, vai trò, thông tin hồ sơ và tiểu sử giảng viên. |
-| Nội dung khóa học | `courses`, `chapters`, `videos`, `documents` | Lưu khóa học, chương học, video và tài liệu học tập. |
-| Kiểm tra đánh giá | `quizzes`, `quiz_questions`, `quiz_options`, `quiz_attempts`, `quiz_answers` | Lưu cấu trúc bài kiểm tra, câu hỏi, phương án trả lời và lịch sử làm bài. |
-| Tiến độ học tập | `course_enrollments`, `video_completion` | Theo dõi ghi danh khóa học và trạng thái hoàn thành video. |
-| Lớp học | `classes`, `class_courses`, `class_students`, `class_students_courses_approval` | Quản lý lớp học, gán khóa học cho lớp và trạng thái tham gia của học viên. |
-| Phản hồi khóa học | `course_reviews` | Lưu đánh giá, nhận xét và hỗ trợ thống kê điểm đánh giá khóa học. |
-
-### A.3. Danh sách bảng và thuộc tính chính
+### A.2. Danh sách bảng và thuộc tính chính
 
 | Bảng | Thuộc tính chính | Quan hệ/ràng buộc đáng chú ý |
 | --- | --- | --- |
@@ -50,7 +39,7 @@ mysql -u root -p lms < docs/sql/seed.sql
 | `class_students_courses_approval` | `class_id`, `student_id`, `course_id`, `status`, `updated_at` | Khóa chính ghép `(class_id, student_id, course_id)` |
 | `course_reviews` | `id`, `course_id`, `user_id`, `rating`, `comment`, `created_at` | `UNIQUE(user_id, course_id)`, `idx_course_rating(course_id, rating)` |
 
-### A.4. Một số ràng buộc và chỉ mục tiêu biểu
+### A.3. Một số ràng buộc và chỉ mục tiêu biểu
 
 ```sql
 CREATE TABLE IF NOT EXISTS courses (
@@ -97,7 +86,7 @@ CREATE TABLE IF NOT EXISTS course_reviews (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 ```
 
-Các đoạn trên được chọn vì thể hiện ba nhóm kỹ thuật quan trọng của schema: khóa ngoại, ràng buộc duy nhất và chỉ mục phục vụ tối ưu truy vấn. Bảng danh sách ở mục A.3 giúp người đọc nắm được toàn bộ cấu trúc mà không cần tra cứu tài liệu ngoài.
+Các đoạn trên được chọn vì thể hiện ba nhóm kỹ thuật quan trọng của schema: khóa ngoại, ràng buộc duy nhất và chỉ mục phục vụ tối ưu truy vấn. Bảng danh sách ở mục A.2 giúp người đọc nắm được toàn bộ cấu trúc mà không cần tra cứu tài liệu ngoài.
 
 ## Phụ lục B. Dữ liệu mẫu khởi tạo
 
