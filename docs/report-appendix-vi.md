@@ -86,11 +86,11 @@ CREATE TABLE IF NOT EXISTS course_reviews (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 ```
 
-Các đoạn trên được chọn vì thể hiện ba nhóm kỹ thuật quan trọng của schema: khóa ngoại, ràng buộc duy nhất và chỉ mục phục vụ tối ưu truy vấn. Bảng danh sách ở mục A.2 giúp người đọc nắm được toàn bộ cấu trúc mà không cần tra cứu tài liệu ngoài.
+Các đoạn trên minh họa ba nhóm kỹ thuật quan trọng của schema: khóa ngoại, ràng buộc duy nhất và chỉ mục phục vụ tối ưu truy vấn. Bảng danh sách ở mục A.2 cung cấp cái nhìn hệ thống về cấu trúc bảng, thuộc tính chính và các quan hệ dữ liệu.
 
 ## Phụ lục B. Dữ liệu mẫu khởi tạo
 
-Phần này tóm tắt bộ dữ liệu mẫu dùng để kiểm thử quan hệ dữ liệu và các truy vấn minh họa. Phụ lục chỉ trình bày vai trò và một số dòng đại diện, vì in toàn bộ `INSERT` sẽ làm phụ lục dài nhưng không bổ sung nhiều giá trị phân tích.
+Phần này mô tả bộ dữ liệu mẫu dùng để kiểm thử quan hệ dữ liệu và các truy vấn minh họa. Nội dung tập trung vào vai trò của từng nhóm dữ liệu và một số dòng đại diện để làm rõ cách dữ liệu được nạp vào hệ thống.
 
 | Nhóm dữ liệu mẫu | Bảng liên quan | Mục đích |
 | --- | --- | --- |
@@ -125,7 +125,7 @@ VALUES
 
 ## Phụ lục C. Bộ migration theo phiên bản
 
-Bộ migration dùng để mô phỏng quá trình schema được mở rộng theo từng giai đoạn nghiệp vụ. Để báo cáo không bị tách vụn, phần phụ lục trình bày theo bốn giai đoạn chính thay vì in toàn bộ nội dung từng migration `up` và `down`.
+Bộ migration dùng để mô phỏng quá trình schema được mở rộng theo từng giai đoạn nghiệp vụ. Phụ lục trình bày theo bốn giai đoạn chính để làm rõ mối liên hệ giữa sự mở rộng nghiệp vụ và thay đổi cấu trúc cơ sở dữ liệu.
 
 | Giai đoạn | Nội dung chính | Tác động đến schema |
 | --- | --- | --- |
@@ -157,7 +157,7 @@ CREATE TABLE IF NOT EXISTS quizzes (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 ```
 
-Mỗi migration đều có chiều `down` tương ứng để thể hiện khả năng hoàn tác khi cần quay lui schema. Trong báo cáo in, chỉ cần trình bày nguyên tắc này và một migration tiêu biểu; không cần in toàn bộ lệnh `DROP TABLE` vì phần đó chủ yếu là thao tác kỹ thuật lặp lại.
+Mỗi migration đều có chiều `down` tương ứng để thể hiện khả năng hoàn tác khi cần quay lui schema. Trong phạm vi báo cáo, phần này nhấn mạnh nguyên tắc quản lý thay đổi và minh họa bằng một migration tiêu biểu, qua đó thể hiện cách schema có thể được triển khai và bảo trì theo phiên bản.
 
 ## Phụ lục D. Danh sách chỉ mục
 
@@ -174,7 +174,7 @@ Mỗi migration đều có chiều `down` tương ứng để thể hiện khả
 
 ## Phụ lục E. Truy vấn benchmark và EXPLAIN
 
-Phần chính của Chương 5 đã phân tích kết quả before/after bằng query cost và kế hoạch thực thi. Phụ lục này chỉ giữ lại truy vấn gốc để người đọc có thể đối chiếu.
+Phần chính của Chương 5 đã phân tích kết quả before/after bằng query cost và kế hoạch thực thi. Phụ lục này cung cấp các truy vấn benchmark gốc để đối chiếu với phần phân tích hiệu năng.
 
 ### E.1. Báo cáo kết quả học tập của học viên
 
@@ -296,7 +296,7 @@ mysql -u root -p lms_restore < lms_backup_2026_05_05.sql
 mysqlbinlog --read-from-remote-server --host=127.0.0.1 --user=root --password --start-position=157 --stop-position=639 --rewrite-db="lms->lms_restore" THANH-bin.000005 | mysql --binary-mode -u root -p lms_restore
 ```
 
-Raw binary log không đưa toàn bộ vào phụ lục vì chứa nhiều nội dung mã hóa khó đọc. Báo cáo chỉ cần giữ lệnh replay và kết quả kiểm tra sau phục hồi để chứng minh quy trình có thể thực hiện.
+Trong quy trình phục hồi theo mốc thời gian, phần quan trọng là xác định đúng vị trí trong binary log, áp dụng lại các thay đổi bằng `mysqlbinlog` và kiểm tra dữ liệu sau phục hồi. Phụ lục vì vậy trình bày lệnh replay cùng kết quả đối chiếu nhằm làm rõ quy trình phục hồi ở mức thao tác.
 
 ## Phụ lục G. Minh chứng replication và failover
 
@@ -426,4 +426,4 @@ powershell -ExecutionPolicy Bypass -File D:\lms-csdlnc\infra\mysql-replication\s
 | Kiểm thử failover | Khi primary dừng, replica được promote để tiếp tục ghi |
 | Kiểm thử rejoin | Primary cũ được đưa lại cụm ở vai trò replica |
 
-Các đoạn cấu hình, lệnh kiểm thử và bảng đối chiếu ở trên đủ để người đọc hiểu quy trình replication/failover khi xem bản in, trong khi vẫn tránh biến phụ lục thành danh sách script dài.
+Các đoạn cấu hình, lệnh kiểm thử và bảng đối chiếu ở trên làm rõ các bước chính trong quy trình replication/failover, từ khởi tạo replica, kiểm tra đồng bộ, kiểm thử read-only đến promote và rejoin node cũ.
