@@ -4,6 +4,7 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, BookOpen, ChevronRight, GraduationCap, Layout, Search } from 'lucide-react';
 import CourseCard from '../../common/card/CourseCard';
+import { getMeshGradient } from '../../../utils/classUtils';
 import './EnrolledClasses.css'; // Reuse glassmorphism and layout styles
 
 const ClassCourse = () => {
@@ -65,33 +66,62 @@ const ClassCourse = () => {
                         <span style={{ fontWeight: 600 }}>Chi tiết lớp học</span>
                     </div>
 
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '20px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '20px', position: 'relative', zIndex: 2 }}>
                         <div>
                             <motion.h1 
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 className="hero-title"
-                                style={{ fontSize: '2.5rem', marginBottom: '8px' }}
+                                style={{ fontSize: '3rem', marginBottom: '8px', WebkitTextFillColor: 'white' }}
                             >
                                 {classInfo?.name || 'Danh sách khóa học'}
                             </motion.h1>
                             <div className="hero-stats">
                                 <div className="stat-item">
                                     <BookOpen size={16} />
-                                    <span>{courses.length} Khóa học</span>
+                                    <span>{courses.length} Khóa học trong lớp</span>
                                 </div>
                             </div>
                         </div>
                         <button 
                             className="btn-join" 
-                            style={{ background: 'rgba(255, 255, 255, 0.2)', border: '1px solid rgba(255, 255, 255, 0.3)' }}
+                            style={{ 
+                                background: 'rgba(255, 255, 255, 0.2)', 
+                                border: '1px solid rgba(255, 255, 255, 0.3)',
+                                backdropFilter: 'blur(10px)'
+                            }}
                             onClick={() => navigate('/enrolled-classes')}
                         >
                             <ArrowLeft size={18} />
-                            <span>Quay lại</span>
+                            <span>Quay lại phòng học</span>
                         </button>
                     </div>
                 </div>
+                {/* Dynamic Background Overlay */}
+                <div 
+                    className="hero-dynamic-bg" 
+                    style={{ 
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: getMeshGradient(classInfo?.name || 'default'),
+                        opacity: 0.8,
+                        zIndex: 0
+                    }}
+                ></div>
+                <div 
+                    style={{ 
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: 'linear-gradient(to bottom, rgba(15, 23, 42, 0.5), #0f172a)',
+                        zIndex: 1
+                    }}
+                ></div>
             </section>
 
             <div className="classes-container">

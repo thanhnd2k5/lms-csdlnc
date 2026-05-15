@@ -182,6 +182,30 @@ Về mặt logic, hệ thống được chia thành các cụm dữ liệu:
 - quản lý tham gia học tập
 - quản lý lớp học
 
+Từ các cụm dữ liệu trên, các thực thể trong ERD được ánh xạ thành lược đồ quan hệ. Mỗi thực thể chính được chuyển thành một bảng, các quan hệ một-nhiều được biểu diễn bằng khóa ngoại, còn các quan hệ nhiều-nhiều được tách thành bảng trung gian. Bảng dưới đây trình bày lược đồ quan hệ rút gọn của hệ thống:
+
+| Quan hệ | Thuộc tính chính | Khóa và ràng buộc chính |
+| --- | --- | --- |
+| `users` | `id`, `username`, `email`, `password`, `full_name`, `role`, `email_verified`, `avatar`, `bio` | PK: `id`; UNIQUE: `username`, `email`; INDEX: `idx_user_role(role)` |
+| `courses` | `id`, `title`, `description`, `thumbnail`, `is_public`, `teacher_id`, `level`, `requirements`, `highlights` | PK: `id`; FK: `teacher_id -> users(id)`; INDEX: `idx_course_public(is_public)` |
+| `chapters` | `id`, `course_id`, `title`, `order_index` | PK: `id`; FK: `course_id -> courses(id)`; INDEX: `idx_chapter_order(course_id, order_index)` |
+| `videos` | `id`, `course_id`, `chapter_id`, `title`, `video_url` | PK: `id`; FK: `course_id -> courses(id)`, `chapter_id -> chapters(id)`; INDEX: `idx_video_chapter(chapter_id)` |
+| `documents` | `id`, `title`, `file_path`, `file_type`, `course_id`, `chapter_id`, `video_id`, `teacher_id` | PK: `id`; FK: `course_id -> courses(id)`, `chapter_id -> chapters(id)`, `video_id -> videos(id)`, `teacher_id -> users(id)` |
+| `quizzes` | `id`, `title`, `course_id`, `chapter_id`, `video_id`, `quiz_type`, `teacher_id` | PK: `id`; FK: `course_id -> courses(id)`, `chapter_id -> chapters(id)`, `video_id -> videos(id)`, `teacher_id -> users(id)`; INDEX: `idx_quiz_type(quiz_type)` |
+| `quiz_questions` | `id`, `quiz_id`, `question_text`, `points`, `allows_multiple_correct` | PK: `id`; FK: `quiz_id -> quizzes(id)` |
+| `quiz_options` | `id`, `question_id`, `option_text`, `is_correct` | PK: `id`; FK: `question_id -> quiz_questions(id)` |
+| `quiz_attempts` | `id`, `user_id`, `quiz_id`, `score`, `status`, `end_time` | PK: `id`; FK: `user_id -> users(id)`, `quiz_id -> quizzes(id)`; INDEX: `idx_attempt_user_quiz(user_id, quiz_id)` |
+| `quiz_answers` | `id`, `attempt_id`, `question_id`, `selected_option_id` | PK: `id`; FK: `attempt_id -> quiz_attempts(id)`, `question_id -> quiz_questions(id)`, `selected_option_id -> quiz_options(id)` |
+| `course_enrollments` | `id`, `user_id`, `course_id`, `enrolled_at` | PK: `id`; FK: `user_id -> users(id)`, `course_id -> courses(id)`; UNIQUE: `(user_id, course_id)` |
+| `video_completion` | `id`, `user_id`, `video_id`, `is_completed`, `completed_at` | PK: `id`; FK: `user_id -> users(id)`, `video_id -> videos(id)`; UNIQUE: `(user_id, video_id)` |
+| `classes` | `id`, `name`, `teacher_id`, `class_code`, `status`, `max_students` | PK: `id`; FK: `teacher_id -> users(id)`; UNIQUE: `class_code`; INDEX: `idx_class_code(class_code)` |
+| `class_courses` | `class_id`, `course_id`, `requires_approval`, `added_at` | PK: `(class_id, course_id)`; FK: `class_id -> classes(id)`, `course_id -> courses(id)` |
+| `class_students` | `class_id`, `student_id`, `status`, `joined_at` | PK: `(class_id, student_id)`; FK: `class_id -> classes(id)`, `student_id -> users(id)` |
+| `class_students_courses_approval` | `class_id`, `student_id`, `course_id`, `status`, `updated_at` | PK: `(class_id, student_id, course_id)`; FK: `class_id -> classes(id)`, `student_id -> users(id)`, `course_id -> courses(id)` |
+| `course_reviews` | `id`, `course_id`, `user_id`, `rating`, `comment`, `created_at` | PK: `id`; FK: `course_id -> courses(id)`, `user_id -> users(id)`; UNIQUE: `(user_id, course_id)`; INDEX: `idx_course_rating(course_id, rating)` |
+
+Lược đồ quan hệ trên là cơ sở để triển khai lược đồ vật lý trong MySQL. Các bảng trung gian như `course_enrollments`, `video_completion`, `class_courses`, `class_students` và `class_students_courses_approval` giúp chuyển các quan hệ nhiều-nhiều trong ERD thành các quan hệ có khóa chính, khóa ngoại và ràng buộc rõ ràng.
+
 Để làm rõ quan hệ giữa các thực thể, báo cáo sử dụng sơ đồ ERD ở cả mức tổng thể và mức nhóm chức năng. Trước hết, Hình 3.1 trình bày sơ đồ ERD tổng thể của toàn bộ hệ thống, qua đó cho thấy mối liên hệ giữa người dùng, khóa học, nội dung học tập, bài kiểm tra, tiến độ học tập và lớp học.
 
 `[Chèn Hình 3.1. Sơ đồ ERD tổng thể của hệ thống tại đây]`
@@ -219,7 +243,7 @@ Về mặt vật lý, lược đồ được cài đặt trên MySQL với:
 
 Lược đồ của hệ thống được thiết kế theo hướng chuẩn hóa tốt. Nhìn chung, các thực thể chính và các quan hệ trung gian đã được tách tương đối rõ, giúp hạn chế trùng lặp dữ liệu và thuận lợi cho việc cập nhật, truy vấn cũng như mở rộng hệ thống.
 
-Ở mức chuẩn thứ nhất, các bảng đều có khóa chính rõ ràng và các thuộc tính được tổ chức theo dạng giá trị nguyên tử. Hệ thống không lưu nhiều giá trị trong cùng một cột, đồng thời các nhóm dữ liệu lặp đã được tách thành các bảng riêng như `quiz_questions`, `quiz_options`, `course_enrollments` hay `class_students`.
+Ở mức chuẩn thứ nhất, các bảng đều có khóa chính rõ ràng và các thuộc tính được tổ chức theo dạng giá trị nguyên tử. Hệ thống không gộp các nhóm dữ liệu lặp vào một bảng lớn; thay vào đó, các nhóm dữ liệu có khả năng phát sinh nhiều bản ghi đã được tách thành các bảng riêng như `quiz_questions`, `quiz_options`, `course_enrollments` hay `class_students`. Riêng các trường `requirements` và `highlights` trong bảng `courses` được sử dụng như metadata mô tả khóa học; nếu cần chuẩn hóa nghiêm ngặt hơn, hai nhóm thông tin này có thể tiếp tục tách thành các bảng riêng như `course_requirements` và `course_highlights`.
 
 Ở mức chuẩn thứ hai, các bảng liên kết sử dụng khóa ghép như `class_courses`, `class_students` và `class_students_courses_approval` được tổ chức tương đối hợp lý. Các thuộc tính không khóa trong các bảng này nhìn chung phụ thuộc vào toàn bộ khóa chính, thay vì chỉ phụ thuộc vào một phần của khóa.
 

@@ -62,7 +62,7 @@ const classController = {
     createClass: async (req, res) => {
         try {
             const teacherId = req.user.id;
-            const { name, description, max_students, requires_password, password } = req.body;
+            const { name, description, max_students, requires_password, password, status, thumbnail } = req.body;
 
             const classData = {
                 name,
@@ -71,6 +71,8 @@ const classController = {
                 max_students: max_students || 100,
                 requires_password,
                 password: requires_password ? password : null,
+                status: status || 'active',
+                thumbnail,
                 class_code: Math.random().toString(36).substring(2, 8).toUpperCase() // Tạo mã lớp ngẫu nhiên
             };
 

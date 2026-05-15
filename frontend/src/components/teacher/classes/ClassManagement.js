@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import CreateClass from './createClass';
 import EditClass from './editClass';
 import { getAssetUrl } from '../../../utils/urlUtils';
+import { getClassIllustration } from '../../../utils/classUtils';
 import './ClassManagement.css';
 
 const { confirm } = Modal;
@@ -98,18 +99,33 @@ const ClassManagement = () => {
             key: 'class_info',
             width: '35%',
             render: (_, record) => (
-                <Space size="middle">
-                    <img
-                        src={getAssetUrl(record.thumbnail)}
-                        alt="thumb"
-                        className="class-thumbnail-mini"
-                        onError={(e) => { e.target.src = 'https://placehold.co/100x60?text=Class' }}
-                    />
+                <div className="align-center-flex" style={{ gap: '16px' }}>
+                    {record.thumbnail ? (
+                        <img
+                            src={getAssetUrl(record.thumbnail)}
+                            alt="thumb"
+                            className="class-thumbnail-mini"
+                        />
+                    ) : (
+                        <div 
+                            className="class-thumbnail-mini fallback-mini" 
+                            style={{ 
+                                background: `linear-gradient(135deg, ${getClassIllustration(record.name).color}22 0%, ${getClassIllustration(record.name).color}44 100%)`,
+                                color: getClassIllustration(record.name).color,
+                                border: `1px solid ${getClassIllustration(record.name).color}33`,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}
+                        >
+                            {React.createElement(getClassIllustration(record.name).icon, { size: 18, strokeWidth: 2.2 })}
+                        </div>
+                    )}
                     <div className="class-title-cell">
-                        <span className="class-main-title">{record.name}</span>
-                        <span className="class-code-sub">Mã lớp: {record.class_code}</span>
+                        <div className="class-main-title">{record.name}</div>
+                        <div className="class-code-sub">Mã lớp: {record.class_code}</div>
                     </div>
-                </Space>
+                </div>
             ),
         },
         {

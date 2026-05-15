@@ -124,9 +124,9 @@ const ClassCourseManagement = () => {
         {
             title: 'Khóa học',
             key: 'course_info',
-            width: '45%',
+            width: '40%',
             render: (_, record) => (
-                <Space size="middle">
+                <div className="align-center-flex" style={{ gap: '16px' }}>
                     <img 
                         src={getAssetUrl(record.thumbnail)} 
                         alt="thumb" 
@@ -134,10 +134,14 @@ const ClassCourseManagement = () => {
                         onError={(e) => e.target.src = 'https://placehold.co/100x60?text=Course'}
                     />
                     <div className="class-title-cell">
-                        <span className="class-main-title">{record.title}</span>
-                        <Text type="secondary" style={{ fontSize: '12px' }} ellipsis>{record.description}</Text>
+                        <div className="class-main-title">{record.title}</div>
+                        <div className="class-desc-sub">
+                            <Text type="secondary" style={{ fontSize: '12px' }} ellipsis={{ tooltip: record.description }}>
+                                {record.description || 'Chưa có mô tả cho khóa học này'}
+                            </Text>
+                        </div>
                     </div>
-                </Space>
+                </div>
             )
         },
         {
@@ -203,7 +207,6 @@ const ClassCourseManagement = () => {
                     <Col>
                         <Button 
                             type="primary" 
-                            icon={<PlusOutlined />} 
                             onClick={() => {
                                 fetchAvailableCourses();
                                 setIsModalVisible(true);

@@ -69,7 +69,8 @@ const getEnrolledCourses = (userId) => {
       SELECT 
         c.*,
         u.full_name as teacher_name,
-        ce.enrolled_at as enrollment_date
+        ce.enrolled_at as enrollment_date,
+        (SELECT COUNT(*) FROM course_enrollments WHERE course_id = c.id) as student_count
       FROM courses c
       JOIN course_enrollments ce ON c.id = ce.course_id
       LEFT JOIN users u ON c.teacher_id = u.id

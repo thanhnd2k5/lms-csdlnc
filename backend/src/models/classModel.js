@@ -58,7 +58,9 @@ const classModel = {
     getClassCourses: (classId) => {
         return new Promise((resolve, reject) => {
             const sql = `
-                SELECT c.* 
+                SELECT c.*,
+                       (SELECT COUNT(*) FROM videos WHERE course_id = c.id) as video_count,
+                       (SELECT COUNT(*) FROM course_enrollments WHERE course_id = c.id) as student_count
                 FROM courses c
                 INNER JOIN class_courses cc ON c.id = cc.course_id
                 WHERE cc.class_id = ?
@@ -305,7 +307,8 @@ const classModel = {
                     c.id,
                     c.title,
                     c.thumbnail,
-                    u.full_name as teacher_name
+                    u.full_name as teacher_name,
+                    (SELECT COUNT(*) FROM course_enrollments WHERE course_id = c.id) as student_count
                 FROM class_courses cc
                 JOIN courses c ON cc.course_id = c.id
                 JOIN users u ON c.teacher_id = u.id

@@ -12,8 +12,15 @@
 }
 
 @keyframes slideInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .course-dashboard-header {
@@ -70,11 +77,30 @@
   flex-shrink: 0;
 }
 
-.stat-icon-wrapper.blue { background: #eff6ff; color: #2563eb; }
-.stat-icon-wrapper.green { background: #f0fdf4; color: #16a34a; }
-.stat-icon-wrapper.purple { background: #f5f3ff; color: #7c3aed; }
-.stat-icon-wrapper.orange { background: #fff7ed; color: #ea580c; }
-.stat-icon-wrapper.cyan { background: #ecfeff; color: #0891b2; }
+.stat-icon-wrapper.blue {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.stat-icon-wrapper.green {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.stat-icon-wrapper.purple {
+  background: #f5f3ff;
+  color: #7c3aed;
+}
+
+.stat-icon-wrapper.orange {
+  background: #fff7ed;
+  color: #ea580c;
+}
+
+.stat-icon-wrapper.cyan {
+  background: #ecfeff;
+  color: #0891b2;
+}
 
 .stat-info h3 {
   margin: 0;
@@ -99,7 +125,7 @@
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
-.premium-table-container .ant-table-thead > tr > th {
+.premium-table-container .ant-table-thead>tr>th {
   background: #f8fafc !important;
   color: #64748b !important;
   font-size: 0.75rem !important;
@@ -110,96 +136,117 @@
   border-bottom: 1px solid #f1f5f9 !important;
 }
 
-.premium-table-container .ant-table-tbody > tr > td {
+.premium-table-container .ant-table-tbody>tr>td {
   padding: 16px 24px !important;
   border-bottom: 1px solid #f1f5f9 !important;
 }
 
-.premium-table-container .ant-table-row:hover > td {
+.premium-table-container .ant-table-row:hover>td {
   background: #f8fafc !important;
 }
 
 /* --- PREMIUM MODALS --- */
 .premium-modal .ant-modal-content {
-  border-radius: 20px !important;
+  border-radius: 24px !important;
+  padding: 32px !important;
   overflow: hidden;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
 }
 
 .premium-modal .ant-modal-header {
-  padding: 16px 32px !important;
+  padding: 0 0 20px 0 !important;
   border-bottom: 1px solid #f1f5f9 !important;
-  margin-bottom: 0 !important;
+  margin-bottom: 24px !important;
 }
 
 .premium-modal .ant-modal-title {
-  font-size: 1.15rem !important;
-  font-weight: 700 !important;
+  font-size: 1.25rem !important;
+  font-weight: 800 !important;
   color: #1e293b !important;
 }
 
 .premium-modal .ant-modal-body {
-  padding: 12px 32px 8px 32px !important;
+  padding: 0 !important;
 }
 
 .premium-modal .ant-modal-footer {
-  padding: 16px 32px !important;
+  padding: 24px 0 0 0 !important;
   border-top: 1px solid #f1f5f9 !important;
-  margin-top: 0 !important;
+  margin-top: 24px !important;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
 }
 
-/* --- MODERN PREMIUM FORMS --- */
-#premium-quiz-form .ant-input-affix-wrapper,
-#premium-quiz-form .ant-input-number-affix-wrapper,
-#premium-quiz-form .ant-input-number,
-#premium-quiz-form .ant-select-selector,
-#premium-quiz-form .ant-input,
-#premium-course-form .ant-input-affix-wrapper,
-#premium-course-form .ant-input-number-affix-wrapper,
-#premium-course-form .ant-input-number,
-#premium-course-form .ant-select-selector,
-#premium-course-form .ant-input {
-  border: 1px solid #e2e8f0 !important;
-  border-radius: 12px !important;
-  background-color: #ffffff !important;
-  padding: 8px 16px !important;
-  box-shadow: none !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  height: auto !important;
+/* --- MODERN PREMIUM FORMS (CLEAN SYSTEM) --- */
+.premium-modal .ant-form-item-label label {
+  font-weight: 600 !important;
+  color: #475569 !important;
+  font-size: 14px !important;
+  margin-bottom: 4px !important;
 }
 
-#premium-quiz-form .ant-input-affix-wrapper:hover,
-#premium-course-form .ant-input-affix-wrapper:hover {
-  border-color: #3b82f6 !important;
-  background-color: #fff !important;
+/* Fix for Overlapping Icons (The Core Issue) */
+.premium-modal .ant-input-affix-wrapper,
+.premium-modal .ant-input-number-affix-wrapper {
+  padding-left: 16px !important;
 }
 
-#premium-quiz-form .ant-input-affix-wrapper-focused,
-#premium-course-form .ant-input-affix-wrapper-focused {
-  border-color: #3b82f6 !important;
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1) !important;
-}
-
-#premium-quiz-form .ant-input-prefix,
-#premium-course-form .ant-input-prefix {
+.premium-modal .ant-input-prefix,
+.premium-modal .ant-input-number-prefix {
   margin-right: 12px !important;
+  font-size: 18px !important;
+  display: flex !important;
+  align-items: center !important;
   color: #6366f1 !important;
+}
+
+/* Specific Blue Icon class used in JS */
+.field-icon-blue {
+  color: #6366f1 !important;
+  font-size: 18px !important;
+}
+
+/* Custom Select Icon Wrapper */
+.select-with-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.select-with-icon-wrapper .field-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  color: #6366f1;
   font-size: 18px;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
 }
 
-/* Fix for inner input inside wrapper */
-#premium-quiz-form .ant-input-affix-wrapper .ant-input,
-#premium-course-form .ant-input-affix-wrapper .ant-input {
-  border: none !important;
-  padding: 0 !important;
-  background: transparent !important;
+.select-with-icon-wrapper .ant-select-selector {
+  padding-left: 46px !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
-/* Global Utility Helpers */
-.align-center-flex {
+.select-with-icon-wrapper .ant-select-selection-placeholder,
+.select-with-icon-wrapper .ant-select-selection-item {
+  padding-left: 0 !important;
+  inset-inline-start: 0 !important;
+}
+
+/* Button & Height Synchronization */
+.premium-modal .ant-btn {
+  height: 48px !important;
   display: inline-flex !important;
   align-items: center !important;
-  gap: 8px;
+  justify-content: center !important;
+  border-radius: 12px !important;
 }
 
 .btn-content-wrapper {
@@ -207,7 +254,93 @@
   align-items: center !important;
   justify-content: center !important;
   gap: 8px !important;
-  height: 100% !important;
-  width: 100% !important;
   line-height: 1 !important;
+}
+
+/* Cleanup for InputNumber artifacts */
+.premium-modal .ant-input-number-handler-wrap {
+  border-left: 1px solid #f1f5f9 !important;
+  border-radius: 0 12px 12px 0 !important;
+  background: #f8fafc !important;
+}
+
+/* --- PREMIUM UI HELPERS --- */
+/* Force Upload to take full width */
+.premium-thumbnail-upload,
+.premium-thumbnail-upload .ant-upload.ant-upload-select {
+  display: block !important;
+  width: 100% !important;
+}
+
+.premium-upload-container {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 2px dashed #e2e8f0;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  box-sizing: border-box;
+}
+
+/* Premium Tip Box Alignment */
+.premium-tip-box {
+  width: 100% !important;
+  padding: 20px 24px !important;
+  background: #eff6ff !important;
+  border: 1px solid #bfdbfe !important;
+  border-radius: 16px !important;
+  display: flex !important;
+  gap: 16px !important;
+  margin-top: 20px !important;
+  box-sizing: border-box !important;
+  align-items: flex-start !important;
+}
+
+.premium-tip-box .anticon {
+  color: #2563eb !important;
+  font-size: 24px !important;
+  margin-top: 2px !important;
+  flex-shrink: 0 !important;
+}
+
+.premium-upload-container:hover {
+  border-color: #6366f1;
+  background: #f5f3ff;
+}
+
+.premium-upload-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.premium-upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.premium-upload-placeholder .anticon {
+  font-size: 32px;
+  color: #94a3b8;
+}
+
+.premium-upload-placeholder .upload-text {
+  font-weight: 600;
+  color: #475569;
+  font-size: 15px;
+}
+
+.premium-upload-placeholder .upload-hint {
+  font-size: 12px;
+  color: #94a3b8;
 }

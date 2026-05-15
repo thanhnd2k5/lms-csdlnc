@@ -8,6 +8,8 @@ import {
     BookOpen, Users, Lock, Key, X, GraduationCap,
     Calendar, AlertCircle, Info
 } from 'lucide-react';
+import { message } from 'antd';
+import { getClassIllustration, getMeshGradient } from '../../../utils/classUtils';
 import './EnrolledClasses.css';
 
 const CLASS_GRADIENTS = [
@@ -69,11 +71,10 @@ const EnrolledClasses = () => {
                 setClassCode('');
                 setPassword('');
                 fetchEnrolledClasses();
-                // Simple toast would be better but keeping it simple for now
-                alert('Tham gia lớp học thành công!');
+                message.success('Tham gia lớp học thành công!');
             }
         } catch (error) {
-            alert(error.response?.data?.message || 'Không thể tham gia lớp học');
+            message.error(error.response?.data?.message || 'Không thể tham gia lớp học');
         } finally {
             setJoinLoading(false);
         }
@@ -88,8 +89,9 @@ const EnrolledClasses = () => {
             );
             setLeaveConfirm(null);
             fetchEnrolledClasses();
+            message.success('Đã rời khỏi lớp học thành công');
         } catch (error) {
-            alert('Không thể rời khỏi lớp học');
+            message.error('Không thể rời khỏi lớp học');
         }
     };
 
@@ -136,7 +138,7 @@ const EnrolledClasses = () => {
                 exit={{ opacity: 0, scale: 0.95 }}
                 className="class-premium-card"
             >
-                <div className="card-banner" style={{ background: getGradient(classData.name) }}>
+                <div className="card-banner" style={{ background: getMeshGradient(classData.name) }}>
                     <div className="card-menu-container" ref={menuRef}>
                         <button
                             className="card-menu-trigger"
@@ -161,14 +163,39 @@ const EnrolledClasses = () => {
                         </AnimatePresence>
                     </div>
                     <div className="card-avatar-wrapper">
-                        <div className="card-avatar" style={{ background: getGradient(classData.name) }}>
-                            {classData.thumbnail ? (
+                        {classData.thumbnail ? (
+                            <div className="card-avatar">
                                 <img
                                     src={getAssetUrl(classData.thumbnail)}
                                     alt={classData.name}
+                                    onError={(e) => {
+                                        // If image fails, hide it and show fallback
+                                        e.target.style.display = 'none';
+                                        e.target.parentElement.classList.add('image-error');
+                                    }}
                                 />
-                            ) : initials}
-                        </div>
+                                <div className="avatar-fallback-overlay">
+                                    <div className="avatar-icon-wrapper">
+                                        {React.createElement(getClassIllustration(classData.name).icon, { size: 32, strokeWidth: 2.2 })}
+                                    </div>
+                                    <div className="avatar-glow" style={{ background: getClassIllustration(classData.name).color }}></div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div 
+                                className="card-avatar fallback-avatar" 
+                                style={{ 
+                                    background: `linear-gradient(135deg, ${getClassIllustration(classData.name).color}22 0%, ${getClassIllustration(classData.name).color}44 100%)`,
+                                    color: getClassIllustration(classData.name).color,
+                                    border: `1px solid ${getClassIllustration(classData.name).color}33`
+                                }}
+                            >
+                                <div className="avatar-icon-wrapper">
+                                    {React.createElement(getClassIllustration(classData.name).icon, { size: 32, strokeWidth: 2.2 })}
+                                </div>
+                                <div className="avatar-glow" style={{ background: getClassIllustration(classData.name).color }}></div>
+                            </div>
+                        )}
                     </div>
                 </div>
 
