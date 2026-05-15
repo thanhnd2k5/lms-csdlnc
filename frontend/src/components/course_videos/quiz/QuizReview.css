@@ -1,61 +1,102 @@
+/* Modern Quiz Review Design */
+
 .quiz-review {
-  padding: 16px;
+  padding: 0;
 }
 
 .quiz-review-card {
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 20px !important;
+  margin-bottom: 24px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  border: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+.quiz-review-card:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+.quiz-review-card .ant-card-head {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  padding: 16px 24px !important;
+}
+
+.quiz-review-card .ant-card-body {
+  padding: 24px !important;
 }
 
 .quiz-review-option {
-  padding: 12px;
-  margin-bottom: 8px;
-  border-radius: 8px;
-  border: 1px solid #f0f0f0;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.02);
   transition: all 0.2s ease;
+  color: #cbd5e1;
 }
 
 .correct-user {
-  background-color: #f6ffed;
-  border-color: #b7eb8f;
+  background-color: rgba(16, 185, 129, 0.1) !important;
+  border-color: #10b981 !important;
+  color: #fff !important;
 }
 
 .wrong-user {
-  background-color: #fff1f0;
-  border-color: #ffa39e;
+  background-color: rgba(239, 68, 68, 0.1) !important;
+  border-color: #ef4444 !important;
+  color: #fff !important;
 }
 
 .correct-answer {
-  background-color: #f6ffed;
-  border-color: #b7eb8f;
-  border-style: dashed;
+  border-color: #10b981 !important;
+  border-style: dashed !important;
+  background-color: rgba(16, 185, 129, 0.05) !important;
 }
 
-/* AI Style */
+/* AI Section */
+.ai-explanation-section {
+  margin-top: 24px;
+}
+
 .ai-explain-btn {
-  border-color: #722ed1 !important;
-  color: #722ed1 !important;
-  border-radius: 20px !important;
-  transition: all 0.3s ease !important;
-  font-weight: 500 !important;
+  background: rgba(114, 46, 209, 0.1) !important;
+  border-color: rgba(114, 46, 209, 0.3) !important;
+  color: #d3adf7 !important;
+  border-radius: 12px !important;
+  height: 44px !important;
+  font-weight: 600 !important;
+  width: 100%;
 }
 
 .ai-explain-btn:hover {
-  background: linear-gradient(135deg, #f9f0ff 0%, #efdbff 100%) !important;
+  background: rgba(114, 46, 209, 0.2) !important;
+  border-color: #b37feb !important;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(114, 46, 209, 0.2);
+}
+
+.ai-alert-premium {
+  background: rgba(114, 46, 209, 0.05) !important;
+  border: 1px solid rgba(114, 46, 209, 0.2) !important;
+  border-radius: 16px !important;
+  padding: 20px !important;
 }
 
 .ai-content {
-  line-height: 1.6;
+  line-height: 1.8;
   font-size: 15px;
-  color: #333;
+  color: #e2e8f0;
 }
 
-.ai-content br {
-  margin-bottom: 8px;
-  display: block;
-  content: "";
+.ai-content h1, .ai-content h2, .ai-content h3 {
+  color: #d3adf7 !important;
+  margin-top: 16px;
+}
+
+.ai-content code {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #ff7875;
 }

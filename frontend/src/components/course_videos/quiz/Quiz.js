@@ -1,8 +1,19 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Card, Radio, Checkbox, Space, Button, message, Result, Progress, Alert, Typography } from 'antd';
+import { Radio, Checkbox, Space, Button, message, Progress, Typography } from 'antd';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { LoadingOutlined, CheckCircleOutlined, CloseCircleOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import { 
+  LoadingOutlined, 
+  CheckCircleOutlined, 
+  CloseCircleOutlined, 
+  ClockCircleOutlined, 
+  FileTextOutlined, 
+  TrophyOutlined,
+  SafetyCertificateOutlined,
+  SendOutlined,
+  ReloadOutlined,
+  EyeOutlined
+} from '@ant-design/icons';
 import QuizReview from './QuizReview';
 import './quiz.css';
 
@@ -148,48 +159,14 @@ const Quiz = ({ quiz: initialQuiz }) => {
     if (isMultiple) {
       setSelectedAnswers(prev => ({
         ...prev,
-        [questionId]: value // value sẽ là array cho multichoice
+        [questionId]: value
       }));
     } else {
       setSelectedAnswers(prev => ({
         ...prev,
-        [questionId]: [value] // wrap single value trong array để thống nhất format
+        [questionId]: [value]
       }));
     }
-  };
-
-  const renderQuestionOptions = (question) => {
-    if (question.allows_multiple_correct) {
-      return (
-        <Checkbox.Group
-          onChange={(values) => handleAnswerChange(question.id, values, true)}
-          value={selectedAnswers[question.id] || []}
-        >
-          <Space direction="vertical" className="quiz-options">
-            {question.options && question.options.map(option => (
-              <Checkbox key={option.id} value={option.id}>
-                {option.option_text}
-              </Checkbox>
-            ))}
-          </Space>
-        </Checkbox.Group>
-      );
-    }
-
-    return (
-      <Radio.Group
-        onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-        value={selectedAnswers[question.id]?.[0]}
-      >
-        <Space direction="vertical" className="quiz-options">
-          {question.options && question.options.map(option => (
-            <Radio key={option.id} value={option.id}>
-              {option.option_text}
-            </Radio>
-          ))}
-        </Space>
-      </Radio.Group>
-    );
   };
 
   const handleRetry = useCallback(async () => {
@@ -223,117 +200,213 @@ const Quiz = ({ quiz: initialQuiz }) => {
     return <div className="loading-icon"><LoadingOutlined /></div>;
   }
 
+  // --- INTRO STATE ---
   if (!isStarted && !showResult) {
     return (
-      <div className="content-section">
-        <Card className="quiz-intro-card">
-          <Title level={2}>{quiz.title || 'Bài kiểm tra'}</Title>
-          
-          <div className="quiz-info">
-            <Alert
-              message="Thông tin bài kiểm tra"
-              description={
-                <Space direction="vertical">
-                  <Text><strong>Thời gian làm bài:</strong> {quiz.duration_minutes || 30} phút</Text>
-                  <Text><strong>Số câu hỏi:</strong> {quiz.questions?.length || 0} câu</Text>
-                  <Text><strong>Điểm đạt yêu cầu:</strong> {quiz.passing_score || 60}/100 điểm</Text>
-                </Space>
-              }
-              type="info"
-              showIcon
-            />
+      <div className="quiz-container">
+        <div className="quiz-intro-card">
+          <div className="quiz-hero">
+            <Title level={1} className="quiz-hero-title">{quiz.title || 'Bài kiểm tra'}</Title>
+            
+            <div className="quiz-stats-grid">
+              <div className="quiz-stat-item">
+                <span className="icon-align-fix quiz-stat-icon"><ClockCircleOutlined /></span>
+                <span className="quiz-stat-value">{quiz.duration_minutes || 30} phút</span>
+                <span className="quiz-stat-label">Thời gian</span>
+              </div>
+              <div className="quiz-stat-item">
+                <span className="icon-align-fix quiz-stat-icon"><FileTextOutlined /></span>
+                <span className="quiz-stat-value">{quiz.questions?.length || 0} câu</span>
+                <span className="quiz-stat-label">Số câu hỏi</span>
+              </div>
+              <div className="quiz-stat-item">
+                <span className="icon-align-fix quiz-stat-icon"><TrophyOutlined /></span>
+                <span className="quiz-stat-value">{quiz.passing_score || 60}/100</span>
+                <span className="quiz-stat-label">Điểm yêu cầu</span>
+              </div>
+            </div>
           </div>
 
-          <div className="quiz-rules">
-            <Alert
-              message="Lưu ý"
-              description={
-                <ul className="quiz-rules-list">
-                  <li>Bài kiểm tra sẽ bắt đầu tính giờ ngay khi bạn nhấn "Bắt đầu làm bài"</li>
-                  <li>Bài làm sẽ tự động được nộp khi hết thời gian</li>
-                  <li>Không thoát khỏi trang khi đang làm bài</li>
-                  <li>Đảm bảo kết nối internet ổn định</li>
-                </ul>
-              }
-              type="warning"
-              showIcon
-            />
+          <div className="quiz-rules-container">
+            <Title level={4} className="quiz-rules-title flex-center">
+              <span className="icon-align-fix"><SafetyCertificateOutlined style={{ color: '#f59e0b' }} /></span> 
+              <span>Hướng dẫn & Quy định</span>
+            </Title>
+            <ul className="quiz-rules-list">
+              <li>Thời gian sẽ bắt đầu tính ngay sau khi bạn nhấn nút.</li>
+              <li>Hệ thống tự động nộp bài khi hết thời gian quy định.</li>
+              <li>Mỗi câu hỏi có thể có một hoặc nhiều đáp án đúng.</li>
+              <li>Vui lòng không tải lại trang hoặc thoát trình duyệt.</li>
+            </ul>
           </div>
 
-          <div className="quiz-actions">
-            <Button type="primary" size="large" onClick={handleStartQuiz}>
-              Bắt đầu làm bài
+          <div className="quiz-actions" style={{ marginTop: 40, textAlign: 'center' }}>
+            <Button 
+              type="primary" 
+              className="btn-primary-premium"
+              onClick={handleStartQuiz}
+            >
+              <div className="btn-content-wrapper">
+                <span className="icon-align-fix"><SendOutlined /></span>
+                <span>Bắt đầu làm bài</span>
+              </div>
             </Button>
           </div>
-        </Card>
+        </div>
       </div>
     );
   }
 
+  // --- RESULT STATE ---
   if (showResult && quizResult) {
+    const isPassed = quizResult.passed;
     return (
-      <div className="content-section">
-        <Card className="quiz-card">
-          <Result
-            icon={quizResult.passed ? <CheckCircleOutlined style={{ color: '#52c41a' }} /> : <CloseCircleOutlined style={{ color: '#ff4d4f' }} />}
-            status={quizResult.passed ? "success" : "error"}
-            title={quizResult.passed ? "Chúc mừng! Bạn đã hoàn thành bài kiểm tra" : "Rất tiếc! Bạn chưa đạt yêu cầu"}
-            subTitle={`Điểm của bạn: ${quizResult.score}/100 ${quizResult.passed ? '- Đạt' : '- Chưa đạt'}`}
-            extra={[
-              <Button type="primary" key="retry" onClick={handleRetry}>
-                Làm lại
-              </Button>,
-              <Button key="review" onClick={() => setShowAnswers(!showAnswers)}>
-                {showAnswers ? 'Ẩn đáp án' : 'Xem đáp án'}
-              </Button>
-            ]}
-          />
-
-          {showAnswers && <QuizReview quiz={quiz} quizResult={quizResult} />}
-        </Card>
-      </div>
-    );
-  }
-
-  return (
-    <div className="content-section">
-      <Card 
-        title={quiz.title || 'Bài kiểm tra'} 
-        className="quiz-card"
-        extra={
-          <div className="quiz-timer">
+      <div className="quiz-container">
+        <div className="quiz-card quiz-result-container">
+          <div className="result-score-circle">
             <Progress 
               type="circle" 
-              percent={getTimeProgress()} 
-              format={() => formatTime(timeRemaining)}
-              width={60}
-              status={timeRemaining < 60 ? "exception" : "normal"}
+              percent={quizResult.score} 
+              strokeColor={isPassed ? '#10b981' : '#ef4444'}
+              strokeWidth={8}
+              width={200}
+              format={() => (
+                <div className="score-value-box">
+                  <div className="score-value">{quizResult.score}</div>
+                  <div className="score-label">Điểm</div>
+                </div>
+              )}
             />
           </div>
-        }
-      >
-        {quiz.questions && quiz.questions.map(question => (
-          <div key={question.id} className="quiz-question">
-            <p className="question-text">
-              {question.question_text}
-              {question.allows_multiple_correct && 
-                <span className="multiple-choice-indicator"> (Chọn nhiều đáp án)</span>
-              }
-            </p>
-            {renderQuestionOptions(question)}
+
+          <div className="result-message">
+            <div className={`result-status-badge ${isPassed ? 'status-passed' : 'status-failed'}`}>
+              {isPassed ? 'Đã vượt qua' : 'Chưa đạt yêu cầu'}
+            </div>
+            <Title level={2} style={{ color: '#fff', marginBottom: 8 }}>
+              {isPassed ? 'Chúc mừng bạn!' : 'Hãy cố gắng hơn nhé!'}
+            </Title>
+            <Text style={{ color: '#94a3b8', fontSize: 16 }}>
+              Bạn đã hoàn thành bài kiểm tra với kết quả trên.
+            </Text>
+          </div>
+
+          <div className="flex-center" style={{ justifyContent: 'center', gap: 24 }}>
+            <Button 
+              className="btn-secondary-premium"
+              onClick={handleRetry}
+            >
+              <div className="btn-content-wrapper">
+                <span className="icon-align-fix"><ReloadOutlined /></span>
+                <span>Làm lại bài</span>
+              </div>
+            </Button>
+            <Button 
+              type="primary" 
+              className="btn-primary-premium"
+              onClick={() => setShowAnswers(!showAnswers)}
+            >
+              <div className="btn-content-wrapper">
+                <span className="icon-align-fix"><EyeOutlined /></span>
+                <span>{showAnswers ? 'Ẩn đáp án' : 'Xem đáp án'}</span>
+              </div>
+            </Button>
+          </div>
+
+          {showAnswers && (
+            <div style={{ marginTop: 48, textAlign: 'left' }}>
+              <QuizReview quiz={quiz} quizResult={quizResult} />
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // --- TAKING STATE ---
+  return (
+    <div className="quiz-container">
+      <div className="quiz-header-sticky">
+        <div className="quiz-title-box">
+          <Title level={4} style={{ color: '#fff', margin: 0 }}>{quiz.title}</Title>
+          <Text style={{ color: '#94a3b8', fontSize: 12 }}>
+            Tiến độ: {Object.keys(selectedAnswers).length}/{quiz.questions?.length} câu
+          </Text>
+        </div>
+        
+        <div className="quiz-timer-box flex-center">
+          <span className="icon-align-fix">
+            <ClockCircleOutlined style={{ color: timeRemaining < 60 ? '#ef4444' : '#3b82f6' }} />
+          </span>
+          <span className={`timer-text ${timeRemaining < 60 ? 'text-red-500' : ''}`}>
+            {formatTime(timeRemaining)}
+          </span>
+        </div>
+      </div>
+
+      <div className="quiz-questions-list">
+        {quiz.questions && quiz.questions.map((question, index) => (
+          <div key={question.id} className="quiz-question-container">
+            <div className="question-header">
+              <div className="question-number">{index + 1}</div>
+              <div className="question-text">
+                {question.question_text}
+                {question.allows_multiple_correct && 
+                  <span className="multiple-choice-indicator"> (Chọn nhiều đáp án)</span>
+                }
+              </div>
+            </div>
+
+            <div className="quiz-options">
+              {question.allows_multiple_correct ? (
+                <Checkbox.Group
+                  onChange={(values) => handleAnswerChange(question.id, values, true)}
+                  value={selectedAnswers[question.id] || []}
+                >
+                  <div className="flex flex-col gap-3" style={{ width: '100%' }}>
+                    {question.options?.map(option => (
+                      <Checkbox key={option.id} value={option.id}>
+                        {option.option_text}
+                      </Checkbox>
+                    ))}
+                  </div>
+                </Checkbox.Group>
+              ) : (
+                <Radio.Group
+                  onChange={(e) => handleAnswerChange(question.id, e.target.value)}
+                  value={selectedAnswers[question.id]?.[0]}
+                >
+                  <div className="flex flex-col gap-3" style={{ width: '100%' }}>
+                    {question.options?.map(option => (
+                      <Radio key={option.id} value={option.id}>
+                        {option.option_text}
+                      </Radio>
+                    ))}
+                  </div>
+                </Radio.Group>
+              )}
+            </div>
           </div>
         ))}
+      </div>
+
+      <div className="quiz-footer" style={{ textAlign: 'right', marginTop: 32 }}>
         <Button 
           type="primary" 
+          size="large"
+          className="btn-primary-premium"
           onClick={handleSubmitQuiz}
           loading={submitting}
           disabled={Object.keys(selectedAnswers).length === 0 || submitting}
         >
-          Nộp bài
+          <div className="btn-content-wrapper">
+            <span className="icon-align-fix"><SendOutlined /></span>
+            <span>Nộp bài ngay</span>
+          </div>
         </Button>
-      </Card>
+      </div>
     </div>
   );
 };
 
-export default Quiz; 
+export default Quiz;

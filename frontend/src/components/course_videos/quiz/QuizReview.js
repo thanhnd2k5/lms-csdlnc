@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Card, Typography, Space, Button, Alert, Divider, message } from 'antd';
-import { BulbOutlined, RobotOutlined } from '@ant-design/icons';
+import { BulbOutlined, RobotOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import './QuizReview.css';
@@ -56,7 +56,8 @@ const QuizReview = ({ quiz, quizResult }) => {
 
   return (
     <div className="quiz-review">
-      <Title level={4} style={{ marginBottom: 24 }}>Xem lại bài làm</Title>
+      <Title level={3} style={{ color: '#fff', marginBottom: 32, textAlign: 'center' }}>Chi tiết bài làm</Title>
+      
       <Space direction="vertical" style={{ width: '100%' }} size="large">
         {quiz.questions.map((question, qIndex) => {
           const userAnswer = quizResult.answers[question.id];
@@ -64,7 +65,12 @@ const QuizReview = ({ quiz, quizResult }) => {
             <Card 
                 key={question.id} 
                 className="quiz-review-card"
-                title={<Text strong>{qIndex + 1}. {question.question_text}</Text>}
+                title={
+                  <div className="flex-center" style={{ alignItems: 'flex-start' }}>
+                    <div className="question-number" style={{ flexShrink: 0 }}>{qIndex + 1}</div>
+                    <Text strong style={{ color: '#fff', fontSize: 16, lineHeight: '1.5' }}>{question.question_text}</Text>
+                  </div>
+                }
             >
               <div className="options-list">
                 {question.options?.map(option => {
@@ -78,43 +84,51 @@ const QuizReview = ({ quiz, quizResult }) => {
                   else if (isCorrect) className += " correct-answer";
 
                   return (
-                    <div key={option.id} className={className} style={{ padding: '8px', marginBottom: '8px', borderRadius: '4px' }}>
-                      <Space>
-                        {isUserAnswer && (
-                          <Text type={isCorrect ? 'success' : 'danger'}>
-                            {isCorrect ? '✓' : '✗'}
-                          </Text>
-                        )}
-                        <Text>{option.option_text}</Text>
+                    <div key={option.id} className={className}>
+                      <div className="flex-center" style={{ justifyContent: 'space-between', width: '100%' }}>
+                        <div className="flex-center">
+                          {isUserAnswer && (
+                            <span className="icon-align-fix">
+                              {isCorrect ? 
+                                <CheckOutlined style={{ color: '#10b981' }} /> : 
+                                <CloseOutlined style={{ color: '#ef4444' }} />
+                              }
+                            </span>
+                          )}
+                          <Text style={{ color: 'inherit' }}>{option.option_text}</Text>
+                        </div>
+                        
                         {isCorrect && !isUserAnswer && (
-                          <Text type="success" italic>(Đáp án đúng)</Text>
+                          <Text style={{ color: '#10b981', fontSize: 12, fontStyle: 'italic' }}>(Đáp án đúng)</Text>
                         )}
-                      </Space>
+                      </div>
                     </div>
                   );
                 })}
               </div>
 
-              <Divider dashed style={{ margin: '16px 0' }} />
-              
               <div className="ai-explanation-section">
                 {!explanations[question.id] ? (
                   <Button 
-                    type="dashed" 
-                    icon={<BulbOutlined />} 
-                    loading={loadingAI[question.id]}
                     onClick={() => handleAskAI(question)}
+                    loading={loadingAI[question.id]}
                     className="ai-explain-btn"
                   >
-                    Hỏi AI giải thích câu này
+                    <div className="btn-content-wrapper">
+                      <span className="icon-align-fix"><BulbOutlined /></span>
+                      <span>Hỏi AI Gemini giải thích</span>
+                    </div>
                   </Button>
                 ) : (
                   <Alert 
+                    className="ai-alert-premium"
                     message={
-                        <Space>
-                            <RobotOutlined style={{ color: '#722ed1' }} />
-                            <Text strong style={{ color: '#722ed1' }}>AI Gemini Giải thích</Text>
-                        </Space>
+                        <div className="flex-center" style={{ marginBottom: 12 }}>
+                            <span className="icon-align-fix">
+                              <RobotOutlined style={{ color: '#b37feb', fontSize: 20 }} />
+                            </span>
+                            <Text strong style={{ color: '#b37feb', fontSize: 16 }}>Giải thích từ AI Gemini</Text>
+                        </div>
                     }
                     description={
                         <div className="ai-content">
@@ -123,11 +137,6 @@ const QuizReview = ({ quiz, quizResult }) => {
                     }
                     type="info"
                     showIcon={false}
-                    style={{ 
-                        borderRadius: 8, 
-                        border: '1px solid #d3adf7',
-                        background: '#f9f0ff'
-                    }}
                   />
                 )}
               </div>
