@@ -84,7 +84,18 @@ Ghi chu:
 - Chuong nay co the viet o muc ly thuyet + de xuat.
 - Khong nen co gang trien khai that neu thoi gian khong du.
 
-### Chuong 8. Ket luan va huong phat trien
+### Chuong 8. Ung dung va anh minh hoa giao dien
+
+1. Muc dich minh hoa giao dien
+2. Nhom chuc nang xac thuc tai khoan
+3. Nhom chuc nang khoa hoc cua hoc vien
+4. Nhom chuc nang hoc tap va kiem tra
+5. Nhom chuc nang lop hoc cua hoc vien
+6. Nhom chuc nang ho so nguoi dung
+7. Nhom chuc nang quan ly cua giang vien
+8. Nhan xet chung
+
+### Chuong 9. Ket luan va huong phat trien
 
 1. Ket qua dat duoc
 2. Han che

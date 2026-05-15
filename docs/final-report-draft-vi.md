@@ -623,24 +623,40 @@ So với replication, sharding vẫn được giữ ở mức định hướng n
 
 Phần kỹ thuật nâng cao đã được kiểm chứng trong môi trường thực nghiệm với mô hình `primary - replica`, `read/write split` và `automatic failover`. Kết quả này cho thấy hệ thống LMS có thể được mở rộng theo hướng tăng tính sẵn sàng và tăng khả năng chịu lỗi mà không cần thay đổi toàn bộ kiến trúc nghiệp vụ hiện có.
 
-## Chương 8. Kết luận và hướng phát triển
+## Chương 8. Ứng dụng và ảnh minh họa giao diện
 
-### 8.1. Kết quả đạt được
+### 8.1. Mục đích minh họa giao diện
+
+Phần ảnh minh họa giao diện được sử dụng để chứng minh ứng dụng LMS đã được triển khai trên nền tảng web và có khả năng khai thác dữ liệu từ cơ sở dữ liệu SQL trong các chức năng thực tế. Các màn hình tiêu biểu thể hiện luồng sử dụng của hệ thống từ xác thực tài khoản, xem khóa học, học video, làm bài kiểm tra, tham gia lớp học đến quản lý nội dung của giảng viên.
+
+### 8.2. Các nhóm giao diện tiêu biểu
+
+Ở phía học viên, hệ thống có các màn hình đăng ký, đăng nhập, trang chủ, danh sách khóa học, chi tiết khóa học, học video, làm bài kiểm tra, xem kết quả bài làm, danh sách khóa học đã đăng ký, tham gia lớp học bằng mã lớp và hồ sơ cá nhân. Các giao diện này minh họa trực tiếp việc sử dụng dữ liệu từ các nhóm bảng như `users`, `courses`, `chapters`, `videos`, `documents`, `quizzes`, `quiz_attempts`, `course_enrollments` và `classes`.
+
+Ở phía giảng viên, hệ thống có các màn hình thống kê tổng quan, quản lý khóa học, xây dựng nội dung khóa học, quản lý bài kiểm tra, quản lý học viên, quản lý lớp học và gán khóa học cho lớp. Các giao diện này cho thấy dữ liệu không chỉ được lưu trữ riêng lẻ mà còn được tổng hợp để phục vụ theo dõi tiến độ học tập, tổ chức nội dung giảng dạy và quản lý lớp học.
+
+### 8.3. Nhận xét
+
+Các ảnh minh họa chi tiết được trình bày trong file chương riêng của báo cáo. Nhìn chung, phần giao diện cho thấy lược đồ cơ sở dữ liệu đã được sử dụng trong các chức năng vận hành thực tế của hệ thống. Dữ liệu người dùng, khóa học, chương học, video, tài liệu, bài kiểm tra, ghi danh, tiến độ học tập và lớp học đều được thể hiện thông qua các màn hình cụ thể, qua đó củng cố tính thực tế của phần phân tích và thiết kế cơ sở dữ liệu.
+
+## Chương 9. Kết luận và hướng phát triển
+
+### 9.1. Kết quả đạt được
 
 Báo cáo đã trình bày được các nội dung cốt lõi của một đề tài cơ sở dữ liệu gắn với hệ thống LMS. Cụ thể, báo cáo đã mô tả bài toán nghiệp vụ, xác định các thực thể dữ liệu chính, xây dựng lược đồ logic và lược đồ vật lý, phân tích mức độ chuẩn hóa, trình bày quá trình khởi tạo cơ sở dữ liệu, xem xét các yếu tố tối ưu truy vấn, đồng thời triển khai được phần thực nghiệm kỹ thuật nâng cao với replication, tách truy vấn đọc và ghi ở backend, và automatic failover được kiểm thử trong môi trường thực nghiệm.
 
-### 8.2. Đánh giá tổng quát về lược đồ dữ liệu của hệ thống
+### 9.2. Đánh giá tổng quát về lược đồ dữ liệu của hệ thống
 
 Lược đồ dữ liệu của hệ thống có cấu trúc tương đối hợp lý và phản ánh được các nhóm nghiệp vụ chính của một hệ thống LMS như quản lý người dùng, nội dung học tập, đánh giá, ghi danh và lớp học. Bên cạnh đó, quá trình đối chiếu với phần triển khai backend cũng cho thấy vẫn còn một số điểm cần tiếp tục đồng bộ để hệ thống hoàn thiện hơn.
 
-### 8.3. Hạn chế của đề tài
+### 9.3. Hạn chế của đề tài
 
 Bên cạnh các kết quả đã đạt được, đề tài vẫn còn một số hạn chế. Các phần thực nghiệm như `EXPLAIN`, sao lưu, phục hồi và replication đã được triển khai ở mức phù hợp với phạm vi học phần, tuy nhiên vẫn có thể tiếp tục mở rộng nếu áp dụng cho môi trường vận hành lớn hơn. Đối với phần replication, mô hình hiện tại mới dừng ở một `primary`, một `replica` và một `failover-manager`, chưa có nhiều replica, chưa có cơ chế quorum hoặc consensus, và quy trình đưa primary cũ quay lại làm replica vẫn là `manual rejoin` chứ chưa tự động hoàn toàn. Bên cạnh đó, giữa lược đồ dữ liệu và phần triển khai backend vẫn còn một vài điểm cần tiếp tục rà soát để hệ thống hoàn thiện hơn.
 
-### 8.4. Hướng phát triển
+### 9.4. Hướng phát triển
 
 Trong thời gian tới, hệ thống có thể được hoàn thiện theo một số hướng chính. Thứ nhất là tiếp tục đồng bộ giữa lược đồ dữ liệu và mã nguồn backend để giảm sai lệch trong quá trình triển khai. Thứ hai là mở rộng bộ dữ liệu kiểm thử và đo đạc hiệu năng trên quy mô dữ liệu lớn hơn để đánh giá rõ hơn tác động của chỉ mục. Thứ ba là hoàn thiện hơn bộ migration, seed và dữ liệu mẫu để phục vụ kiểm thử và minh họa rõ hơn quá trình phát triển cơ sở dữ liệu. Thứ tư là mở rộng mô hình replication hiện tại theo hướng nhiều replica, cơ chế `automatic rejoin` hoặc `automatic failback` cho node cũ và monitoring đầy đủ hơn. Cuối cùng, khi hệ thống đạt quy mô lớn hơn, có thể nghiên cứu thêm các kỹ thuật phân tán sâu hơn như quorum, consensus hoặc sharding cho các bảng giao dịch lớn.
 
-### 8.5. Kết luận chung
+### 9.5. Kết luận chung
 
 Qua đề tài này có thể thấy cơ sở dữ liệu SQL giữ vai trò trung tâm trong việc tổ chức và vận hành một hệ thống quản lý học tập trực tuyến. Việc xây dựng lược đồ phù hợp, thiết lập ràng buộc rõ ràng, chuẩn hóa dữ liệu và quan tâm tới tối ưu truy vấn là những yếu tố quyết định chất lượng của hệ thống. Trên cơ sở đó, đề tài đã đáp ứng được mục tiêu chính của học phần và tạo nền tảng để tiếp tục hoàn thiện trong các giai đoạn sau.
