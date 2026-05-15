@@ -498,6 +498,15 @@ Phương án áp dụng cho báo cáo được tóm tắt như sau:
 | Lưu phiên bản | Giữ nhiều file backup theo ngày để tránh ghi đè |
 | Kiểm tra | Định kỳ restore thử sang database khác để xác nhận file dùng được |
 
+Từ phương án trên, có thể xác định sơ bộ hai chỉ tiêu vận hành quan trọng là RPO và RTO:
+
+| Chỉ tiêu | Ý nghĩa | Áp dụng trong hệ thống LMS |
+| --- | --- | --- |
+| RPO (Recovery Point Objective) | Mức mất dữ liệu tối đa có thể chấp nhận khi xảy ra sự cố | Không chỉ phụ thuộc vào thời điểm tạo `full backup`, mà còn phụ thuộc vào việc `binary log` có được ghi nhận và bảo toàn đầy đủ hay không. Nếu `binary log` còn nguyên vẹn, hệ thống có thể phục hồi tới gần thời điểm trước sự cố hơn thay vì chỉ quay lại bản backup gần nhất. |
+| RTO (Recovery Time Objective) | Thời gian cần thiết để đưa dữ liệu trở lại trạng thái có thể sử dụng | Bao gồm thời gian tạo cơ sở dữ liệu phục hồi, nạp lại file `full backup`, áp dụng phần `binary log` cần thiết bằng `mysqlbinlog`, sau đó kiểm tra lại dữ liệu và các truy vấn nghiệp vụ chính. |
+
+Trong phạm vi đề tài, RPO/RTO chưa được cam kết bằng con số cố định như trong môi trường production, nhưng việc kết hợp `full backup` với `binary log` cho thấy chiến lược sao lưu đã xét đến cả điểm phục hồi dữ liệu và thời gian phục hồi. Đây là cơ sở để hệ thống có thể phát triển tiếp sang phục hồi theo thời điểm (point-in-time recovery) hoàn chỉnh khi vận hành thực tế.
+
 Ưu điểm của phương án này là có tính thực tiễn cao hơn so với backup thuần bằng file SQL, đồng thời vẫn có thể triển khai bằng các công cụ sẵn có của MySQL. Với hệ thống có quy mô lớn hơn, phương án này có thể được mở rộng bằng các công cụ `physical backup` chuyên dụng.
 
 Trong trường hợp hệ thống phát triển với quy mô dữ liệu lớn hơn và tần suất cập nhật cao hơn, chiến lược sao lưu còn có thể được mở rộng theo hướng kết hợp `full backup`, `incremental backup` và `binary log`. Khi đó, `incremental backup` giúp chỉ sao lưu phần dữ liệu thay đổi kể từ lần backup trước, qua đó giảm thời gian sao lưu và dung lượng lưu trữ cần sử dụng. Tuy nhiên, do phương án này thường cần tới các công cụ `physical backup` chuyên dụng và quy trình quản trị phức tạp hơn, nên trong phạm vi đề tài hiện tại, giải pháp `full backup` kết hợp `binary log` vẫn là lựa chọn phù hợp hơn.
