@@ -103,7 +103,7 @@ Các tham số thực nghiệm được cấu hình trong backend như sau:
 | `DB_HEALTHCHECK_FAILURE_THRESHOLD` | `3` lần lỗi liên tiếp | Số lần kiểm tra thất bại liên tiếp trước khi kích hoạt promote replica. |
 | `connectTimeout` khi ping node | `2000ms` | Thời gian chờ tối đa cho một lần thử kết nối kiểm tra sức khỏe node. |
 
-Với cấu hình mặc định, hệ thống không failover ngay sau một lỗi kết nối đơn lẻ mà chờ đủ 3 lần kiểm tra thất bại liên tiếp. Do chu kỳ kiểm tra là 5 giây, thời gian phát hiện sự cố tối thiểu ở mức xấp xỉ 15 giây, chưa tính thời gian thực hiện các lệnh promote replica. Đây là chỉ tiêu phục hồi ở mức tính sẵn sàng của mô hình replication/failover, khác với RTO của quy trình backup/restore ở Chương 6.
+Với cấu hình mặc định, hệ thống không failover ngay sau một lỗi kết nối đơn lẻ mà chờ đủ 3 lần kiểm tra thất bại liên tiếp. Do chu kỳ kiểm tra là 5 giây, thời gian phát hiện sự cố tối thiểu ở mức xấp xỉ 15 giây, chưa tính thời gian thực hiện các lệnh promote replica. Cách đặt ngưỡng này giúp hạn chế việc chuyển vai trò do lỗi kết nối ngắn hạn.
 
 1. xác nhận replica vẫn còn hoạt động
 2. dừng cơ chế replica trên node phụ

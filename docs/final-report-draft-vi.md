@@ -613,7 +613,7 @@ Log backend cũng ghi nhận rõ hai hướng truy vấn:
 
 Khi dừng node `mysql-primary`, `failover-manager` phát hiện lỗi kết nối sau nhiều lần kiểm tra liên tiếp, sau đó promote replica thành primary mới. Log hệ thống ghi nhận thông báo hoàn tất failover và cập nhật node ghi sang `127.0.0.1:3308`. Sau khi quá trình này kết thúc, backend vẫn tiếp tục thực hiện thành công các truy vấn ghi và đọc.
 
-Trong phần triển khai, `failover-manager` sử dụng các tham số thực nghiệm: `DB_HEALTHCHECK_INTERVAL_MS = 5000ms`, `DB_HEALTHCHECK_FAILURE_THRESHOLD = 3` và `connectTimeout = 2000ms` cho mỗi lần ping node. Như vậy, hệ thống chỉ kích hoạt failover sau 3 lần kiểm tra thất bại liên tiếp, tương ứng thời gian phát hiện sự cố tối thiểu khoảng 15 giây với cấu hình mặc định, chưa tính thời gian chạy các lệnh promote replica. Thông số này phản ánh khả năng phục hồi ở mức tính sẵn sàng của replication/failover, khác với RTO của quy trình backup/restore ở Chương 6.
+Trong phần triển khai, `failover-manager` sử dụng các tham số thực nghiệm: `DB_HEALTHCHECK_INTERVAL_MS = 5000ms`, `DB_HEALTHCHECK_FAILURE_THRESHOLD = 3` và `connectTimeout = 2000ms` cho mỗi lần ping node. Như vậy, hệ thống chỉ kích hoạt failover sau 3 lần kiểm tra thất bại liên tiếp, tương ứng thời gian phát hiện sự cố tối thiểu khoảng 15 giây với cấu hình mặc định, chưa tính thời gian chạy các lệnh promote replica. Thông số này cho thấy cơ chế failover có ngưỡng kiểm tra cụ thể để hạn chế việc chuyển vai trò do lỗi kết nối ngắn hạn.
 
 ### 7.5. Liên hệ với sharding
 
