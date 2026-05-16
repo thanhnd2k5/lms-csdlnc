@@ -647,7 +647,7 @@ Báo cáo đã trình bày được các nội dung cốt lõi của một đề
 
 ### 9.2. Đánh giá tổng quát về lược đồ dữ liệu của hệ thống
 
-Lược đồ dữ liệu của hệ thống có cấu trúc tương đối hợp lý và phản ánh được các nhóm nghiệp vụ chính của một hệ thống LMS như quản lý người dùng, nội dung học tập, đánh giá, ghi danh và lớp học. Bên cạnh đó, quá trình đối chiếu với phần triển khai backend cũng cho thấy vẫn còn một số điểm cần tiếp tục đồng bộ để hệ thống hoàn thiện hơn.
+Lược đồ dữ liệu của hệ thống có cấu trúc tương đối hợp lý và phản ánh được các nhóm nghiệp vụ chính của một hệ thống LMS như quản lý người dùng, nội dung học tập, đánh giá, ghi danh và lớp học. Các quan hệ dữ liệu được sử dụng trong nhiều chức năng thực tế của ứng dụng, từ hiển thị khóa học, ghi nhận tiến độ học tập đến quản lý lớp học và tổng hợp kết quả kiểm tra.
 
 ### 9.3. Hạn chế của đề tài
 
@@ -659,7 +659,7 @@ Ngoài ra, bộ dữ liệu thử nghiệm và các kịch bản kiểm thử hi
 
 ### 9.4. Hướng phát triển
 
-Trong thời gian tới, hệ thống có thể được hoàn thiện theo một số hướng chính. Thứ nhất là tiếp tục đồng bộ giữa lược đồ dữ liệu và mã nguồn backend để giảm sai lệch trong quá trình triển khai. Thứ hai là mở rộng bộ dữ liệu kiểm thử và đo đạc hiệu năng trên quy mô dữ liệu lớn hơn để đánh giá rõ hơn tác động của chỉ mục. Thứ ba là hoàn thiện hơn bộ migration, seed và dữ liệu mẫu để phục vụ kiểm thử và minh họa rõ hơn quá trình phát triển cơ sở dữ liệu. Thứ tư là mở rộng mô hình replication hiện tại theo hướng nhiều replica, cơ chế `automatic rejoin` hoặc `automatic failback` cho node cũ và monitoring đầy đủ hơn. Cuối cùng, khi hệ thống đạt quy mô lớn hơn, có thể nghiên cứu thêm các kỹ thuật phân tán sâu hơn như quorum, consensus hoặc sharding cho các bảng giao dịch lớn.
+Trong các giai đoạn tiếp theo, hệ thống có thể được mở rộng theo một số hướng chính. Thứ nhất là tăng quy mô dữ liệu kiểm thử và bổ sung các kịch bản đo hiệu năng để đánh giá khả năng đáp ứng khi số lượng người dùng, khóa học, bài kiểm tra và lượt ghi danh tăng lên. Thứ hai là chuẩn hóa quy trình migration và seed theo từng phiên bản, giúp việc triển khai, kiểm thử và tái tạo môi trường dữ liệu thuận tiện hơn. Thứ ba là mở rộng cụm replication theo hướng nhiều replica, tự động đưa node đã phục hồi quay lại cụm và bổ sung monitoring cho trạng thái cơ sở dữ liệu. Cuối cùng, khi hệ thống đạt quy mô lớn, có thể nghiên cứu thêm các kỹ thuật phân tán như quorum, consensus hoặc sharding cho các bảng phát sinh dữ liệu lớn.
 
 ### 9.5. Kết luận chung
 
