@@ -27,6 +27,11 @@ const Profile = () => {
     role: '',
     bio: ''
   });
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
 
   const token = localStorage.getItem('token');
 
@@ -64,6 +69,11 @@ const Profile = () => {
     setUserData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handlePasswordChange = (e) => {
+    const { name, value } = e.target;
+    setPasswordData(prev => ({ ...prev, [name]: value }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -88,6 +98,43 @@ const Profile = () => {
       window.dispatchEvent(new Event('userUpdate'));
     } catch (error) {
       message.error('Không thể cập nhật thông tin');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      return message.error('Mật khẩu mới và xác nhận mật khẩu không khớp');
+    }
+
+    if (passwordData.newPassword.length < 6) {
+      return message.error('Mật khẩu mới phải có ít nhất 6 ký tự');
+    }
+
+    try {
+      setSubmitting(true);
+      await axios.put(
+        `${process.env.REACT_APP_API_URL}/users/change-password`,
+        { 
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword 
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      message.success('Đổi mật khẩu thành công');
+      setPasswordData({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      });
+      setActiveTab('info');
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || 'Không thể đổi mật khẩu';
+      message.error(errorMsg);
     } finally {
       setSubmitting(false);
     }
@@ -298,20 +345,84 @@ const Profile = () => {
                 </form>
               </div>
             ) : (
-              <div className="h-full flex flex-col items-center justify-center text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="w-24 h-24 bg-slate-800 rounded-full flex items-center justify-center mb-6 text-indigo-400">
-                  <Lock size={48} className="opacity-20 animate-pulse" />
-                </div>
-                <h2 className="text-2xl font-bold text-white">Đổi mật khẩu</h2>
-                <p className="text-slate-400 mt-3 max-w-md">
-                  Tính năng bảo mật này hiện đang được bảo trì và sẽ sớm quay trở lại. Vui lòng quay lại sau!
-                </p>
-                <button 
-                  onClick={() => setActiveTab('info')}
-                  className="mt-8 text-indigo-400 hover:text-indigo-300 font-medium transition-colors"
-                >
-                  Quay lại Thông tin cá nhân
-                </button>
+              <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <header className="mb-10">
+                  <h1 className="text-3xl font-bold text-white">Đổi mật khẩu</h1>
+                  <p className="text-slate-400 mt-2">Để đảm bảo an toàn, vui lòng không chia sẻ mật khẩu của bạn cho người khác.</p>
+                </header>
+
+                <form onSubmit={handleChangePassword} className="space-y-8">
+                  <div className="space-y-6">
+                    <div className="space-y-2">
+                      <label htmlFor="currentPassword" className="text-sm font-medium text-slate-300 flex items-center gap-2">
+                        <Lock size={14} /> Mật khẩu hiện tại
+                      </label>
+                      <input
+                        type="password"
+                        id="currentPassword"
+                        name="currentPassword"
+                        value={passwordData.currentPassword}
+                        onChange={handlePasswordChange}
+                        placeholder="Nhập mật khẩu hiện tại"
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                        required
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label htmlFor="newPassword" className="text-sm font-medium text-slate-300 flex items-center gap-2">
+                          <Key size={14} /> Mật khẩu mới
+                        </label>
+                        <input
+                          type="password"
+                          id="newPassword"
+                          name="newPassword"
+                          value={passwordData.newPassword}
+                          onChange={handlePasswordChange}
+                          placeholder="Nhập mật khẩu mới"
+                          className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                          required
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label htmlFor="confirmPassword" className="text-sm font-medium text-slate-300 flex items-center gap-2">
+                          <Shield size={14} /> Xác nhận mật khẩu mới
+                        </label>
+                        <input
+                          type="password"
+                          id="confirmPassword"
+                          name="confirmPassword"
+                          value={passwordData.confirmPassword}
+                          onChange={handlePasswordChange}
+                          placeholder="Xác nhận mật khẩu mới"
+                          className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-6 flex flex-col sm:flex-row gap-4">
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold py-4 px-8 rounded-xl shadow-lg shadow-indigo-500/20 transition-all duration-300 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
+                    >
+                      {submitting ? <Spin size="small" /> : <Save size={20} />}
+                      {submitting ? 'Đang xử lý...' : 'Cập nhật mật khẩu'}
+                    </button>
+                    
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('info')}
+                      className="inline-flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold py-4 px-8 rounded-xl border border-slate-700 transition-all duration-300"
+                    >
+                      Hủy bỏ
+                    </button>
+                  </div>
+                </form>
               </div>
             )}
 

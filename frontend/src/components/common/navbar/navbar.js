@@ -182,10 +182,6 @@ const Navbar = () => {
                       <UserOutlined className="item-icon" />
                       <span>Hồ sơ cá nhân</span>
                     </Link>
-                    <Link to="/settings" className="dropdown-item-modern" onClick={() => setShowMenu(false)}>
-                      <SettingOutlined className="item-icon" />
-                      <span>Cài đặt hệ thống</span>
-                    </Link>
                   </div>
 
                   <div className="menu-divider-modern"></div>

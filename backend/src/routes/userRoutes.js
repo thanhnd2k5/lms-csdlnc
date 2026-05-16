@@ -34,5 +34,6 @@ const upload = multer({
 router.get('/profile', authMiddleware, userController.getProfile);
 router.put('/profile', authMiddleware, userController.updateProfile);
 router.post('/upload-avatar', authMiddleware, upload.single('avatar'), userController.uploadAvatar);
+router.put('/change-password', authMiddleware, userController.changePassword);
 
 module.exports = router; 

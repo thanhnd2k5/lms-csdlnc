@@ -96,6 +96,46 @@ const User = {
       throw error;
     }
   },
+
+  // Lấy hash mật khẩu của user
+  getPasswordById: async (userId) => {
+    try {
+      return new Promise((resolve, reject) => {
+        db.query(
+          'SELECT password FROM users WHERE id = ?',
+          [userId],
+          (error, results) => {
+            if (error) {
+              return reject(error);
+            }
+            resolve(results[0]?.password);
+          }
+        );
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Cập nhật mật khẩu mới
+  updatePassword: async (userId, hashedPassword) => {
+    try {
+      return new Promise((resolve, reject) => {
+        db.query(
+          'UPDATE users SET password = ? WHERE id = ?',
+          [hashedPassword, userId],
+          (error, results) => {
+            if (error) {
+              return reject(error);
+            }
+            resolve(true);
+          }
+        );
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 module.exports = User; 
