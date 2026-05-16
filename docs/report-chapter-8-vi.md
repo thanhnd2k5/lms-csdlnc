@@ -2,7 +2,7 @@
 
 ## 8.1. Mục đích minh họa giao diện
 
-Phần này trình bày một số màn hình tiêu biểu của ứng dụng LMS nhằm minh họa kết quả triển khai hệ thống trên nền tảng web. Trong phạm vi đề tài, nội dung trọng tâm là cơ sở dữ liệu SQL, tuy nhiên các giao diện ứng dụng giúp làm rõ cách dữ liệu được sử dụng trong các chức năng thực tế.
+Phần này trình bày các màn hình tiêu biểu của ứng dụng LMS để thể hiện kết quả triển khai hệ thống trên nền tảng web. Các giao diện cho thấy dữ liệu SQL được khai thác trực tiếp trong những chức năng thực tế như xác thực tài khoản, quản lý khóa học, học video, làm bài kiểm tra, theo dõi tiến độ và quản lý lớp học.
 
 Các hình ảnh được sắp xếp theo luồng sử dụng chính của hệ thống, bao gồm xác thực tài khoản, tra cứu khóa học, học tập, làm bài kiểm tra, quản lý lớp học và quản lý nội dung của giảng viên. Qua đó có thể thấy các nhóm dữ liệu như người dùng, khóa học, chương học, video, tài liệu, bài kiểm tra, ghi danh, tiến độ học tập và lớp học đều được khai thác trực tiếp từ cơ sở dữ liệu trong quá trình vận hành ứng dụng.
 

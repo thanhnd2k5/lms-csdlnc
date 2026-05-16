@@ -10,7 +10,7 @@ Phần thực nghiệm được xây dựng nhằm kiểm chứng ba khả năng
 - tách được truy vấn đọc và truy vấn ghi ở tầng ứng dụng
 - tự động chuyển vai trò ghi sang node còn hoạt động khi node chính gặp sự cố
 
-Trong phạm vi đề tài, mục tiêu của mô hình là chứng minh tính khả thi của hướng triển khai và làm rõ nguyên lý vận hành của hệ thống, chứ chưa hướng tới một cụm chịu lỗi hoàn chỉnh như trong môi trường production quy mô lớn.
+Trong phạm vi đề tài, mô hình được triển khai nhằm chứng minh tính khả thi của hướng mở rộng cơ sở dữ liệu và làm rõ nguyên lý vận hành của hệ thống khi cần tăng tính sẵn sàng, tách tải đọc/ghi và xử lý sự cố ở tầng lưu trữ dữ liệu.
 
 ## 7.2. Kiến trúc hệ thống thực nghiệm
 

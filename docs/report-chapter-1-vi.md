@@ -21,7 +21,7 @@ Từ yêu cầu đó, đề tài “Ứng dụng sử dụng cơ sở dữ liệ
 
 ## 1.3. Phạm vi đề tài
 
-Đề tài hướng tới việc xây dựng một hệ thống LMS gồm giao diện người dùng, tầng xử lý nghiệp vụ và cơ sở dữ liệu SQL. Tuy nhiên, do trọng tâm của học phần là Cơ sở dữ liệu, nội dung báo cáo chủ yếu tập trung trình bày thành phần cơ sở dữ liệu của hệ thống, cụ thể bao gồm:
+Đề tài hướng tới việc xây dựng một hệ thống LMS gồm giao diện người dùng, tầng xử lý nghiệp vụ và cơ sở dữ liệu SQL. Báo cáo đặt cơ sở dữ liệu ở vị trí trung tâm để phân tích, đồng thời liên hệ với các chức năng ứng dụng nhằm chứng minh cách dữ liệu được tổ chức và sử dụng trong quá trình vận hành hệ thống, cụ thể bao gồm:
 
 - phân tích yêu cầu dữ liệu
 - xác định thực thể, thuộc tính và quan hệ
